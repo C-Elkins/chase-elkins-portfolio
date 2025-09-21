@@ -67,10 +67,6 @@ Edit `js/projects.js` and add new project objects to the `projects` array:
     tech: ["Technology", "Stack"],
     image: "🚀", // Emoji or image path
     github: "https://github.com/username/repo",
-    demo: "https://demo-url.com",
-    status: "completed" // completed, in-progress, or planned
-}
-```
 
 ### Updating Personal Information
 
@@ -84,8 +80,9 @@ Edit `js/projects.js` and add new project objects to the `projects` array:
 Update CSS custom properties in `css/style.css`:
 
 ```css
-:root {
     --primary-color: #667eea;
+## 🤝 Contributing
+We welcome contributions! Please refer to our [Code of Conduct](CODE_OF_CONDUCT.md) and contribution expectations before getting started.
     --secondary-color: #764ba2;
     /* ... other colors */
 }
