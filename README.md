@@ -20,7 +20,7 @@ A modern, responsive portfolio website showcasing my transition from IT Professi
 
 ## 📁 Project Structure
 
-```
+```bash
 portfolio/
 ├── index.html              # Main HTML file
 ├── css/
