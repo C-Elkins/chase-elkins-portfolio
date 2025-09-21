@@ -1,5 +1,7 @@
 # Chase Elkins - Portfolio Website
 
+[![Deploy static site to GitHub Pages](https://github.com/C-Elkins/chase-elkins-portfolio/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/C-Elkins/chase-elkins-portfolio/actions/workflows/pages.yml)
+
 A modern, responsive portfolio website showcasing my transition from IT Professional to Full-Stack Developer.
 
 ## 🚀 Features
