@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#667eea"/>
+      <stop offset="100%" stop-color="#764ba2"/>
+    </linearGradient>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="24"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g opacity="0.25" filter="url(#soft)">
+    <circle cx="200" cy="150" r="160" fill="#fff"/>
+    <circle cx="1050" cy="520" r="140" fill="#fff"/>
+  </g>
+  <g fill="#fff">
+    <text x="80" y="300" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="80" font-weight="700">Chase Elkins</text>
+    <text x="80" y="380" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="40" opacity="0.9">Full Stack Developer</text>
+    <text x="80" y="460" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="28" opacity="0.85">Java • Python • JavaScript • React • Spring Boot</text>
+  </g>
+</svg>
