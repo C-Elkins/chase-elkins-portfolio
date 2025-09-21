@@ -9,6 +9,36 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="manifest" href="site.webmanifest">
+    
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Chase Elkins",
+            "jobTitle": "Full Stack Developer",
+            "url": "https://c-elkins.github.io/chase-elkins-portfolio/",
+            "image": "https://c-elkins.github.io/chase-elkins-portfolio/images/profile.jpg",
+            "email": "mailto:chase.e.elkins1@gmail.com",
+            "sameAs": [
+                "https://github.com/C-Elkins",
+                "https://linkedin.com/in/chase-elkins-793bb8169"
+            ]
+        }
+        </script>
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Chase Elkins - Portfolio",
+            "url": "https://c-elkins.github.io/chase-elkins-portfolio/",
+            "description": "Chase Elkins - IT Professional transitioning to Full Stack Development. Java, Python, JavaScript, and modern web technologies.",
+            "publisher": {
+                "@type": "Person",
+                "name": "Chase Elkins"
+            }
+        }
+        </script>
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Chase Elkins - Full Stack Developer">
@@ -37,12 +67,11 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <a href="#home">Chase Elkins</a>
-            </div>
-            <div class="nav-menu" id="nav-menu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#about" class="nav-link">About</a>
+                <div class="contact-form">
+                    <form id="contact-form" method="POST" data-endpoint="https://formspree.io/f/yourFormId" novalidate>
+                        <p class="sr-only" aria-hidden="true">
+                            <label>Dont fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+                        </p>
                 <a href="#skills" class="nav-link">Skills</a>
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#contact" class="nav-link">Contact</a>

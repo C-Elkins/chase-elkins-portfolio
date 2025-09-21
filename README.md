@@ -152,6 +152,18 @@ Live URL (GitHub Pages):
 - **GitHub**: [@C-Elkins](https://github.com/C-Elkins)
 - **Phone**: +1 (850) 557-3197
 
+## ✉️ Contact Form (Formspree)
+
+This site uses Formspree for contact form handling when hosted on GitHub Pages.
+
+1. Create a Formspree form at <https://formspree.io/forms> and copy your form ID (looks like `xyzabcd`)
+2. Update the endpoint in `index.html` contact form:
+
+    `data-endpoint="https://formspree.io/f/yourFormId"` → replace `yourFormId`
+
+3. Optional: Add allowed domains in Formspree settings so submissions from your Pages URL are accepted.
+4. Test by submitting the form on your live site; check your email or Formspree dashboard for messages.
+
 ---
 
 — Built with ❤️ by Chase Elkins · Full-Stack Developer

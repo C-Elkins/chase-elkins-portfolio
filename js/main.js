@@ -95,42 +95,46 @@ function initScrollAnimations() {
 
 // Contact form functionality
 function initContactForm() {
-    const contactForm = document.getElementById('contact-form');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            
-            // Show loading state
-            submitBtn.innerHTML = '<span class="loading-spinner"></span> Sending...';
-            submitBtn.disabled = true;
-            
-            // Get form data
-            const formData = new FormData(contactForm);
-            const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                subject: formData.get('subject'),
-                message: formData.get('message')
-            };
-            
-            // Simulate form submission (replace with actual form handler)
-            setTimeout(() => {
-                // Show success message
-                showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-                
-                // Reset form
-                contactForm.reset();
-                
-                // Reset button
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }, 2000);
-        });
-    }
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+
+    const endpoint = form.getAttribute('data-endpoint');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Basic honeypot check
+        const honeypot = form.querySelector('input[name="bot-field"]');
+        if (honeypot && honeypot.value) return; // silently ignore bots
+
+        const originalText = submitBtn.textContent;
+        submitBtn.innerHTML = '<span class="loading-spinner"></span> Sending...';
+        submitBtn.disabled = true;
+
+        try {
+            const formData = new FormData(form);
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { Accept: 'application/json' },
+                body: formData
+            });
+
+            if (res.ok) {
+                showNotification("Message sent successfully! I'll get back to you soon.", 'success');
+                form.reset();
+            } else {
+                const data = await res.json().catch(() => ({}));
+                const msg = data?.errors?.[0]?.message || 'There was a problem submitting your form.';
+                showNotification(msg, 'info');
+            }
+        } catch (err) {
+            showNotification('Network error. Please try again later.', 'info');
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    });
 }
 
 // Smooth scrolling for anchor links
