@@ -1,13 +1,22 @@
 // Projects Data
 const projects = [
     {
+        title: "Professional Portfolio Website",
+        description: "Modern, responsive portfolio showcasing full-stack development transition. Features accessibility-first design, SEO optimization, and mobile-responsive layout.",
+        tech: ["HTML5", "CSS3", "JavaScript", "GitHub Pages"],
+        image: "🌟",
+        github: "https://github.com/C-Elkins/chase-elkins-portfolio",
+        demo: "https://c-elkins.github.io/chase-elkins-portfolio/",
+        status: "completed"
+    },
+    {
         title: "DevStudio Portfolio",
-        description: "A comprehensive portfolio platform showcasing modern web development skills with responsive design and interactive elements.",
+        description: "Comprehensive portfolio platform showcasing modern web development skills with interactive elements and dynamic content management.",
         tech: ["JavaScript", "HTML5", "CSS3", "Git"],
         image: "🚀",
         github: "https://github.com/C-Elkins/Devstudio-portfolio",
         demo: "#",
-        status: "completed"
+        status: "in-progress"
     },
     {
         title: "IT Asset Management System",
