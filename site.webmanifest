@@ -1,0 +1,12 @@
+{
+  "name": "Chase Elkins — Portfolio",
+  "short_name": "Chase Elkins",
+  "start_url": "/chase-elkins-portfolio/",
+  "scope": "/chase-elkins-portfolio/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#667eea",
+  "icons": [
+    { "src": "assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

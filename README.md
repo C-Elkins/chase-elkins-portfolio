@@ -91,10 +91,15 @@ Update CSS custom properties in `css/style.css`:
 
 ## 🌐 Deployment Instructions
 
+Live URL (GitHub Pages):
+
+- <https://c-elkins.github.io/chase-elkins-portfolio/>
+
 ### GitHub Pages (Recommended)
 
 1. **Create GitHub Repository:**
-   ```bash
+
+    ```bash
    git init
    git add .
    git commit -m "Initial portfolio commit"
@@ -142,11 +147,11 @@ Update CSS custom properties in `css/style.css`:
 
 ## 📞 Contact
 
-- **Email**: chase.e.elkins1@gmail.com
+- **Email**: <chase.e.elkins1@gmail.com>
 - **LinkedIn**: [Chase Elkins](https://linkedin.com/in/chase-elkins-793bb8169)
 - **GitHub**: [@C-Elkins](https://github.com/C-Elkins)
 - **Phone**: +1 (850) 557-3197
 
 ---
 
-**Built with ❤️ by Chase Elkins | Full-Stack Developer**
+— Built with ❤️ by Chase Elkins · Full-Stack Developer
