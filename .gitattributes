@@ -1,0 +1,15 @@
+# Normalize text files and line endings
+* text=auto eol=lf
+
+# Treat images as binary to avoid diff noise
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+
+# Keep SVG as text but use LF endings for consistency
+*.svg text eol=lf
+
+# Don't include local/editor folders when creating archive exports
+.github export-ignore
+.vscode export-ignore

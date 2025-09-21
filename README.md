@@ -147,7 +147,19 @@ Live URL (GitHub Pages):
 - Minimal external dependencies
 - Fast loading times
 
-## 📞 Contact
+## � Security
+
+For security disclosures, please see [SECURITY.md](./.github/SECURITY.md).
+
+## 🧾 License
+
+Code in this repository is licensed under the MIT License. See [LICENSE](./LICENSE).
+
+## 📸 Content and Media
+
+Unless otherwise noted, all images, logos, and written content are © Chase Elkins and are not licensed for reuse. If you want to use any media, please reach out first.
+
+## �📞 Contact
 
 - **Email**: <chase.e.elkins1@gmail.com>
 - **LinkedIn**: [Chase Elkins](https://linkedin.com/in/chase-elkins-793bb8169)

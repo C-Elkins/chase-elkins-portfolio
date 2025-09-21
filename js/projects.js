@@ -14,9 +14,9 @@ const projects = [
         description: "Comprehensive portfolio platform showcasing modern web development skills with interactive elements and dynamic content management.",
         tech: ["JavaScript", "HTML5", "CSS3", "Git"],
         image: "🚀",
-        github: "#",
+        github: "https://github.com/C-Elkins/Devstudio",
         demo: "#",
-        status: "planned"
+        status: "in-progress"
     },
     {
         title: "IT Asset Management System",
