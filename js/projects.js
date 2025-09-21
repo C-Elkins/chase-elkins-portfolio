@@ -10,11 +10,11 @@ const projects = [
         status: "completed"
     },
     {
-        title: "DevStudio Portfolio",
+        title: "DevStudio",
         description: "Comprehensive portfolio platform showcasing modern web development skills with interactive elements and dynamic content management.",
         tech: ["JavaScript", "HTML5", "CSS3", "Git"],
         image: "🚀",
-        github: "https://github.com/C-Elkins/Devstudio-portfolio",
+        github: "https://github.com/C-Elkins/Devstudio",
         demo: "#",
         status: "in-progress"
     },
