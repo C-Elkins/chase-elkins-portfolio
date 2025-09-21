@@ -295,10 +295,11 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form id="contact-form" method="POST" data-endpoint="https://formspree.io/f/meorjqpq" novalidate>
+                    <form id="contact-form" method="POST" action="https://formspree.io/f/meorjqpq" data-endpoint="https://formspree.io/f/meorjqpq" novalidate>
                         <p class="sr-only" aria-hidden="true">
                             <label>Don’t fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
                         </p>
+                        <input type="hidden" name="_redirect" value="https://c-elkins.github.io/chase-elkins-portfolio/success.html">
                         <div class="form-group">
                             <label class="sr-only" for="name">Name</label>
                             <input type="text" id="name" name="name" placeholder="Your Name" required>
