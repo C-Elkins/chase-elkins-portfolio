@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="manifest" href="site.webmanifest">
+    <!-- Preload LCP hero image for faster first paint -->
+    <link rel="preload" as="image" href="https://c-elkins.github.io/chase-elkins-portfolio/images/profile.jpg" imagesrcset="https://c-elkins.github.io/chase-elkins-portfolio/images/profile.jpg 1x" imagesizes="300px">
     <meta name="author" content="Chase Elkins">
     <meta name="apple-mobile-web-app-title" content="Chase Elkins">
     
@@ -68,8 +70,21 @@
     <link rel="stylesheet" href="css/animations.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Analytics: Plausible (lightweight, privacy-friendly) -->
-    <script defer data-domain="c-elkins.github.io" src="https://plausible.io/js/script.js"></script>
+        <!-- Analytics: Plausible (lightweight, privacy-friendly) with Do Not Track respect -->
+        <script>
+            (function(){
+                try {
+                    var dnt = navigator.doNotTrack == '1' || window.doNotTrack == '1' || navigator.msDoNotTrack == '1';
+                    if (!dnt) {
+                        var s = document.createElement('script');
+                        s.defer = true;
+                        s.setAttribute('data-domain', 'c-elkins.github.io');
+                        s.src = 'https://plausible.io/js/script.js';
+                        document.head.appendChild(s);
+                    }
+                } catch(e) { /* no-op */ }
+            })();
+        </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -123,7 +138,7 @@
             </div>
             <div class="hero-image">
                 <div class="hero-avatar">
-                    <img src="images/profile.jpg" alt="Chase Elkins" id="profile-img" loading="lazy" decoding="async">
+                    <img src="images/profile.jpg" alt="Chase Elkins" id="profile-img" width="300" height="300" fetchpriority="high" decoding="async">
                 </div>
             </div>
         </div>
