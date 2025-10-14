@@ -10,55 +10,28 @@ const projects = [
         status: "completed"
     },
     {
-        title: "DevStudio",
-        description: "Comprehensive portfolio platform showcasing modern web development skills with interactive elements and dynamic content management.",
-        tech: ["JavaScript", "HTML5", "CSS3", "Git"],
-        image: "🚀",
-    github: "https://github.com/C-Elkins/Devstudio",
+        title: "RetroWave Music Visualizer",
+        description: "Interactive music visualizer with 80s synthwave aesthetics. Features real-time audio analysis, customizable effects, and the ability to upload your own tracks.",
+        tech: ["JavaScript", "Web Audio API", "Canvas", "CSS3 Animations"],
+        image: "🎵",
+        github: "#",
         demo: "#",
         status: "in-progress"
     },
     {
-        title: "IT Asset Management System",
+        title: "Asset Management System",
         description: "Full-stack application for tracking IT equipment, software licenses, and maintenance schedules with role-based access control.",
         tech: ["Java", "Spring Boot", "React", "PostgreSQL"],
         image: "💻",
-        github: "#",
+        github: "https://github.com/C-Elkins/Asset-Management",
         demo: "#",
-        status: "planned"
+        status: "in-progress"
     },
     {
-        title: "Network Security Monitor",
-        description: "Python-based tool for monitoring network security, detecting anomalies, and generating automated reports for IT teams.",
-        tech: ["Python", "Flask", "SQLite", "Chart.js"],
-        image: "🛡️",
-        github: "#",
-        demo: "#",
-        status: "planned"
-    },
-    {
-        title: "Remote Helpdesk Mobile App",
-        description: "Mobile-first PWA for IT support ticket management with offline capabilities and real-time notifications.",
-        tech: ["React Native", "Node.js", "MongoDB", "Socket.io"],
-        image: "📱",
-        github: "#",
-        demo: "#",
-        status: "planned"
-    },
-    {
-        title: "System Log Analyzer",
-        description: "Automated log parsing and analysis tool that identifies patterns, anomalies, and generates actionable insights.",
-        tech: ["Python", "Pandas", "FastAPI", "Docker"],
-        image: "📊",
-        github: "#",
-        demo: "#",
-        status: "planned"
-    },
-    {
-        title: "Cloud Infrastructure Dashboard",
-        description: "Real-time monitoring dashboard for cloud resources with cost tracking and performance optimization suggestions.",
-        tech: ["Vue.js", "AWS", "Docker", "Terraform"],
-        image: "☁️",
+        title: "AI-Powered Code Snippet Manager",
+        description: "Smart code snippet library with AI-powered search, syntax highlighting, and organization. Features tagging, version control, and team collaboration capabilities.",
+        tech: ["TypeScript", "Next.js", "Tailwind CSS", "Supabase"],
+        image: "🤖",
         github: "#",
         demo: "#",
         status: "planned"
@@ -105,15 +78,43 @@ function createProjectCard(project) {
 }
 
 // Function to load projects
-function loadProjects() {
+function loadProjects(filter = 'all') {
     const projectsContainer = document.getElementById('projects-container');
     if (projectsContainer) {
-        projectsContainer.innerHTML = projects.map(createProjectCard).join('');
-        
+        const filteredProjects = filter === 'all'
+            ? projects
+            : projects.filter(project => project.status === filter);
+
+        projectsContainer.innerHTML = filteredProjects.map(createProjectCard).join('');
+
         // Initialize scroll animations for project cards
-        initScrollAnimations();
+        if (typeof initScrollAnimations === 'function') {
+            initScrollAnimations();
+        }
     }
 }
 
+// Initialize project filtering
+function initProjectFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Add active class to clicked button
+            this.classList.add('active');
+
+            // Get filter value and load projects
+            const filter = this.getAttribute('data-filter');
+            loadProjects(filter);
+        });
+    });
+}
+
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', loadProjects);
+document.addEventListener('DOMContentLoaded', function() {
+    loadProjects();
+    initProjectFilters();
+});

@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScrolling();
     initProfileImage();
     initTypingEffect();
+    initThemeToggle();
+    initScrollToTop();
 });
 
 // Navigation functionality
@@ -37,13 +39,12 @@ function initNavigation() {
     // Change navbar background on scroll
     window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.navbar');
+
         if (navbar) {
             if (window.scrollY > 50) {
-                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+                navbar.classList.add('navbar-scrolled');
             } else {
-                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-                navbar.style.boxShadow = 'none';
+                navbar.classList.remove('navbar-scrolled');
             }
         }
     });
@@ -313,6 +314,68 @@ function initEasterEggs() {
 
 // Initialize easter eggs
 initEasterEggs();
+
+// Theme Toggle Functionality
+function initThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const htmlElement = document.documentElement;
+
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    htmlElement.setAttribute('data-theme', currentTheme);
+    updateThemeIcon(currentTheme, themeIcon);
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme, themeIcon);
+
+            // Add a smooth transition effect
+            htmlElement.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+        });
+    }
+}
+
+function updateThemeIcon(theme, icon) {
+    if (icon) {
+        if (theme === 'dark') {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        }
+    }
+}
+
+// Scroll to Top Functionality
+function initScrollToTop() {
+    const scrollToTopBtn = document.getElementById('scroll-to-top');
+
+    if (scrollToTopBtn) {
+        // Show/hide button based on scroll position
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+
+        // Scroll to top when clicked
+        scrollToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+}
 
 // Add CSS for notifications
 const notificationCSS = `
