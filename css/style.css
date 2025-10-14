@@ -151,13 +151,11 @@ h1, h2, h3, h4, h5, h6 {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     box-shadow: var(--shadow);
+    border: none;
 }
 /* Primary button: solid color, no gradient, good contrast */
 .btn-primary {
-    background-color: var(--primary-color);
-    color: #fff;
-    box-shadow: var(--shadow);
-    border: 2px solid var(--primary-color);
+    /* Remove solid color override for .btn-primary */
 }
 
 .btn-primary:hover {
@@ -166,10 +164,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
+    /* Removed glass/blur background for .btn-secondary */
 }
 /* Secondary button: solid accent color, good contrast, no glass effect */
 .btn-secondary {
@@ -181,9 +176,10 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Dark mode variants for buttons */
 [data-theme="dark"] .btn-primary {
-    background-color: var(--accent-color);
+    background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
     color: #fff;
-    border-color: var(--accent-color);
+    box-shadow: var(--shadow);
+    border: none;
 }
 
 [data-theme="dark"] .btn-secondary {
@@ -345,8 +341,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .scroll-to-top:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    background-color: var(--accent-color);
+    color: #fff;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
 }
 
 /* Hero Section */
@@ -423,11 +421,23 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     width: 50px;
     height: 50px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    color: var(--text-secondary);
-    text-decoration: none;
+    background-color: #ffe0c0;
+    color: var(--primary-color);
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
     transition: var(--transition);
+[data-theme="dark"] .btn-primary:hover {
+    background-color: #ffb38c;
+    color: #fff;
+    border-color: #ffb38c;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background-color: #23272f;
+    color: var(--secondary-color);
+    border-color: var(--accent-color);
+}
     box-shadow: var(--shadow);
 }
 
