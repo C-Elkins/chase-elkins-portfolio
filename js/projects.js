@@ -14,9 +14,9 @@ const projects = [
         description: "Interactive music visualizer with 80s synthwave aesthetics. Features real-time audio analysis, customizable effects, and the ability to upload your own tracks.",
         tech: ["JavaScript", "Web Audio API", "Canvas", "CSS3 Animations"],
         image: "🎵",
-        github: "#",
-        demo: "#",
-        status: "in-progress"
+        github: "https://github.com/C-Elkins/Retrowave-music-visualizer",
+        demo: "https://c-elkins.github.io/Retrowave-music-visualizer/",
+        status: "completed"
     },
     {
         title: "Asset Management System",

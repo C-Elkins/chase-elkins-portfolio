@@ -699,7 +699,7 @@ h1, h2, h3, h4, h5, h6 {
 .filter-btn {
     padding: 0.75rem 1.5rem;
     border: 2px solid var(--border-color);
-    background: transparent;
+    background-color: var(--bg-primary);
     color: var(--text-secondary);
     border-radius: 25px;
     cursor: pointer;
@@ -707,18 +707,21 @@ h1, h2, h3, h4, h5, h6 {
     transition: var(--transition);
     font-family: inherit;
     font-size: 0.95rem;
+    box-shadow: none; /* prevent gradient/shadow artifacts on some browsers */
 }
 
 .filter-btn:hover {
     border-color: var(--primary-color);
+    background-color: rgba(255, 214, 187, 0.35); /* subtle peach hover */
     color: var(--primary-color);
     transform: translateY(-2px);
 }
 
 .filter-btn.active {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    border-color: transparent;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 14px rgba(197, 101, 62, 0.25);
 }
 
 .projects-grid {
