@@ -58,7 +58,7 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the project maintainer(s) responsible for enforcement at
-[chase.e.elkins1@gmail.com](mailto:chase.e.elkins1@gmail.com).
+the contact form on the project owner's portfolio website.
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the

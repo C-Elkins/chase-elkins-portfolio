@@ -1,14 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="CE monogram">
   <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#667eea"/>
-      <stop offset="100%" stop-color="#764ba2"/>
+    <linearGradient id="edge" x1="16" y1="16" x2="112" y2="112" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9dff5b"/>
+      <stop offset="1" stop-color="#70e1f5"/>
     </linearGradient>
-    <filter id="s" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.2"/>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
   </defs>
-  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#g)" filter="url(#s)"/>
-  <path d="M20 42 L32 18 L44 42" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="32" cy="46" r="2" fill="#fff"/>
+  <rect x="4" y="4" width="120" height="120" rx="25" fill="#05080d"/>
+  <path d="M29 14H99L114 29V99L99 114H29L14 99V29Z" fill="none" stroke="url(#edge)" stroke-width="3"/>
+  <path d="M55 37H44C31 37 25 46 25 64s6 27 19 27h11" fill="none" stroke="#9dff5b" stroke-width="10" stroke-linecap="square"/>
+  <path d="M98 37H67V91H98M67 64H92" fill="none" stroke="#70e1f5" stroke-width="10" stroke-linejoin="miter"/>
+  <path d="M101 19h8v8" fill="none" stroke="#9dff5b" stroke-width="3" filter="url(#glow)"/>
 </svg>

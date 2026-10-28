@@ -6,7 +6,8 @@ This repository hosts a static portfolio website. There is no server-side code o
 
 ## Reporting a Vulnerability
 
-Please report potential vulnerabilities privately by emailing: [chase.e.elkins1@gmail.com](mailto:chase.e.elkins1@gmail.com)
+Please report potential vulnerabilities through
+[GitHub's private vulnerability reporting](https://github.com/C-Elkins/chase-elkins-portfolio/security/advisories/new).
 
 - Include steps to reproduce and affected URLs if applicable.
 - Do not create public issues for security reports.
@@ -15,6 +16,6 @@ Please report potential vulnerabilities privately by emailing: [chase.e.elkins1@
 ## Best practices we follow
 
 - Deployed via GitHub Pages with HTTPS
-- No third-party scripts beyond well-known CDNs and analytics
+- No runtime third-party scripts
 - Form submissions handled by Formspree
 - Regular dependency and content review

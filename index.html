@@ -1,757 +1,227 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chase Elkins - Full Stack Developer</title>
-    <meta name="description" content="Chase Elkins - IT Professional transitioning to Full Stack Development. Specializing in Java, Python, JavaScript, and modern web technologies.">
-    <meta name="theme-color" content="rgb(197, 101, 62)">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="manifest" href="site.webmanifest">
-    <!-- Preload LCP hero image for faster first paint -->
-    <link rel="preload" as="image" href="https://c-elkins.github.io/chase-elkins-portfolio/images/profile.jpg" imagesrcset="https://c-elkins.github.io/chase-elkins-portfolio/images/profile.jpg 1x" imagesizes="300px">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Portfolio of Chase Elkins, a full-stack developer and IT professional building secure, reliable software.">
     <meta name="author" content="Chase Elkins">
-    <meta name="apple-mobile-web-app-title" content="Chase Elkins">
-    
-        <!-- JSON-LD Structured Data -->
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Person",
-            "name": "Chase Elkins",
-            "jobTitle": "Full Stack Developer",
-            "url": "https://c-elkins.github.io/chase-elkins-portfolio/",
-            "image": "https://c-elkins.github.io/chase-elkins-portfolio/images/profile.jpg",
-            "email": "mailto:chase.e.elkins1@gmail.com",
-            "sameAs": [
-                "https://github.com/C-Elkins",
-                "https://linkedin.com/in/chase-elkins-793bb8169"
-            ]
-        }
-        </script>
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "Chase Elkins - Portfolio",
-            "url": "https://c-elkins.github.io/chase-elkins-portfolio/",
-            "description": "Chase Elkins - IT Professional transitioning to Full Stack Development. Java, Python, JavaScript, and modern web technologies.",
-            "publisher": {
-                "@type": "Person",
-                "name": "Chase Elkins"
-            }
-        }
-        </script>
-    <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Chase Elkins — Portfolio">
-    <meta property="og:title" content="Chase Elkins - Full Stack Developer">
-    <meta property="og:description" content="IT Professional transitioning to Full Stack Development. Java, Python, JavaScript, and modern web technologies.">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:image" content="https://c-elkins.github.io/chase-elkins-portfolio/assets/social-card.png?v=2025-09-21">
-    <meta property="og:image:alt" content="Chase Elkins portfolio social preview card with name and title.">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <!-- Set your final site URL after deploy -->
+    <meta name="theme-color" content="#05080d">
+    <script type="application/ld+json">
+        {"@context":"https://schema.org","@type":"Person","name":"Chase Elkins","jobTitle":"Full-Stack Developer","url":"https://c-elkins.github.io/chase-elkins-portfolio/","image":"https://c-elkins.github.io/chase-elkins-portfolio/images/chase-elkins.jpg","sameAs":["https://github.com/C-Elkins"]}
+    </script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src https://formspree.io; form-action https://formspree.io; base-uri 'none'; object-src 'none'">
+    <title>Chase Elkins | Full-Stack Developer</title>
     <link rel="canonical" href="https://c-elkins.github.io/chase-elkins-portfolio/">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <link rel="preload" as="image" href="images/chase-elkins.jpg" fetchpriority="high">
+    <link rel="stylesheet" href="css/style.css?v=2026-10-28">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Chase Elkins">
+    <meta property="og:title" content="Chase Elkins | Full-Stack Developer">
+    <meta property="og:description" content="Secure systems. Thoughtful interfaces. Software built to last.">
     <meta property="og:url" content="https://c-elkins.github.io/chase-elkins-portfolio/">
-    <!-- Twitter -->
+    <meta property="og:image" content="https://c-elkins.github.io/chase-elkins-portfolio/assets/social-card.png">
+    <meta property="og:image:alt" content="Chase Elkins portfolio preview">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Chase Elkins - Full Stack Developer">
-    <meta name="twitter:description" content="Modern web applications with Java, Python, and JavaScript.">
-    <meta name="twitter:image" content="https://c-elkins.github.io/chase-elkins-portfolio/assets/social-card.png?v=2025-09-21">
-    <meta name="twitter:image:alt" content="Chase Elkins portfolio social preview card with name and title.">
-    <!-- SVG alternative: assets/social-card.svg -->
-    <!-- Icons -->
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-    <link rel="mask-icon" href="assets/favicon.svg" color="#667eea">
-    <link rel="apple-touch-icon" href="https://c-elkins.github.io/chase-elkins-portfolio/images/profile.jpg">
-    <link rel="stylesheet" href="css/style.css?v=2025-10-14.1">
-    <link rel="stylesheet" href="css/animations.css?v=2025-10-13">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
-        <!-- Analytics: Plausible (lightweight, privacy-friendly) with Do Not Track respect -->
-        <script>
-            (function(){
-                try {
-                    var dnt = navigator.doNotTrack == '1' || window.doNotTrack == '1' || navigator.msDoNotTrack == '1';
-                    if (!dnt) {
-                        var s = document.createElement('script');
-                        s.defer = true;
-                        s.setAttribute('data-domain', 'c-elkins.github.io');
-                        s.src = 'https://plausible.io/js/script.js';
-                        document.head.appendChild(s);
-                    }
-                } catch(e) { /* no-op */ }
-            })();
-        </script>
+    <script src="js/projects.js?v=3" defer></script>
+    <script src="js/main.js?v=4" defer></script>
 </head>
 <body>
-    <a href="#home" class="skip-link">Skip to content</a>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="#home">Chase Elkins</a>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="boot-screen" id="boot-screen" aria-hidden="true">
+        <div class="boot-content">
+            <div class="boot-mark">&gt;_</div>
+            <div class="boot-copy">
+                <span>C_ELKINS / PORTFOLIO_OS</span>
+                <span id="boot-status">INITIALIZING INTERFACE</span>
             </div>
-            <div class="nav-menu" id="nav-menu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="#skills" class="nav-link">Skills</a>
-                <a href="#projects" class="nav-link">Projects</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </div>
-            <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation" aria-controls="nav-menu" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">
-                <i class="fas fa-moon" id="theme-icon"></i>
-            </button>
+            <div class="boot-track"><span></span></div>
+            <div class="boot-counter" id="boot-counter">000</div>
         </div>
-    </nav>
+    </div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Hi, I'm <span class="text-gradient">Chase Elkins</span>
-                </h1>
-                <h2 class="hero-subtitle">Full Stack Developer</h2>
-                <p class="hero-description">
-                    IT Professional with 8+ years of experience transitioning into full-stack development. 
-                    I build modern web applications with Java, Python, and JavaScript.
-                </p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-                </div>
-                <div class="hero-social">
-                    <a href="https://github.com/C-Elkins" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub profile">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="https://linkedin.com/in/chase-elkins-793bb8169" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn profile">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="mailto:chase.e.elkins1@gmail.com" class="social-link" aria-label="Send email">
-                        <i class="fas fa-envelope"></i>
-                    </a>
-                </div>
+    <header class="site-header" id="site-header">
+        <nav class="nav shell" aria-label="Primary navigation">
+            <a class="brand" href="#home" aria-label="Chase Elkins home">
+                <span class="brand-mark">&gt;_</span>
+                <span>C_ELKINS</span>
+            </a>
+            <div class="nav-links" id="nav-menu">
+                <a href="#about">About</a>
+                <a href="#skills">Stack</a>
+                <a href="#projects">Work</a>
+                <a href="#contact">Contact</a>
             </div>
-            <div class="hero-image">
-                <div class="hero-avatar">
-                    <img src="images/profile.jpg" alt="Chase Elkins" id="profile-img" width="300" height="300" fetchpriority="high" decoding="async">
-                </div>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme">
+                    <span aria-hidden="true">◐</span>
+                </button>
+                <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation" aria-controls="nav-menu" aria-expanded="false">
+                    <span></span><span></span>
+                </button>
             </div>
-        </div>
-    </section>
+        </nav>
+    </header>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <h3>From IT Infrastructure to Full Stack Development</h3>
-                    <p>
-                        With 8+ years in IT infrastructure management, I've gained deep insights into how technology 
-                        solutions impact business operations. Now I'm channeling that experience into building 
-                        web applications that solve real-world problems.
-                    </p>
-                    <p>
-                        My background in system troubleshooting, network security, and team leadership gives me 
-                        a unique perspective on software development. I understand both the technical requirements 
-                        and the business needs that drive successful applications.
-                    </p>
-                    <div class="about-highlights">
-                        <div class="highlight">
-                            <i class="fas fa-code"></i>
-                            <div>
-                                <h4>Clean Code</h4>
-                                <p>Writing maintainable, well-documented code</p>
-                            </div>
-                        </div>
-                        <div class="highlight">
-                            <i class="fas fa-users"></i>
-                            <div>
-                                <h4>Team Leadership</h4>
-                                <p>8+ years managing technical teams</p>
-                            </div>
-                        </div>
-                        <div class="highlight">
-                            <i class="fas fa-rocket"></i>
-                            <div>
-                                <h4>Problem Solving</h4>
-                                <p>Turning complex challenges into elegant solutions</p>
-                            </div>
-                        </div>
+    <main id="main">
+        <section class="hero" id="home">
+            <div class="hero-grid shell">
+                <div class="hero-copy reveal">
+                    <p class="eyebrow"><span class="status-dot"></span> Available for new opportunities</p>
+                    <h1>Building systems that are <span>secure by design.</span></h1>
+                    <p class="hero-lede">I’m Chase, a full-stack developer with 8+ years in IT infrastructure. I turn operational experience into fast, resilient software and thoughtful digital products.</p>
+                    <div class="hero-actions">
+                        <a class="button button-primary" href="#projects">Explore my work <span aria-hidden="true">↗</span></a>
                     </div>
+                    <dl class="hero-metrics" aria-label="Professional highlights">
+                        <div><dt>08+</dt><dd>Years in IT</dd></div>
+                        <div><dt>SEC+</dt><dd>Certified</dd></div>
+                        <div><dt>FULL</dt><dd>Stack focus</dd></div>
+                    </dl>
                 </div>
-                <div class="about-stats">
-                    <div class="stat">
-                        <h3>8+</h3>
-                        <p>Years IT Experience</p>
-                    </div>
-                    <div class="stat">
-                        <h3>5+</h3>
-                        <p>Programming Languages</p>
-                    </div>
-                    <div class="stat">
-                        <h3>100%</h3>
-                        <p>Remote Ready</p>
-                    </div>
-                    <div class="stat">
-                        <h3>24/7</h3>
-                        <p>Learning Mode</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="skills-header">
-            <h2 class="section-title">Technical Skills</h2>
-            <p class="skills-subtitle">Technologies I work with</p>
-        </div>
-        <div class="skills-carousel-wrapper">
-            <div class="skills-carousel">
-                <div class="skills-track skills-track-1">
-                    <div class="skill-icon" title="JavaScript">
-                        <i class="fab fa-js-square"></i>
-                    </div>
-                    <div class="skill-icon" title="React">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <div class="skill-icon" title="HTML5">
-                        <i class="fab fa-html5"></i>
-                    </div>
-                    <div class="skill-icon" title="CSS3">
-                        <i class="fab fa-css3-alt"></i>
-                    </div>
-                    <div class="skill-icon" title="Java">
-                        <i class="fab fa-java"></i>
-                    </div>
-                    <div class="skill-icon" title="Python">
-                        <i class="fab fa-python"></i>
-                    </div>
-                    <div class="skill-icon" title="TypeScript">
-                        <i class="fab fa-js-square"></i>
-                    </div>
-                    <div class="skill-icon" title="Vue.js">
-                        <i class="fab fa-vuejs"></i>
-                    </div>
-                    <div class="skill-icon" title="Angular">
-                        <i class="fab fa-angular"></i>
-                    </div>
-                    <div class="skill-icon" title="Bootstrap">
-                        <i class="fab fa-bootstrap"></i>
-                    </div>
-                    <div class="skill-icon" title="Sass">
-                        <i class="fab fa-sass"></i>
-                    </div>
-                    <div class="skill-icon" title="Redux">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <div class="skill-icon" title="jQuery">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-icon" title="Webpack">
-                        <i class="fas fa-cube"></i>
-                    </div>
-                    <div class="skill-icon" title="Tailwind CSS">
-                        <i class="fas fa-wind"></i>
-                    </div>
-                    <div class="skill-icon" title="Next.js">
-                        <i class="fas fa-forward"></i>
-                    </div>
-                    <div class="skill-icon" title="GraphQL">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="skill-icon" title="Material UI">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <div class="skill-icon" title="Vite">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <div class="skill-icon" title="Jest">
-                        <i class="fas fa-vial"></i>
-                    </div>
-                    <div class="skill-icon" title="Cypress">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="skill-icon" title="Figma">
-                        <i class="fab fa-figma"></i>
-                    </div>
-                    <div class="skill-icon" title="PHP">
-                        <i class="fab fa-php"></i>
-                    </div>
-                    <div class="skill-icon" title="Ruby">
-                        <i class="fas fa-gem"></i>
-                    </div>
-                    <div class="skill-icon" title="C++">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-icon" title="Go">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-icon" title="Swift">
-                        <i class="fab fa-swift"></i>
-                    </div>
-                    <div class="skill-icon" title="Kotlin">
-                        <i class="fab fa-android"></i>
-                    </div>
-                    <div class="skill-icon" title="Rust">
-                        <i class="fas fa-cog"></i>
-                    </div>
-                    <div class="skill-icon" title="Django">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <div class="skill-icon" title="Flask">
-                        <i class="fas fa-flask"></i>
-                    </div>
-                    <div class="skill-icon" title="Laravel">
-                        <i class="fab fa-laravel"></i>
-                    </div>
-                    <div class="skill-icon" title="Electron">
-                        <i class="fas fa-atom"></i>
-                    </div>
-                    <div class="skill-icon" title="React Native">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <div class="skill-icon" title="Flutter">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <!-- Duplicate for seamless loop -->
-                    <div class="skill-icon" title="JavaScript">
-                        <i class="fab fa-js-square"></i>
-                    </div>
-                    <div class="skill-icon" title="React">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <div class="skill-icon" title="HTML5">
-                        <i class="fab fa-html5"></i>
-                    </div>
-                    <div class="skill-icon" title="CSS3">
-                        <i class="fab fa-css3-alt"></i>
-                    </div>
-                    <div class="skill-icon" title="Java">
-                        <i class="fab fa-java"></i>
-                    </div>
-                    <div class="skill-icon" title="Python">
-                        <i class="fab fa-python"></i>
-                    </div>
-                    <div class="skill-icon" title="TypeScript">
-                        <i class="fab fa-js-square"></i>
-                    </div>
-                    <div class="skill-icon" title="Vue.js">
-                        <i class="fab fa-vuejs"></i>
-                    </div>
-                    <div class="skill-icon" title="Angular">
-                        <i class="fab fa-angular"></i>
-                    </div>
-                    <div class="skill-icon" title="Bootstrap">
-                        <i class="fab fa-bootstrap"></i>
-                    </div>
-                    <div class="skill-icon" title="Sass">
-                        <i class="fab fa-sass"></i>
-                    </div>
-                    <div class="skill-icon" title="Redux">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <div class="skill-icon" title="jQuery">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-icon" title="Webpack">
-                        <i class="fas fa-cube"></i>
-                    </div>
-                    <div class="skill-icon" title="Tailwind CSS">
-                        <i class="fas fa-wind"></i>
-                    </div>
-                    <div class="skill-icon" title="Next.js">
-                        <i class="fas fa-forward"></i>
-                    </div>
-                    <div class="skill-icon" title="GraphQL">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="skill-icon" title="Material UI">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <div class="skill-icon" title="Vite">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <div class="skill-icon" title="Jest">
-                        <i class="fas fa-vial"></i>
-                    </div>
-                    <div class="skill-icon" title="Cypress">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="skill-icon" title="Figma">
-                        <i class="fab fa-figma"></i>
-                    </div>
-                    <div class="skill-icon" title="PHP">
-                        <i class="fab fa-php"></i>
-                    </div>
-                    <div class="skill-icon" title="Ruby">
-                        <i class="fas fa-gem"></i>
-                    </div>
-                    <div class="skill-icon" title="C++">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-icon" title="Go">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-icon" title="Swift">
-                        <i class="fab fa-swift"></i>
-                    </div>
-                    <div class="skill-icon" title="Kotlin">
-                        <i class="fab fa-android"></i>
-                    </div>
-                    <div class="skill-icon" title="Rust">
-                        <i class="fas fa-cog"></i>
-                    </div>
-                    <div class="skill-icon" title="Django">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <div class="skill-icon" title="Flask">
-                        <i class="fas fa-flask"></i>
-                    </div>
-                    <div class="skill-icon" title="Laravel">
-                        <i class="fab fa-laravel"></i>
-                    </div>
-                    <div class="skill-icon" title="Electron">
-                        <i class="fas fa-atom"></i>
-                    </div>
-                    <div class="skill-icon" title="React Native">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <div class="skill-icon" title="Flutter">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                </div>
-                <div class="skills-track skills-track-2">
-                    <div class="skill-icon" title="Node.js">
-                        <i class="fab fa-node-js"></i>
-                    </div>
-                    <div class="skill-icon" title="Express">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <div class="skill-icon" title="Git">
-                        <i class="fab fa-git-alt"></i>
-                    </div>
-                    <div class="skill-icon" title="Docker">
-                        <i class="fab fa-docker"></i>
-                    </div>
-                    <div class="skill-icon" title="Kubernetes">
-                        <i class="fas fa-dharmachakra"></i>
-                    </div>
-                    <div class="skill-icon" title="AWS">
-                        <i class="fab fa-aws"></i>
-                    </div>
-                    <div class="skill-icon" title="Azure">
-                        <i class="fab fa-microsoft"></i>
-                    </div>
-                    <div class="skill-icon" title="PostgreSQL">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="skill-icon" title="MongoDB">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="skill-icon" title="MySQL">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="skill-icon" title="Spring Boot">
-                        <i class="fas fa-leaf"></i>
-                    </div>
-                    <div class="skill-icon" title="Linux">
-                        <i class="fab fa-linux"></i>
-                    </div>
-                    <div class="skill-icon" title="Ubuntu">
-                        <i class="fab fa-ubuntu"></i>
-                    </div>
-                    <div class="skill-icon" title="GitHub">
-                        <i class="fab fa-github"></i>
-                    </div>
-                    <div class="skill-icon" title="GitLab">
-                        <i class="fab fa-gitlab"></i>
-                    </div>
-                    <div class="skill-icon" title="NPM">
-                        <i class="fab fa-npm"></i>
-                    </div>
-                    <div class="skill-icon" title="Yarn">
-                        <i class="fab fa-yarn"></i>
-                    </div>
-                    <div class="skill-icon" title="REST API">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <div class="skill-icon" title="Redis">
-                        <i class="fas fa-memory"></i>
-                    </div>
-                    <div class="skill-icon" title="Nginx">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <div class="skill-icon" title="Jenkins">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div class="skill-icon" title="Firebase">
-                        <i class="fas fa-fire"></i>
-                    </div>
-                    <div class="skill-icon" title="Terraform">
-                        <i class="fas fa-layer-group"></i>
-                    </div>
-                    <div class="skill-icon" title="Postman">
-                        <i class="fas fa-envelope-open-text"></i>
-                    </div>
-                    <div class="skill-icon" title="VS Code">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-icon" title="Bitbucket">
-                        <i class="fab fa-bitbucket"></i>
-                    </div>
-                    <div class="skill-icon" title="Slack">
-                        <i class="fab fa-slack"></i>
-                    </div>
-                    <div class="skill-icon" title="Jira">
-                        <i class="fab fa-jira"></i>
-                    </div>
-                    <div class="skill-icon" title="Heroku">
-                        <i class="fas fa-cloud"></i>
-                    </div>
-                    <div class="skill-icon" title="Vercel">
-                        <i class="fas fa-triangle"></i>
-                    </div>
-                    <div class="skill-icon" title="Netlify">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <div class="skill-icon" title="DigitalOcean">
-                        <i class="fab fa-digital-ocean"></i>
-                    </div>
-                    <div class="skill-icon" title="GraphQL">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="skill-icon" title="Elasticsearch">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <div class="skill-icon" title="RabbitMQ">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <!-- Duplicate for seamless loop -->
-                    <div class="skill-icon" title="Node.js">
-                        <i class="fab fa-node-js"></i>
-                    </div>
-                    <div class="skill-icon" title="Express">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <div class="skill-icon" title="Git">
-                        <i class="fab fa-git-alt"></i>
-                    </div>
-                    <div class="skill-icon" title="Docker">
-                        <i class="fab fa-docker"></i>
-                    </div>
-                    <div class="skill-icon" title="Kubernetes">
-                        <i class="fas fa-dharmachakra"></i>
-                    </div>
-                    <div class="skill-icon" title="AWS">
-                        <i class="fab fa-aws"></i>
-                    </div>
-                    <div class="skill-icon" title="Azure">
-                        <i class="fab fa-microsoft"></i>
-                    </div>
-                    <div class="skill-icon" title="PostgreSQL">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="skill-icon" title="MongoDB">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="skill-icon" title="MySQL">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="skill-icon" title="Spring Boot">
-                        <i class="fas fa-leaf"></i>
-                    </div>
-                    <div class="skill-icon" title="Linux">
-                        <i class="fab fa-linux"></i>
-                    </div>
-                    <div class="skill-icon" title="Ubuntu">
-                        <i class="fab fa-ubuntu"></i>
-                    </div>
-                    <div class="skill-icon" title="GitHub">
-                        <i class="fab fa-github"></i>
-                    </div>
-                    <div class="skill-icon" title="GitLab">
-                        <i class="fab fa-gitlab"></i>
-                    </div>
-                    <div class="skill-icon" title="NPM">
-                        <i class="fab fa-npm"></i>
-                    </div>
-                    <div class="skill-icon" title="Yarn">
-                        <i class="fab fa-yarn"></i>
-                    </div>
-                    <div class="skill-icon" title="REST API">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <div class="skill-icon" title="Redis">
-                        <i class="fas fa-memory"></i>
-                    </div>
-                    <div class="skill-icon" title="Nginx">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <div class="skill-icon" title="Jenkins">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div class="skill-icon" title="Firebase">
-                        <i class="fas fa-fire"></i>
-                    </div>
-                    <div class="skill-icon" title="Terraform">
-                        <i class="fas fa-layer-group"></i>
-                    </div>
-                    <div class="skill-icon" title="Postman">
-                        <i class="fas fa-envelope-open-text"></i>
-                    </div>
-                    <div class="skill-icon" title="VS Code">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-icon" title="Bitbucket">
-                        <i class="fab fa-bitbucket"></i>
-                    </div>
-                    <div class="skill-icon" title="Slack">
-                        <i class="fab fa-slack"></i>
-                    </div>
-                    <div class="skill-icon" title="Jira">
-                        <i class="fab fa-jira"></i>
-                    </div>
-                    <div class="skill-icon" title="Heroku">
-                        <i class="fas fa-cloud"></i>
-                    </div>
-                    <div class="skill-icon" title="Vercel">
-                        <i class="fas fa-triangle"></i>
-                    </div>
-                    <div class="skill-icon" title="Netlify">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <div class="skill-icon" title="DigitalOcean">
-                        <i class="fab fa-digital-ocean"></i>
-                    </div>
-                    <div class="skill-icon" title="GraphQL">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="skill-icon" title="Elasticsearch">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <div class="skill-icon" title="RabbitMQ">
-                        <i class="fas fa-network-wired"></i>
+                <div class="portrait-wrap reveal">
+                    <div class="portrait-terminal" aria-hidden="true">
+                        <span>chase@portfolio:~$</span>
+                        <span class="terminal-text">whoami</span>
+                    </div>
+                    <div class="portrait-frame" id="portrait-frame" tabindex="0" aria-label="Portrait of Chase Elkins. Hover or focus to activate ASCII mode.">
+                        <img class="portrait-primary" src="images/chase-elkins.jpg" alt="Professional portrait of Chase Elkins" width="720" height="900" fetchpriority="high" decoding="async">
+                        <img class="portrait-alt" src="images/chase-elkins-ascii.png" alt="" width="329" height="329" aria-hidden="true" decoding="async">
+                        <div class="portrait-scan"></div>
+                        <span class="portrait-label">PROFILE_01</span>
+                    </div>
+                    <div class="floating-card floating-card-top">
+                        <span class="card-icon">{ }</span>
+                        <span>Full-stack<br><strong>Developer</strong></span>
+                    </div>
+                    <div class="floating-card floating-card-bottom">
+                        <span class="pulse"></span>
+                        <span>Systems online</span>
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
-    </section>
+            <div class="hero-ticker" aria-hidden="true">
+                <div>JAVA <span>◆</span> JAVASCRIPT <span>◆</span> PYTHON <span>◆</span> SECURITY <span>◆</span> CLOUD <span>◆</span> REACT <span>◆</span> INFRASTRUCTURE <span>◆</span></div>
+            </div>
+        </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
-            <div class="project-filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="completed">Completed</button>
-                <button class="filter-btn" data-filter="in-progress">In Progress</button>
-                <button class="filter-btn" data-filter="planned">Planned</button>
-            </div>
-            <div class="projects-grid" id="projects-container">
-                <!-- Projects will be loaded dynamically -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Let's Work Together</h2>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h3>Ready to bring your ideas to life</h3>
-                    <p>
-                        I'm currently seeking full-stack developer opportunities, especially remote positions. 
-                        Let's discuss how my technical background and fresh perspective can contribute to your team.
-                    </p>
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <a href="mailto:chase.e.elkins1@gmail.com">chase.e.elkins1@gmail.com</a>
+        <section class="section about" id="about">
+            <div class="shell">
+                <div class="section-heading reveal">
+                    <p class="eyebrow">01 / About</p>
+                    <h2>Infrastructure mindset.<br><span>Developer execution.</span></h2>
+                </div>
+                <div class="about-grid">
+                    <div class="about-visual reveal">
+                        <img src="images/chase-elkins-ascii.png" alt="ASCII art portrait of Chase Elkins" width="329" height="329" loading="lazy" decoding="async">
+                        <div class="image-code" aria-hidden="true">
+                            <span>identity.render()</span>
+                            <span>329 × 329px</span>
                         </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <a href="tel:+18505573197">+1 (850) 557-3197</a>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Remote / Willing to Relocate</span>
+                    </div>
+                    <div class="about-copy reveal">
+                        <p class="lead">I bridge the gap between the server room and the product roadmap.</p>
+                        <p>My background in systems troubleshooting, network security, and technical leadership shapes how I write software: understand the full system, anticipate failure, and make the experience clear for the people using it.</p>
+                        <div class="principles">
+                            <article>
+                                <span>01</span>
+                                <div><h3>Secure foundations</h3><p>Security and reliability are requirements, not finishing touches.</p></div>
+                            </article>
+                            <article>
+                                <span>02</span>
+                                <div><h3>Clean delivery</h3><p>Maintainable code, practical architecture, and clear communication.</p></div>
+                            </article>
+                            <article>
+                                <span>03</span>
+                                <div><h3>Useful outcomes</h3><p>Technology should simplify real work and create measurable value.</p></div>
+                            </article>
                         </div>
                     </div>
                 </div>
-                <div class="contact-form">
-                    <form id="contact-form" method="POST" action="https://formspree.io/f/meorjqpq" data-endpoint="https://formspree.io/f/meorjqpq" novalidate>
-                        <p class="sr-only" aria-hidden="true">
-                            <label>Don’t fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
-                        </p>
-                        <input type="hidden" name="_redirect" value="https://c-elkins.github.io/chase-elkins-portfolio/success.html">
-                        <div class="form-group">
-                            <label class="sr-only" for="name">Name</label>
-                            <input type="text" id="name" name="name" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="Your Email" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="subject">Subject</label>
-                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="message">Message</label>
-                            <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send Message</button>
-                    </form>
+            </div>
+        </section>
+
+        <section class="section stack" id="skills">
+            <div class="shell">
+                <div class="section-heading reveal">
+                    <p class="eyebrow">02 / Capabilities</p>
+                    <h2>The tools behind<br><span>the build.</span></h2>
+                </div>
+                <div class="stack-grid reveal">
+                    <article class="stack-card">
+                        <p class="stack-index">01 — FRONTEND</p>
+                        <h3>Interfaces</h3>
+                        <div class="tag-list"><span>JavaScript</span><span>TypeScript</span><span>React</span><span>HTML</span><span>CSS</span><span>Accessibility</span></div>
+                    </article>
+                    <article class="stack-card accent-card">
+                        <p class="stack-index">02 — BACKEND</p>
+                        <h3>Applications</h3>
+                        <div class="tag-list"><span>Java</span><span>Spring Boot</span><span>Python</span><span>Node.js</span><span>REST APIs</span><span>PostgreSQL</span></div>
+                    </article>
+                    <article class="stack-card">
+                        <p class="stack-index">03 — OPERATIONS</p>
+                        <h3>Systems</h3>
+                        <div class="tag-list"><span>Linux</span><span>Docker</span><span>AWS</span><span>Git</span><span>Networking</span><span>Security</span></div>
+                    </article>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
+        <section class="section projects" id="projects">
+            <div class="shell">
+                <div class="section-heading section-heading-row reveal">
+                    <div>
+                        <p class="eyebrow">03 / Selected work</p>
+                        <h2>Projects with<br><span>purpose.</span></h2>
+                    </div>
+                    <div class="project-filters" role="group" aria-label="Filter projects">
+                        <button class="filter-button active" type="button" data-filter="all" aria-pressed="true">All</button>
+                        <button class="filter-button" type="button" data-filter="completed" aria-pressed="false">Live</button>
+                        <button class="filter-button" type="button" data-filter="in-progress" aria-pressed="false">Building</button>
+                    </div>
+                </div>
+                <div class="project-grid" id="projects-container" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <section class="section contact" id="contact">
+            <div class="shell contact-grid">
+                <div class="contact-copy reveal">
+                    <p class="eyebrow">04 / Start a conversation</p>
+                    <h2>Let’s build something<br><span>that matters.</span></h2>
+                    <p>I’m looking for full-stack opportunities where strong engineering and operational thinking can make an impact.</p>
+                    <div class="contact-links">
+                        <button class="email-reveal" id="email-reveal" type="button">Reveal email <span>Human check / click ↗</span></button>
+                        <a href="https://github.com/C-Elkins" target="_blank" rel="noopener noreferrer">GitHub / C-Elkins <span>↗</span></a>
+                    </div>
+                </div>
+                <form class="contact-form reveal" id="contact-form" action="https://formspree.io/f/meorjqpq" method="post">
+                    <input class="honeypot" type="text" name="bot-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+                    <div class="field-row">
+                        <label>Name<input type="text" name="name" autocomplete="name" required maxlength="100"></label>
+                        <label>Email<input type="email" name="email" autocomplete="email" required maxlength="254"></label>
+                    </div>
+                    <label>Subject<input type="text" name="subject" required maxlength="150"></label>
+                    <label>Message<textarea name="message" rows="5" required maxlength="3000"></textarea></label>
+                    <button class="button button-primary" type="submit">Send message <span aria-hidden="true">↗</span></button>
+                    <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+                    <p class="form-privacy">Please don’t send sensitive information. Submissions are processed by <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">Formspree</a>.</p>
+                </form>
+            </div>
+        </section>
+    </main>
+
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-text">
-                    <p>&copy; 2025 Chase Elkins. All rights reserved.</p>
-                </div>
-                <div class="footer-social">
-                    <a href="https://github.com/C-Elkins" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub profile">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="https://linkedin.com/in/chase-elkins-793bb8169" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn profile">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="mailto:chase.e.elkins1@gmail.com" class="social-link" aria-label="Send email">
-                        <i class="fas fa-envelope"></i>
-                    </a>
-                </div>
-            </div>
+        <div class="shell">
+            <div><span class="brand-mark">&gt;_</span> C_ELKINS</div>
+            <p>Designed &amp; engineered with intention.</p>
+            <p>© <span id="year">2026</span> Chase Elkins</p>
         </div>
     </footer>
-
-    <!-- Scroll to Top Button -->
-    <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <script src="js/projects.js?v=2025-10-14"></script>
-    <script src="js/main.js?v=2025-10-14"></script>
 </body>
 </html>

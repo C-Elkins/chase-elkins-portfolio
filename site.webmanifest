@@ -4,9 +4,11 @@
   "start_url": "/chase-elkins-portfolio/",
   "scope": "/chase-elkins-portfolio/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#667eea",
+  "background_color": "#05080d",
+  "theme_color": "#05080d",
   "icons": [
-    { "src": "assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/favicon.png", "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any maskable" }
   ]
 }

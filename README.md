@@ -298,10 +298,7 @@ Contributions, issues, and feature requests are welcome! Please refer to our [Co
 
 | Platform | Link |
 |----------|------|
-| 📧 Email | [chase.e.elkins1@gmail.com](mailto:chase.e.elkins1@gmail.com) |
-| 💼 LinkedIn | [Chase Elkins](https://linkedin.com/in/chase-elkins-793bb8169) |
 | 👨‍💻 GitHub | [@C-Elkins](https://github.com/C-Elkins) |
-| 📱 Phone | [+1 (850) 557-3197](tel:+18505573197) |
 
 ## 📬 Contact Form Setup
 
