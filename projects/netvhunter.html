@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="NetVHunter is a private cybersecurity product in active development by Chase Elkins.">
+    <meta name="description" content="NetVHunter is an early-alpha cybersecurity audit platform in active development by Chase Elkins.">
     <meta name="author" content="Chase Elkins">
     <meta name="theme-color" content="#05080d">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; object-src 'none'">
@@ -12,7 +12,7 @@
     <link rel="icon" href="../assets/favicon.svg?v=2" type="image/svg+xml">
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
     <link rel="preload" as="image" href="../images/netvhunter-badge.jpg">
-    <link rel="stylesheet" href="../css/style.css?v=2026-10-28">
+    <link rel="stylesheet" href="../css/style.css?v=2026-10-29">
     <script src="../js/case-study.js" defer></script>
 </head>
 <body class="case-body">
@@ -34,48 +34,75 @@
         <section class="case-hero">
             <div class="case-hero-grid shell">
                 <div class="reveal">
-                    <p class="case-kicker">Private product / Active development</p>
+                    <p class="case-kicker">Early alpha / Active development</p>
                     <h1>NetV<span>Hunter</span></h1>
-                    <p class="case-summary">A focused production attack-suite concept for authorized red teams and managed service providers—designed to bring fragmented assessment workflows into one deliberate operating environment.</p>
+                    <p class="case-summary">A security audit platform for authorized red teams and managed service providers—designed to help operators discover, validate, organize, and report meaningful findings from one deliberate environment.</p>
                     <dl class="case-metrics">
-                        <div><dt>Private</dt><dd>Repository</dd></div>
-                        <div><dt>Active</dt><dd>Development</dd></div>
-                        <div><dt>Security</dt><dd>Product focus</dd></div>
+                        <div><dt>Early alpha</dt><dd>Current stage</dd></div>
+                        <div><dt>3 runs</dt><dd>Findings verified</dd></div>
+                        <div><dt>Active</dt><dd>Stabilization</dd></div>
                     </dl>
                 </div>
                 <div class="case-brand reveal">
-                    <img src="../images/netvhunter-badge.jpg" alt="NetVHunter production attack suite badge" width="720" height="720" decoding="async">
+                    <img src="../images/netvhunter-badge.jpg" alt="NetVHunter cybersecurity audit platform badge" width="720" height="720" decoding="async">
                 </div>
             </div>
         </section>
 
         <section class="case-section">
             <div class="shell">
-                <p class="case-label reveal">01 / Product vision</p>
-                <h2 class="reveal">One workspace for the <span>full assessment loop.</span></h2>
+                <p class="case-label reveal">01 / Development update</p>
+                <h2 class="reveal">The engine works. Now we make it <span>dependable.</span></h2>
+                <div class="case-update reveal">
+                    <div class="case-update-copy">
+                        <p class="case-update-date">ALPHA LOG / OCTOBER 2026</p>
+                        <p>NetVHunter is in an early alpha stage. The core audit engine has completed three separate end-to-end runs, and the findings from those runs were independently checked and confirmed to be accurate.</p>
+                        <p>That is an important milestone, but it is not the finish line. Current work is focused on small bugs, repeatability, output quality, and protecting the stability of the engine as new capabilities are introduced. Progress is deliberate because reliability matters more than rushing an unfinished security tool.</p>
+                    </div>
+                    <ol class="case-update-log" aria-label="NetVHunter development milestones">
+                        <li><span>COMPLETE</span><strong>Core engine operating end to end</strong></li>
+                        <li><span>VERIFIED</span><strong>Findings confirmed across three controlled runs</strong></li>
+                        <li><span>ACTIVE</span><strong>Bug fixes and consistency improvements</strong></li>
+                        <li><span>NEXT</span><strong>Broader testing and workflow refinement</strong></li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section class="case-section">
+            <div class="shell">
+                <p class="case-label reveal">02 / What it is</p>
+                <h2 class="reveal">An audit workspace built around <span>evidence.</span></h2>
                 <div class="case-intro-grid reveal">
-                    <p class="case-label">The challenge</p>
-                    <p>Security teams often move between disconnected tools, outputs, and reporting systems. NetVHunter is being explored as a unified interface that keeps authorized assessment work structured, traceable, and easier to turn into remediation.</p>
+                    <p class="case-label">The purpose</p>
+                    <p>NetVHunter helps authorized security professionals conduct and document technical audits. Rather than replacing expert judgment, it is intended to reduce repetitive work, keep evidence connected to each finding, and give operators a clearer path from initial discovery to an actionable report.</p>
                 </div>
+                <div class="case-capabilities reveal">
+                    <article><span>01 / DISCOVERY</span><h3>Map the environment</h3><p>Organize approved targets and collect the technical signals needed to understand the audit surface.</p></article>
+                    <article><span>02 / ANALYSIS</span><h3>Prioritize findings</h3><p>Bring related evidence together so operators can separate meaningful risks from background noise.</p></article>
+                    <article><span>03 / VALIDATION</span><h3>Confirm what is real</h3><p>Support controlled checks that help verify a suspected issue before it is treated as a confirmed finding.</p></article>
+                    <article><span>04 / REPORTING</span><h3>Explain the impact</h3><p>Turn technical evidence into traceable findings and remediation guidance that teams can act on.</p></article>
+                </div>
+                <p class="case-disclaimer reveal">NetVHunter is designed only for systems the operator owns or has explicit authorization to assess.</p>
             </div>
         </section>
 
         <section class="case-section">
             <div class="shell">
-                <p class="case-label reveal">02 / Planned workflow</p>
+                <p class="case-label reveal">03 / Audit workflow</p>
                 <h2 class="reveal">Scan. Find. Validate. <span>Secure.</span></h2>
                 <div class="workflow-grid reveal">
-                    <article class="workflow-step"><span>01</span><h3>Scan</h3><p>Establish scope and organize authorized discovery from a clear starting point.</p></article>
-                    <article class="workflow-step"><span>02</span><h3>Find</h3><p>Surface and prioritize meaningful signals without losing operational context.</p></article>
-                    <article class="workflow-step"><span>03</span><h3>Validate</h3><p>Support controlled verification workflows with intentional safety boundaries.</p></article>
-                    <article class="workflow-step"><span>04</span><h3>Secure</h3><p>Translate findings into clear remediation priorities and useful outcomes.</p></article>
+                    <article class="workflow-step"><span>01</span><h3>Scope</h3><p>Define approved systems, boundaries, and audit objectives before the engine begins work.</p></article>
+                    <article class="workflow-step"><span>02</span><h3>Inspect</h3><p>Collect and correlate relevant signals while preserving the context behind each observation.</p></article>
+                    <article class="workflow-step"><span>03</span><h3>Verify</h3><p>Review evidence and perform controlled validation so unconfirmed signals are not overstated.</p></article>
+                    <article class="workflow-step"><span>04</span><h3>Report</h3><p>Package confirmed findings with evidence, impact, and practical remediation priorities.</p></article>
                 </div>
             </div>
         </section>
 
         <section class="case-section">
             <div class="shell">
-                <p class="case-label reveal">03 / Engineering direction</p>
+                <p class="case-label reveal">04 / Engineering direction</p>
                 <h2 class="reveal">Powerful tooling needs <span>responsible design.</span></h2>
                 <div class="case-principles reveal">
                     <article><span>PRINCIPLE_01</span><h3>Authorized by default</h3><p>Scope awareness and explicit operator intent should be visible throughout the workflow.</p></article>
@@ -87,9 +114,9 @@
 
         <section class="case-section case-cta">
             <div class="shell reveal">
-                <p class="case-label">04 / Project status</p>
-                <h2>Currently being<br><span>built in private.</span></h2>
-                <p>More implementation details and product milestones will be shared as the project develops.</p>
+                <p class="case-label">05 / Project status</p>
+                <h2>Working software.<br><span>Early-alpha discipline.</span></h2>
+                <p>The engine has produced verified results, and development is continuing carefully through stabilization, testing, and incremental improvement.</p>
                 <a class="button button-primary" href="../#projects">Return to portfolio →</a>
             </div>
         </section>
@@ -98,7 +125,7 @@
     <footer class="footer">
         <div class="shell">
             <div><span class="brand-mark">&gt;_</span> C_ELKINS</div>
-            <p>NetVHunter / Private build</p>
+            <p>NetVHunter / Early alpha</p>
             <p>© <span id="year">2026</span> Chase Elkins</p>
         </div>
     </footer>

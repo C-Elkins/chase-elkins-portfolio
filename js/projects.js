@@ -3,7 +3,7 @@
 const projects = [
     {
         title: "NetVHunter",
-        description: "A private production attack-suite concept for authorized red teams and MSPs, bringing security assessment workflows into one focused product.",
+        description: "An early-alpha audit platform for authorized security teams, with three end-to-end runs completed and findings independently verified.",
         tech: ["Security", "Red Team", "Automation", "Product Design"],
         image: "images/netvhunter-badge.jpg",
         glyph: "NV",
