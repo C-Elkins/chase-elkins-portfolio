@@ -264,7 +264,16 @@ h1 span { background: linear-gradient(100deg, transparent 25%, rgba(157,255,91,.
 .case-intro-grid { display: grid; grid-template-columns: .7fr 1.3fr; gap: clamp(2rem, 8vw, 8rem); margin-top: 4rem; }
 .case-intro-grid > p { margin: 0; color: var(--muted); font-size: clamp(1.1rem, 2vw, 1.5rem); }
 .case-label { color: var(--case-accent); font: 700 .7rem var(--mono); letter-spacing: .1em; text-transform: uppercase; }
-.case-update { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2rem, 7vw, 7rem); margin-top: 4rem; align-items: start; }
+.case-overview { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 7vw, 7rem); margin-top: 4rem; }
+.case-overview > div > p:last-child { color: var(--muted); font-size: clamp(1.05rem, 1.7vw, 1.35rem); }
+.case-facts { margin: 0; border-top: 1px solid var(--line); }
+.case-facts div { display: grid; grid-template-columns: 115px 1fr; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.case-facts dt { color: var(--case-accent); font: 700 .66rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.case-facts dd { margin: 0; color: var(--text); font-size: .9rem; }
+.case-problem-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 4rem; }
+.case-problem-list article { padding: 1.5rem; border-top: 1px solid var(--case-accent); background: linear-gradient(180deg, var(--case-soft), transparent 70%); }
+.case-problem-list span { color: var(--case-accent); font: 700 .66rem var(--mono); letter-spacing: .08em; }
+.case-problem-list p { margin: 2.5rem 0 0; color: var(--muted); font-size: .9rem; }
 .case-update-copy { padding-left: 1.5rem; border-left: 2px solid var(--case-accent); }
 .case-update-copy p { margin: 0 0 1.2rem; color: var(--muted); font-size: clamp(1rem, 1.5vw, 1.18rem); }
 .case-update-copy .case-update-date { color: var(--case-accent); font: 700 .68rem var(--mono); letter-spacing: .1em; }
@@ -281,6 +290,26 @@ h1 span { background: linear-gradient(100deg, transparent 25%, rgba(157,255,91,.
 .case-capabilities h3 { margin: 4rem 0 .7rem; font: 700 1.7rem var(--display); text-transform: uppercase; }
 .case-capabilities p { margin: 0; color: var(--muted); font-size: .9rem; }
 .case-disclaimer { margin: 1.2rem 0 0; padding: 1rem 1.2rem; border: 1px solid rgba(255,24,39,.24); color: var(--muted); background: rgba(255,24,39,.045); font: .7rem/1.6 var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+.case-validation { display: grid; grid-template-columns: .45fr .55fr 1.5fr; gap: 1px; margin-top: 4rem; border: 1px solid var(--line); background: var(--line); }
+.case-validation > div { padding: 2rem; background: var(--panel); }
+.validation-result { display: flex; min-height: 280px; flex-direction: column; }
+.validation-result span { color: var(--case-accent); font: 700 clamp(4rem, 8vw, 7rem)/1 var(--display); }
+.validation-result p { margin: auto 0 0; color: var(--muted); font: .72rem/1.6 var(--mono); text-transform: uppercase; }
+.validation-copy p { margin: 0 0 1.3rem; color: var(--muted); font-size: 1rem; }
+.journal-intro { max-width: 760px; color: var(--muted); font-size: 1.05rem; }
+.update-archive { margin-top: 3rem; border-top: 1px solid var(--line); }
+.update-archive details { border-bottom: 1px solid var(--line); background: var(--panel); }
+.update-archive summary { display: grid; grid-template-columns: 140px 1fr 32px; gap: 1rem; align-items: center; padding: 1.4rem; cursor: pointer; list-style: none; }
+.update-archive summary::-webkit-details-marker { display: none; }
+.update-archive summary:hover { background: color-mix(in srgb, var(--panel) 92%, var(--case-accent)); }
+.update-date { color: var(--case-accent); font: 700 .68rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.update-title { color: var(--text); font-weight: 700; }
+.update-toggle { position: relative; width: 22px; height: 22px; justify-self: end; }
+.update-toggle::before,
+.update-toggle::after { content: ""; position: absolute; left: 2px; top: 10px; width: 18px; height: 1px; background: var(--case-accent); transition: transform .25s ease; }
+.update-toggle::after { transform: rotate(90deg); }
+.update-archive details[open] .update-toggle::after { transform: rotate(0deg); }
+.update-entry { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2rem, 7vw, 7rem); padding: 1rem 1.5rem 2rem; }
 .workflow-grid { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 4rem; border: 1px solid var(--line); }
 .workflow-step { min-height: 330px; padding: 1.6rem; border-right: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; transition: transform .3s, background-color .3s; }
 .workflow-step:last-child { border: 0; }
@@ -318,7 +347,7 @@ h1 span { background: linear-gradient(100deg, transparent 25%, rgba(157,255,91,.
     .stack-grid { grid-template-columns: 1fr; }
     .stack-card { min-height: 300px; }
     .section-heading-row { align-items: flex-start; flex-direction: column; }
-    .case-hero-grid, .case-intro-grid, .case-update { grid-template-columns: 1fr; }
+    .case-hero-grid, .case-intro-grid, .case-overview, .update-entry { grid-template-columns: 1fr; }
     .case-brand { width: min(560px, 90%); margin-inline: auto; }
     .workflow-grid { grid-template-columns: repeat(2, 1fr); }
     .workflow-step:nth-child(2) { border-right: 0; }
@@ -344,7 +373,7 @@ h1 span { background: linear-gradient(100deg, transparent 25%, rgba(157,255,91,.
     .project-card { min-height: 390px; border-right: 0; }
     .field-row { grid-template-columns: 1fr; gap: 0; }
     .footer .shell { flex-direction: column; align-items: flex-start; }
-    .case-metrics, .case-principles, .workflow-grid, .case-capabilities { grid-template-columns: 1fr; }
+    .case-metrics, .case-principles, .workflow-grid, .case-capabilities, .case-problem-list, .case-validation { grid-template-columns: 1fr; }
     .case-metrics div, .workflow-step, .workflow-step:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--line); }
     .case-metrics div:last-child, .workflow-step:last-child { border-bottom: 0; }
     .case-capabilities article,
@@ -352,6 +381,11 @@ h1 span { background: linear-gradient(100deg, transparent 25%, rgba(157,255,91,.
     .case-capabilities article:nth-last-child(-n+2) { border-right: 0; border-bottom: 1px solid var(--line); }
     .case-capabilities article:last-child { border-bottom: 0; }
     .workflow-step { min-height: 260px; }
+    .validation-result { min-height: 210px; }
+    .update-archive summary { grid-template-columns: 1fr 32px; }
+    .update-date { grid-column: 1; }
+    .update-title { grid-column: 1; }
+    .update-toggle { grid-column: 2; grid-row: 1 / span 2; }
     .case-hero h1 { font-size: clamp(3rem, 17vw, 4.5rem); letter-spacing: -.06em; overflow-wrap: anywhere; }
 }
 

@@ -12,7 +12,7 @@
     <link rel="icon" href="../assets/favicon.svg?v=2" type="image/svg+xml">
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
     <link rel="preload" as="image" href="../images/netvhunter-badge.jpg">
-    <link rel="stylesheet" href="../css/style.css?v=2026-10-29">
+    <link rel="stylesheet" href="../css/style.css?v=2026-10-29.1">
     <script src="../js/case-study.js" defer></script>
 </head>
 <body class="case-body">
@@ -51,31 +51,46 @@
 
         <section class="case-section">
             <div class="shell">
-                <p class="case-label reveal">01 / Development update</p>
-                <h2 class="reveal">The engine works. Now we make it <span>dependable.</span></h2>
-                <div class="case-update reveal">
-                    <div class="case-update-copy">
-                        <p class="case-update-date">ALPHA LOG / OCTOBER 2026</p>
-                        <p>NetVHunter is in an early alpha stage. The core audit engine has completed three separate end-to-end runs, and the findings from those runs were independently checked and confirmed to be accurate.</p>
-                        <p>That is an important milestone, but it is not the finish line. Current work is focused on small bugs, repeatability, output quality, and protecting the stability of the engine as new capabilities are introduced. Progress is deliberate because reliability matters more than rushing an unfinished security tool.</p>
+                <p class="case-label reveal">01 / Case study overview</p>
+                <h2 class="reveal">A clearer path from audit signal to <span>actionable evidence.</span></h2>
+                <div class="case-overview reveal">
+                    <div>
+                        <p class="case-label">The product</p>
+                        <p>NetVHunter is an early-alpha security audit platform for authorized red teams and managed service providers. It is being built to organize discovery, evidence review, controlled validation, and reporting within one focused workflow.</p>
                     </div>
-                    <ol class="case-update-log" aria-label="NetVHunter development milestones">
-                        <li><span>COMPLETE</span><strong>Core engine operating end to end</strong></li>
-                        <li><span>VERIFIED</span><strong>Findings confirmed across three controlled runs</strong></li>
-                        <li><span>ACTIVE</span><strong>Bug fixes and consistency improvements</strong></li>
-                        <li><span>NEXT</span><strong>Broader testing and workflow refinement</strong></li>
-                    </ol>
+                    <dl class="case-facts">
+                        <div><dt>My role</dt><dd>Product design and engineering</dd></div>
+                        <div><dt>Audience</dt><dd>Authorized security teams and MSPs</dd></div>
+                        <div><dt>Stage</dt><dd>Private early alpha</dd></div>
+                        <div><dt>Current proof</dt><dd>Three verified end-to-end runs</dd></div>
+                    </dl>
                 </div>
             </div>
         </section>
 
         <section class="case-section">
             <div class="shell">
-                <p class="case-label reveal">02 / What it is</p>
+                <p class="case-label reveal">02 / The problem</p>
+                <h2 class="reveal">Audit work becomes fragmented <span>too quickly.</span></h2>
+                <div class="case-intro-grid reveal">
+                    <p class="case-label">The challenge</p>
+                    <p>Security professionals frequently move between separate discovery tools, raw outputs, validation notes, and reporting systems. Context can be lost between those steps, repetitive work grows, and unverified signals can be difficult to distinguish from findings that are ready for remediation.</p>
+                </div>
+                <div class="case-problem-list reveal">
+                    <article><span>FRAGMENTED CONTEXT</span><p>Evidence and operator notes live in different places, making an audit harder to follow and reproduce.</p></article>
+                    <article><span>TOO MUCH NOISE</span><p>Raw signals still require expert review before they should be treated as meaningful security findings.</p></article>
+                    <article><span>REPORTING FRICTION</span><p>Technical observations must be translated into clear impact and remediation guidance for other teams.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="case-section">
+            <div class="shell">
+                <p class="case-label reveal">03 / The approach</p>
                 <h2 class="reveal">An audit workspace built around <span>evidence.</span></h2>
                 <div class="case-intro-grid reveal">
-                    <p class="case-label">The purpose</p>
-                    <p>NetVHunter helps authorized security professionals conduct and document technical audits. Rather than replacing expert judgment, it is intended to reduce repetitive work, keep evidence connected to each finding, and give operators a clearer path from initial discovery to an actionable report.</p>
+                    <p class="case-label">Design direction</p>
+                    <p>NetVHunter does not replace professional judgment. The product direction is to reduce repetitive work, preserve the evidence behind each observation, and keep operators in control of when a signal becomes a validated finding.</p>
                 </div>
                 <div class="case-capabilities reveal">
                     <article><span>01 / DISCOVERY</span><h3>Map the environment</h3><p>Organize approved targets and collect the technical signals needed to understand the audit surface.</p></article>
@@ -89,7 +104,7 @@
 
         <section class="case-section">
             <div class="shell">
-                <p class="case-label reveal">03 / Audit workflow</p>
+                <p class="case-label reveal">04 / Audit workflow</p>
                 <h2 class="reveal">Scan. Find. Validate. <span>Secure.</span></h2>
                 <div class="workflow-grid reveal">
                     <article class="workflow-step"><span>01</span><h3>Scope</h3><p>Define approved systems, boundaries, and audit objectives before the engine begins work.</p></article>
@@ -102,7 +117,28 @@
 
         <section class="case-section">
             <div class="shell">
-                <p class="case-label reveal">04 / Engineering direction</p>
+                <p class="case-label reveal">05 / Validation and learning</p>
+                <h2 class="reveal">Promising results, measured <span>honestly.</span></h2>
+                <div class="case-validation reveal">
+                    <div class="validation-result">
+                        <span>3</span>
+                        <p>separate end-to-end audit runs completed successfully</p>
+                    </div>
+                    <div class="validation-result">
+                        <span>✓</span>
+                        <p>reported findings independently checked and confirmed</p>
+                    </div>
+                    <div class="validation-copy">
+                        <p>These controlled runs show that the core engine can complete its intended workflow and produce useful findings. They do not yet prove production readiness, broad environmental coverage, or long-term reliability.</p>
+                        <p>The primary lesson is that stability must be protected while the product grows. Current engineering work favors repeatability, clear output, and careful bug fixes over rapidly adding more surface area.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="case-section">
+            <div class="shell">
+                <p class="case-label reveal">06 / Responsible engineering</p>
                 <h2 class="reveal">Powerful tooling needs <span>responsible design.</span></h2>
                 <div class="case-principles reveal">
                     <article><span>PRINCIPLE_01</span><h3>Authorized by default</h3><p>Scope awareness and explicit operator intent should be visible throughout the workflow.</p></article>
@@ -112,11 +148,41 @@
             </div>
         </section>
 
+        <section class="case-section">
+            <div class="shell">
+                <p class="case-label reveal">07 / Development journal</p>
+                <h2 class="reveal">Progress documented, <span>not jumbled.</span></h2>
+                <p class="journal-intro reveal">Each future development update will be added as its own dated entry. Open an entry to read the milestone, evidence, current work, and next objective.</p>
+                <div class="update-archive reveal">
+                    <details open>
+                        <summary>
+                            <span class="update-date">October 2026</span>
+                            <span class="update-title">Core engine validated in early alpha</span>
+                            <span class="update-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <div class="update-entry">
+                            <div class="case-update-copy">
+                                <p class="case-update-date">ALPHA LOG / UPDATE 001</p>
+                                <p>The core audit engine completed three separate end-to-end runs. The findings produced during those runs were independently reviewed and confirmed to be accurate.</p>
+                                <p>This is an important proof point, but not a production-readiness claim. Work is continuing on small bugs, repeatability, output quality, and maintaining engine stability as the product evolves.</p>
+                            </div>
+                            <ol class="case-update-log" aria-label="October 2026 development milestones">
+                                <li><span>COMPLETE</span><strong>Core engine operating end to end</strong></li>
+                                <li><span>VERIFIED</span><strong>Findings confirmed across three controlled runs</strong></li>
+                                <li><span>ACTIVE</span><strong>Bug fixes and consistency improvements</strong></li>
+                                <li><span>NEXT</span><strong>Broader testing and workflow refinement</strong></li>
+                            </ol>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
         <section class="case-section case-cta">
             <div class="shell reveal">
-                <p class="case-label">05 / Project status</p>
+                <p class="case-label">08 / Next steps</p>
                 <h2>Working software.<br><span>Early-alpha discipline.</span></h2>
-                <p>The engine has produced verified results, and development is continuing carefully through stabilization, testing, and incremental improvement.</p>
+                <p>Next priorities are repeatable testing, stronger error handling, clearer audit output, and gradual workflow refinement without destabilizing the engine.</p>
                 <a class="button button-primary" href="../#projects">Return to portfolio →</a>
             </div>
         </section>
