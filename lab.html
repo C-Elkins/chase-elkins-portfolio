@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self' blob:; connect-src 'none'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <meta name="description" content="Chase Elkins' interactive engineering lab: networks, algorithms, audio, compression, and browser-local encryption and hashing.">
+    <meta name="theme-color" content="#eef3ef">
+    <script src="js/theme.js?v=2026-11-10"></script>
+    <title>Engineering Lab | Chase Elkins</title>
+    <link rel="canonical" href="https://c-elkins.github.io/chase-elkins-portfolio/lab.html">
+    <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
+    <link rel="stylesheet" href="css/lab.css?v=2026-11-10-crypto">
+    <script type="module" src="js/lab.js"></script>
+</head>
+<body>
+    <a class="skip" href="#main">Skip to experiments</a>
+    <header class="lab-header">
+        <a class="brand" href="./"><span>&gt;_</span> C_ELKINS</a>
+        <div class="header-actions">
+            <a href="./">← Portfolio</a>
+            <button data-theme-toggle type="button" aria-label="Switch to dark theme" aria-pressed="false"><span aria-hidden="true">◐</span> <span data-theme-label>Dark mode</span></button>
+        </div>
+    </header>
+    <main id="main">
+        <div class="lab-intro">
+            <p class="eyebrow">ENGINEERING LAB / INTERACTIVE SYSTEMS</p>
+            <h1>Don't just read.<br><span>Experiment.</span></h1>
+            <p>Build a network. Hear a signal. Compress a file. Lock a message. A hands-on workspace for understanding what happens beneath the interface.</p>
+            <p class="privacy"><span aria-hidden="true">●</span> Lab inputs stay in your browser. No uploads, microphone access, analytics, or real network probes.</p>
+        </div>
+        <nav class="lab-tabs" aria-label="Choose an experiment">
+            <a href="#network" aria-current="location">01 / Network studio</a>
+            <a href="#algorithms">02 / Algorithm theater</a>
+            <a href="#audio">03 / Signal room</a>
+            <a href="#compression">04 / Compression bench</a>
+            <a href="#crypto">05 / Encryption &amp; hashing</a>
+        </nav>
+
+        <section id="network" class="experiment">
+            <div class="section-top">
+                <div><p class="eyebrow">01 / NETWORK STUDIO</p><h2>How does a network work?</h2></div>
+                <span class="badge">SIMULATION ONLY</span>
+            </div>
+            <p class="section-intro">Start with the office network, or build your own. Select a client, request an address, then trace a DNS lookup and a simulated web request. Break a connection or block the firewall to see what changes.</p>
+            <div class="network-layout">
+                <aside class="panel toolbox" aria-label="Network controls">
+                    <h3>Choose a scenario</h3>
+                    <label>Learning setup<select id="network-scenario">
+                        <option value="office">Office network</option><option value="home">Home Wi-Fi / multiple clients</option>
+                        <option value="firewall">Investigate a firewall block</option><option value="dns">Troubleshoot a DNS outage</option>
+                        <option value="cable">Find the broken cable</option>
+                    </select></label>
+                    <button id="load-scenario" type="button">Load scenario</button>
+                    <h3>Build your topology</h3>
+                    <div id="device-palette" class="device-palette" aria-label="Device palette"></div>
+                    <p class="hint">Drag a palette item onto the board, or click it to add. Move existing devices by dragging, or focus one and use arrow keys. Touch users can use the same controls.</p>
+                    <label>Device type
+                        <select id="device-type">
+                            <option value="client">Client / laptop</option><option value="switch">Switch</option>
+                            <option value="phone">Phone / Wi-Fi client</option><option value="printer">Network printer</option>
+                            <option value="ap">Wireless access point</option><option value="router">Router / DHCP</option>
+                            <option value="firewall">Firewall</option><option value="server">DNS server</option>
+                            <option value="internet">Internet endpoint</option>
+                        </select>
+                    </label>
+                    <button id="add-device" type="button">+ Add device</button>
+                    <p class="hint">Up to 16 devices. One router, DNS server, and internet endpoint in this single-LAN lesson.</p>
+                    <label>Connect from<select id="link-from"></select></label>
+                    <label>Connect to<select id="link-to"></select></label>
+                    <button id="add-link" type="button">Connect devices</button>
+                    <hr>
+                    <label class="check"><input id="dhcp-on" type="checkbox" checked> Router DHCP enabled</label>
+                    <label class="check"><input id="dns-on" type="checkbox" checked> DNS service enabled</label>
+                    <label class="check"><input id="firewall-on" type="checkbox"> Firewall blocks web traffic</label>
+                    <label>Simulation pace<select id="network-speed"><option value="1200">Slow / learning</option><option value="650" selected>Normal</option><option value="250">Fast</option></select></label>
+                    <button id="network-reset" type="button">Load office example</button>
+                    <button id="network-clear" type="button" class="quiet">Clear topology</button>
+                </aside>
+                <div class="network-workspace">
+                    <div class="panel topology">
+                        <div class="panel-heading"><span>LIVE TOPOLOGY</span><span id="topology-count"></span></div>
+                        <p id="scenario-lesson" class="hint"></p>
+                        <div class="simulation-controls">
+                            <label>Source client<select id="source-client"></select></label>
+                            <button id="run-dhcp" type="button">Request IP / DHCP</button>
+                            <button id="run-web" type="button">Visit demo.test / DNS + web</button>
+                        </div>
+                        <div class="playback">
+                            <button id="network-play" type="button" disabled>Play</button>
+                            <button id="network-step" type="button" disabled>Next hop →</button>
+                            <button id="network-stop" type="button" disabled>Stop / clear trace</button>
+                            <button id="network-connect" type="button" aria-pressed="false">Cable mode</button>
+                            <span id="packet-status" role="status">Choose an action to prepare a trace.</span>
+                        </div>
+                        <div class="topology-scroll">
+                            <div class="topology-board" id="topology-board">
+                                <svg id="topology-lines" viewBox="0 0 760 440" aria-hidden="true"></svg>
+                                <div id="topology-devices" aria-label="Network devices"></div>
+                            </div>
+                        </div>
+                        <p class="hint">Dashed links = Wi-Fi. Select a device to inspect it. In Cable mode, select two devices to connect them; use Manage connections to disconnect.</p>
+                        <div id="device-inspector" class="inspector"></div>
+                        <details class="cable-list"><summary>Manage connections</summary><ul id="link-list"></ul></details>
+                    </div>
+                    <div class="panel simulation">
+                        <h3>Packet journal</h3>
+                        <label class="check"><input id="network-follow" type="checkbox" checked> Follow latest journal entry (never moves the page)</label>
+                        <ol id="network-log" class="event-log" aria-label="Packet trace"></ol>
+                        <p id="network-status" class="status" role="status"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="lesson-grid">
+                <article><span>01</span><h3>DHCP gives you an address</h3><p>Discover → Offer → Request → Acknowledge. A new client broadcasts on its local LAN; the server offers a lease containing an IP, gateway, and DNS server. Routers do not forward these broadcasts without a DHCP relay.</p></article>
+                <article><span>02</span><h3>DNS translates a name</h3><p>After obtaining an address, the client asks a DNS server for demo.test. Our server returns the documentation-only address 203.0.113.10. No real DNS query leaves this page.</p></article>
+                <article><span>03</span><h3>Each device has a job</h3><p>APs bridge wireless clients into a LAN. Switches forward local traffic. Routers connect networks. Firewalls allow or deny traffic. This model abstracts ARP, VLANs, NAT, TCP, RF, and routing tables; it is not a network emulator.</p></article>
+            </div>
+        </section>
+
+        <section id="algorithms" class="experiment" hidden>
+            <div class="section-top"><div><p class="eyebrow">02 / ALGORITHM THEATER</p><h2>Watch order emerge.</h2></div><span class="badge">DETERMINISTIC LOGIC</span></div>
+            <p class="section-intro">Compare bubble sort and insertion sort on the same input. Blue marks a comparison; green marks a write. Step through each operation or play the full sequence.</p>
+            <div class="panel">
+                <div class="control-grid">
+                    <label>Algorithm<select id="sort-algorithm"><option value="bubble">Bubble sort</option><option value="insertion">Insertion sort</option></select></label>
+                    <label>Array size <output id="sort-size-value">20</output><input id="sort-size" type="range" min="6" max="40" value="20"></label>
+                    <label>Pace<select id="sort-speed"><option value="500">Slow</option><option value="120" selected>Normal</option><option value="25">Fast</option></select></label>
+                </div>
+                <div class="toolbar"><button id="sort-play" type="button">Play</button><button id="sort-step" type="button">Step →</button><button id="sort-restart" type="button">Replay same input</button><button id="sort-shuffle" type="button">New array</button></div>
+                <div class="sort-chart" id="sort-chart" role="img" aria-label="Unsorted values"></div>
+                <div class="stats"><span>Comparisons <strong id="sort-comparisons">0</strong></span><span>Writes <strong id="sort-writes">0</strong></span><span id="sort-state" role="status">Ready</span></div>
+                <p id="sort-explanation" class="hint"></p>
+                <details><summary>Read the current values</summary><p id="sort-values"></p></details>
+            </div>
+            <div class="lesson-grid two">
+                <article><h3>Bubble sort</h3><p>Repeatedly compares neighboring values and swaps them if they are reversed. An early-exit check stops when a pass makes no swaps. Average/worst time: O(n²); extra storage: O(1).</p></article>
+                <article><h3>Insertion sort</h3><p>Builds a sorted prefix by shifting larger values right and inserting the next value. Efficient for small or nearly sorted inputs. Average/worst time: O(n²); extra storage: O(1). The visualizer stores snapshots separately for playback.</p></article>
+            </div>
+        </section>
+
+        <section id="audio" class="experiment" hidden>
+            <div class="section-top"><div><p class="eyebrow">03 / SIGNAL ROOM</p><h2>See what you hear.</h2></div><span class="badge">WEB AUDIO / LOCAL ONLY</span></div>
+            <p class="section-intro">Explore a generated tone or choose an audio file from your device. Nothing is uploaded. Playback starts only when you press Play; volume starts low.</p>
+            <div class="panel">
+                <div class="control-grid">
+                    <label>Audio source<select id="audio-source"><option value="tone">Generated test tone</option><option value="file">Local audio file</option></select></label>
+                    <label>Local file (up to 25 MB)<input id="audio-file" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.flac,.aac"></label>
+                    <label>Display<select id="audio-mode"><option value="frequency">Frequency spectrum</option><option value="waveform">Waveform</option></select></label>
+                    <label>Tone frequency <output id="tone-value">220 Hz</output><input id="tone-frequency" type="range" min="60" max="1200" value="220"></label>
+                    <label>Volume <output id="volume-value">10%</output><input id="audio-volume" type="range" min="0" max="50" value="10"></label>
+                </div>
+                <div class="toolbar"><button id="audio-play" type="button">Play audio</button><button id="audio-stop" type="button" disabled>Stop</button><button id="audio-clear" type="button">Clear file</button></div>
+                <canvas id="audio-canvas" width="1000" height="300" role="img" aria-label="Audio visualization, currently stopped"></canvas>
+                <p id="audio-status" class="status" role="status">Ready. Choose a source and press Play.</p>
+                <p class="hint">Reduced-motion mode keeps the canvas static while audio remains controllable. Browser audio-codec support varies; unsupported files produce an explicit error.</p>
+            </div>
+            <div class="lesson-grid two">
+                <article><h3>Waveform = amplitude over time</h3><p>A sine tone forms a smooth repeating wave. Increasing frequency packs more cycles into the same window. Increasing volume changes the output level.</p></article>
+                <article><h3>Spectrum = frequency content</h3><p>A fast Fourier transform separates the signal into frequency bins. A sine tone has a strong peak near its selected frequency. Music spreads energy over many bins.</p></article>
+            </div>
+        </section>
+        <section id="compression" class="experiment" hidden>
+            <div class="section-top"><div><p class="eyebrow">04 / COMPRESSION BENCH</p><h2>Smaller isn't magic.</h2></div><span class="badge">LOSSLESS / LOCAL ONLY</span></div>
+            <p class="section-intro">Computers store text, pictures, audio, and programs as bytes. Compression represents those same bytes more efficiently by finding patterns. Follow the journey from raw data to repeated runs, dictionary references, compact binary codes, and a real ZIP.</p>
+            <nav class="lesson-nav" aria-label="Compression lesson chapters">
+                <a href="#data-chapter">1 / Bytes</a><a href="#rle-chapter">2 / Runs</a><a href="#dictionary-chapter">3 / Patterns</a><a href="#huffman-chapter">4 / Codes</a><a href="#compare-chapter">5 / Compare</a><a href="#zip-chapter">6 / ZIP</a>
+            </nav>
+            <div class="panel compression-chapter" id="data-chapter">
+                <h3>01 / Everything starts as bytes</h3>
+                <p>A bit is 0 or 1. Eight bits make a byte, with 256 possible values. The same byte can be displayed as decimal, hexadecimal, or binary: these are different notations, not different amounts of data.</p>
+                <label>Choose data to inspect<select id="data-sample">
+                    <option value="pixels">Raw image / grayscale pixels</option><option value="pcm">Raw audio / 16-bit PCM</option>
+                    <option value="logs">Structured log records / UTF-8</option><option value="pattern">Repeating binary pattern</option>
+                    <option value="noise">Pseudorandom binary data</option>
+                </select></label>
+                <p id="data-description" class="hint"></p>
+                <details>
+                    <summary>Inspect bytes from a local file</summary>
+                    <label>Optional local file (up to 10 MB; reads only the first 4,096 bytes)<input id="data-file" type="file"></label>
+                    <button id="data-file-clear" type="button">Clear file</button>
+                    <p id="data-file-status" class="status" role="status">No file selected. The sample is never uploaded, decoded as media, or executed.</p>
+                </details>
+                <div class="data-layout">
+                    <div><canvas id="data-canvas" width="256" height="256" role="img" aria-label="Grayscale image sample"></canvas><p class="hint" id="data-preview-caption"></p></div>
+                    <div>
+                        <div class="stats"><span>Input <strong id="data-size"></strong></span><span>Distinct byte values <strong id="data-unique"></strong></span></div>
+                        <div id="byte-grid" class="byte-grid" role="group" aria-label="First 64 bytes; select one to inspect it"></div>
+                        <p id="byte-detail" class="status" role="status"></p>
+                        <p class="hint">Only the first 64 bytes are displayed. Position is a zero-based byte offset. A text character may span several UTF-8 bytes; a 16-bit audio sample occupies two bytes.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel compression-chapter" id="rle-chapter">
+                <h3>02 / Group identical neighbors: run-length encoding</h3>
+                <p class="hint">A teaching algorithm, not ZIP's algorithm. Each pair is a one-byte count (1–255) and a one-byte UTF-8 value. Long repeated runs shrink; varied data often grows. The pair list below is a human-readable representation, not the binary output.</p>
+                <div class="control-grid">
+                    <label>Example<select id="compression-example"><option value="repeated">Long repeated runs</option><option value="varied">Varied text</option><option value="pattern">Repeating pattern / RLE's limitation</option></select></label>
+                    <label>Pace<select id="compression-speed"><option value="700">Slow</option><option value="350" selected>Normal</option><option value="120">Fast</option></select></label>
+                </div>
+                <label for="compression-input">Your text (up to 512 UTF-16 code units; multi-byte characters are counted as UTF-8 bytes)</label>
+                <textarea id="compression-input" maxlength="512" rows="3" spellcheck="false">AAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCC</textarea>
+                <div class="toolbar"><button id="compression-play" type="button">Play</button><button id="compression-step" type="button">Next run →</button><button id="compression-reset" type="button">Restart</button></div>
+                <div class="stats"><span>Original <strong id="compression-original"></strong></span><span>Encoded so far <strong id="compression-encoded"></strong></span><span id="compression-result"></span></div>
+                <p id="compression-state" class="status" role="status"></p>
+                <p id="compression-window" class="hint"></p>
+                <div id="compression-runs" class="compression-runs" aria-label="Most recent encoded runs (up to 80)"></div>
+                <details><summary>Read all count / byte pairs</summary><p id="compression-output"></p></details>
+            </div>
+            <div class="panel compression-chapter" id="dictionary-chapter">
+                <h3>03 / Remember earlier patterns: dictionary references</h3>
+                <p>RLE cannot shorten <code>ABCABCABC</code> because adjacent bytes differ. A dictionary method can write <code>A B C</code>, then say “go back 3 bytes and copy 6.” It works on pixel rows, audio patterns, or any repeated bytes—not just text.</p>
+                <p class="hint">This simplified LZ-style lesson uses the first 256 bytes of the selected sample, a 64-byte history, and matches of 3–34 bytes. A literal costs 9 bits (a tag + 8 data bits); a reference costs 12 (a tag + 6 distance bits + 5 length bits). These are teaching-format costs, not actual DEFLATE output. Copies may overlap: the decoder can reuse bytes it just produced.</p>
+                <div class="toolbar"><button id="dictionary-play" type="button">Play</button><button id="dictionary-step" type="button">Next token →</button><button id="dictionary-reset" type="button">Restart</button></div>
+                <p id="dictionary-state" class="status" role="status"></p>
+                <p id="dictionary-explanation" class="hint"></p>
+                <div id="dictionary-tokens" class="compression-runs" aria-label="Most recent dictionary tokens, up to 64"></div>
+                <details><summary>Read the reconstructed bytes</summary><p id="dictionary-restored" class="byte-output"></p></details>
+            </div>
+            <div class="panel compression-chapter" id="huffman-chapter">
+                <h3>04 / Give frequent symbols shorter codes</h3>
+                <p>Ordinary byte storage spends 8 bits on every value. Huffman coding builds a prefix-free code: common symbols get short codes and no full code is the start of another. A decoder can tell where each code ends without separators.</p>
+                <p class="hint">This example codes the raw bytes directly. Actual DEFLATE applies fixed or dynamic Huffman codes to its literals, match lengths, and distances (or uses uncompressed blocks). The table shows up to 16 most frequent bytes; bit totals cover the entire selected sample.</p>
+                <div class="stats"><span>Fixed-width input <strong id="huffman-original"></strong></span><span>Huffman payload <strong id="huffman-bits"></strong></span><span id="huffman-note"></span></div>
+                <div class="table-scroll"><table><caption>Frequency and prefix codes for the selected sample</caption><thead><tr><th scope="col">Byte</th><th scope="col">Count</th><th scope="col">Code</th><th scope="col">Bits used</th></tr></thead><tbody id="huffman-table"></tbody></table></div>
+                <p class="hint">Encoded first 16 input bytes (spaces added only to show code boundaries):</p>
+                <p id="huffman-stream" class="byte-output"></p>
+                <p class="hint">The decoder also needs the codebook. Totals above exclude that codebook, headers, and final byte padding, so they are not a file-size prediction. This lesson uses at least one bit for a single-symbol alphabet.</p>
+            </div>
+            <div class="panel compression-chapter" id="compare-chapter">
+                <h3>05 / Same algorithms, different data</h3>
+                <p>Compare the selected sample using real browser DEFLATE and the teaching RLE format. Bytes and patterns—not filename extensions—determine what can shrink.</p>
+                <button id="data-compare" type="button">Compare this sample</button>
+                <div class="table-scroll"><table><caption>Payload sizes only; ZIP metadata is not included</caption><thead><tr><th scope="col">Method</th><th scope="col">Bytes</th><th scope="col">Against original</th></tr></thead><tbody id="data-comparison"></tbody></table></div>
+                <p id="data-compare-status" class="status" role="status">Choose a sample, then compare its actual encoded sizes.</p>
+                <div class="lesson-grid two">
+                    <article><h3>Photos and recordings</h3><p>Raw pixels and PCM audio can contain structure a lossless compressor can exploit. PNG already uses lossless compression, so zipping a PNG often saves little. JPEG, MP3, and many video formats use specialized compression, often lossy; ZIP cannot restore details those formats already discarded.</p></article>
+                    <article><h3>Why not compress forever?</h3><p>No lossless compressor can make every possible input smaller: there are fewer short byte strings than long ones. Random-looking data often stays the same size or grows. Encryption normally removes useful visible patterns; compress before encrypting when appropriate, not to “undo” encryption.</p></article>
+                </div>
+            </div>
+            <div class="panel zip-panel compression-chapter" id="zip-chapter">
+                <h3>06 / Build a real ZIP</h3>
+                <p class="hint">Choose up to 20 files, 10 MB combined. ZIP is a container; DEFLATE compresses each entry using repeated byte sequences and compact codes. Already-compressed photos, music, or archives may not shrink. Filenames are made portable and duplicates receive suffixes. No folders, extraction, encryption, or passwords.</p>
+                <div class="control-grid">
+                    <label>Local files<input id="zip-files" type="file" multiple></label>
+                    <label>ZIP method<select id="zip-method"><option value="deflate">DEFLATE / compress when smaller</option><option value="store">Store / package without compression</option></select></label>
+                </div>
+                <p id="zip-support" class="hint"></p>
+                <div class="toolbar"><button id="zip-build" type="button">Create ZIP</button><button id="zip-clear" type="button">Cancel / clear files</button><a id="zip-download" class="download-button" download="engineering-lab.zip" hidden>Download ZIP</a></div>
+                <p id="zip-status" class="status" role="status">Ready. Choose local files to begin. Selecting files does not execute them or upload them.</p>
+                <ul id="zip-report" class="zip-report" aria-label="Archive entries"></ul>
+            </div>
+            <div class="lesson-grid">
+                <article><h3>Lossless means reversible</h3><p>Decoding reproduces the exact original bytes. RLE expands count / value pairs. DEFLATE uses back-references and Huffman coding. Unlike lossy photo or audio encoding, neither deliberately discards information.</p></article>
+                <article><h3>ZIP is a container</h3><p>A ZIP bundles separate entries with filenames, metadata, and a central directory. Each entry can be compressed or stored. Metadata costs space, so tiny files can produce a larger archive even when their payload compresses.</p></article>
+                <article><h3>Integrity is not secrecy</h3><p>CRC-32 detects accidental corruption; it is not cryptographic authentication. Compression is not encryption. A ZIP from this lab is readable by anyone who receives it, and does not establish that its contents are safe.</p></article>
+            </div>
+        </section>
+        <section id="crypto" class="experiment" hidden>
+            <div class="section-top"><div><p class="eyebrow">05 / ENCRYPTION &amp; HASHING STUDIO</p><h2>Small change. Big difference.</h2></div><span class="badge">WEB CRYPTO / LOCAL ONLY</span></div>
+            <p class="section-intro">Compression makes data smaller. Encryption makes it unreadable without a key. Hashing makes a fixed-length fingerprint. Explore the differences with real browser cryptography—not a pretend cipher.</p>
+            <p id="crypto-support" class="status" role="status">Checking Web Crypto support…</p>
+            <p class="privacy">Use sample messages, not passwords or sensitive information. Nothing here is uploaded or saved. The key stays in this page's memory, is not exportable, and is discarded on navigation or Clear studio. This is an educational experiment, not a password manager or a way to send recoverable encrypted files.</p>
+            <nav class="lesson-nav" aria-label="Cryptography lesson chapters"><a href="#hash-chapter">1 / Fingerprints</a><a href="#cipher-chapter">2 / Lock &amp; verify</a><a href="#crypto-concepts">3 / Know the difference</a></nav>
+            <div class="panel crypto-chapter" id="hash-chapter">
+                <h3>01 / Hashing: a fingerprint, not a lock</h3>
+                <p>SHA-256 turns any bounded message here into 256 bits. Identical input bytes always produce the same digest. Changing one character can flip many output bits, even though the hash stays the same length. You cannot “decrypt” a hash to retrieve the message.</p>
+                <div class="control-grid crypto-inputs">
+                    <label>Message A (up to 4,096 UTF-16 code units)<textarea id="hash-a" maxlength="4096" rows="3" spellcheck="false" autocomplete="off">Hello, network!</textarea></label>
+                    <label>Message B (up to 4,096 UTF-16 code units)<textarea id="hash-b" maxlength="4096" rows="3" spellcheck="false" autocomplete="off">hello, network!</textarea></label>
+                </div>
+                <div class="toolbar"><button id="hash-compare" type="button" disabled>Compare SHA-256 hashes</button><button id="hash-example" type="button">Load one-character example</button><button id="hash-identical" type="button">Make B identical to A</button></div>
+                <div class="crypto-digests">
+                    <div><h4>Digest A / hexadecimal</h4><p id="hash-a-output" class="crypto-output">Not calculated</p></div>
+                    <div><h4>Digest B / hexadecimal</h4><p id="hash-b-output" class="crypto-output">Not calculated</p></div>
+                </div>
+                <div class="stats"><span>Changed output bits <strong id="hash-distance">— / 256 bits</strong></span><span>Difference <strong id="hash-percent">—</strong></span></div>
+                <p id="hash-input-sizes" class="hint">Choose two messages and compare.</p>
+                <p class="hint">The map shows all 256 bits of digest B, left to right, most-significant bit first. Highlighted bits differ from A. Hover a bit for its A/B values. The difference count above provides the same information without relying on color.</p>
+                <div id="hash-bits" class="hash-map" role="img" aria-label="No hash comparison calculated"></div>
+                <p id="hash-status" class="status" role="status">The example differs by one uppercase letter. Compare to see the avalanche effect.</p>
+                <p class="hint">The browser encodes these inputs as UTF-8 without normalizing Unicode. Visually identical strings can have different underlying bytes. SHA-256 is not a password-storage scheme: real password systems use a salted, deliberately costly password hash such as Argon2id.</p>
+            </div>
+            <div class="panel crypto-chapter" id="cipher-chapter">
+                <h3>02 / Encryption: lock, unlock, and detect tampering</h3>
+                <p>AES-GCM is authenticated encryption. It hides the plaintext and produces an authentication tag. Decryption releases plaintext only when the key, nonce, ciphertext, and tag agree. A wrong key or altered byte causes verification to fail.</p>
+                <ol class="crypto-pipeline" aria-label="Encryption workflow">
+                    <li data-crypto-stage="input" class="crypto-stage-active" aria-current="step"><span>01</span> Plaintext</li>
+                    <li data-crypto-stage="key"><span>02</span> Session key</li>
+                    <li data-crypto-stage="sealed"><span>03</span> Encrypted + tag</li>
+                    <li data-crypto-stage="verified"><span>04</span> Verified plaintext</li>
+                    <li data-crypto-stage="rejected"><span>!</span> Rejected attempt</li>
+                </ol>
+                <label>Sample message (up to 4,096 UTF-16 code units)<textarea id="crypto-message" maxlength="4096" rows="3" spellcheck="false" autocomplete="off">Meet me in the Engineering Lab. Bring a packet.</textarea></label>
+                <div class="toolbar"><button id="crypto-generate" type="button" disabled>1 / Generate new key</button><button id="crypto-encrypt" type="button" disabled>2 / Encrypt message</button><button id="crypto-decrypt" type="button" disabled>3 / Decrypt original</button></div>
+                <p id="crypto-key-state" class="hint">No session key yet</p>
+                <dl class="crypto-envelope">
+                    <div><dt>Nonce / IV · 12 bytes · public</dt><dd id="crypto-nonce" class="crypto-output">Created freshly for each encryption</dd></div>
+                    <div><dt>Ciphertext · encrypted payload · hex preview</dt><dd id="crypto-ciphertext" class="crypto-output">No ciphertext yet</dd></div>
+                    <div><dt>Authentication tag · 16 bytes</dt><dd id="crypto-tag" class="crypto-output">No authentication tag yet</dd></div>
+                </dl>
+                <p id="crypto-sizes" class="hint">No encrypted message yet</p>
+                <div class="toolbar"><button id="crypto-tamper" type="button" disabled>Flip one bit / test tampering</button><button id="crypto-wrong-key" type="button" disabled>Try a different key</button></div>
+                <h4>Verified plaintext / current attempt</h4>
+                <p id="crypto-restored" class="crypto-output crypto-plaintext">No message decrypted</p>
+                <p id="crypto-status" class="status" role="status">Start by generating a key. This is a random AES-256 key, not a password.</p>
+                <p class="hint">Each encryption uses a fresh cryptographically random 96-bit nonce and a 128-bit tag. Never reuse a nonce with the same AES-GCM key. Randomness is practical here, not a uniqueness guarantee for an unbounded production system. The test buttons change only a copy or use a separate key; your original stays available. A new key discards the old ciphertext.</p>
+                <button id="crypto-clear" type="button">Clear studio / discard session key</button>
+                <p class="hint">Clearing removes the lab's references and visible inputs; JavaScript cannot promise secure memory erasure. Reloading or leaving the page also discards the session. Non-exportable keys cannot be exported through Web Crypto, but that does not make this page safe against a compromised browser or malicious same-origin scripts.</p>
+            </div>
+            <div id="crypto-concepts" class="lesson-grid">
+                <article><h3>Encoding ≠ encryption</h3><p>Hex and Base64 change representation and need no secret to reverse. Hex uses two characters per byte. Compression exploits patterns; it does not keep data secret. Ciphertext is usually not usefully compressible.</p></article>
+                <article><h3>A hash needs trust, too</h3><p>A file hash helps detect changes if the expected digest came from a trusted source. Anyone can hash a message. Authenticating its sender needs something else, such as a keyed MAC or digital signature; this studio does not implement signatures.</p></article>
+                <article><h3>Authentication has limits</h3><p>An AES-GCM tag checks data using a shared secret key. It does not identify a person, prevent replay by itself, or solve key exchange. Real secure messaging needs a complete, reviewed protocol—not just an encryption function.</p></article>
+            </div>
+        </section>
+        <noscript><p class="status error">These experiments need JavaScript. Enable it to use the local simulations; no external services are required.</p></noscript>
+    </main>
+    <footer>ENGINEERING LAB / Built by Chase Elkins / <a href="./">Return to portfolio</a></footer>
+</body>
+</html>

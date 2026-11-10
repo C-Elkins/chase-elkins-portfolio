@@ -1,19 +1,20 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="NetVHunter is an early-alpha cybersecurity audit platform in active development by Chase Elkins.">
     <meta name="author" content="Chase Elkins">
-    <meta name="theme-color" content="#05080d">
+    <meta name="theme-color" content="#eef3ef">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; object-src 'none'">
+    <script src="../js/theme.js?v=2026-11-10"></script>
     <title>NetVHunter Case Study | Chase Elkins</title>
     <link rel="canonical" href="https://c-elkins.github.io/chase-elkins-portfolio/projects/netvhunter.html">
     <link rel="icon" href="../assets/favicon.svg?v=2" type="image/svg+xml">
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
     <link rel="preload" as="image" href="../images/netvhunter-badge.jpg">
-    <link rel="stylesheet" href="../css/style.css?v=2026-10-29.1">
-    <script src="../js/case-study.js" defer></script>
+    <link rel="stylesheet" href="../css/style.css?v=2026-11-10-themes">
+    <script src="../js/case-study.js?v=2026-11-10.1" defer></script>
 </head>
 <body class="case-body">
     <a class="skip-link" href="#case-main">Skip to case study</a>
@@ -26,7 +27,10 @@
                 <span class="brand-mark">&gt;_</span>
                 <span>C_ELKINS</span>
             </a>
-            <a class="case-back" href="../#projects">← All projects</a>
+            <div class="nav-actions">
+                <a class="case-back" href="../#projects">← All projects</a>
+                <button class="theme-switch" data-theme-toggle type="button" aria-label="Switch to dark theme" aria-pressed="false"><span aria-hidden="true">◐</span> <span data-theme-label>Dark mode</span></button>
+            </div>
         </nav>
     </header>
 
@@ -152,9 +156,35 @@
             <div class="shell">
                 <p class="case-label reveal">07 / Development journal</p>
                 <h2 class="reveal">Progress documented, <span>not jumbled.</span></h2>
-                <p class="journal-intro reveal">Each future development update will be added as its own dated entry. Open an entry to read the milestone, evidence, current work, and next objective.</p>
+                <p class="journal-intro reveal">Browse dated development updates below. Entries start collapsed; opening one closes the previous update so you can focus on a single milestone at a time.</p>
                 <div class="update-archive reveal">
-                    <details open>
+                    <details name="development-journal">
+                        <summary>
+                            <span class="update-date"><time datetime="2026-11-10">November 2026</time></span>
+                            <span class="update-title">Engine redesign and expanded assessment capabilities</span>
+                            <span class="update-toggle" aria-hidden="true"></span>
+                        </summary>
+                        <div class="update-entry">
+                            <div class="case-update-copy">
+                                <p class="case-update-date">ALPHA LOG / UPDATE 002</p>
+                                <p>NetVHunter remains in early alpha. The engine has undergone a substantial architectural redesign to support a broader range of internal and external penetration-testing scenarios while preserving the foundation established during earlier validation work.</p>
+                                <p>Current development includes a CVE lookup and vulnerability-discovery system, alongside Active Directory assessment workflows for evaluating potential compromise paths within authorized environments. Additional tools are also being developed; a complete capability inventory will be published as those components mature.</p>
+                                <p>The expanded engine supports external network assessments from outside the target network, without requiring an existing internal foothold. Wireless testing now includes deauthentication-packet capabilities for explicitly approved resilience exercises. Internal testing has also expanded to include the deployment of simulated malware as a proof of concept for evaluating defensive detection and response.</p>
+                                <p>MCP (Model Context Protocol) connectivity now allows large language models to assist with assessment scoping and exploration of approved testing objectives. This connection is not a substitute for operator judgment or authorization; AI-assisted activity must remain within the engagement's agreed boundaries.</p>
+                                <p>Planned work includes evaluating deeper integration with Metasploit and BeEF (Browser Exploitation Framework). These integrations remain roadmap items rather than completed capabilities. Stability, controlled validation, and incremental refinement remain priorities throughout the early-alpha process.</p>
+                                <p>All testing requires explicit permission from the system owner. Disruptive wireless exercises and simulated-malware deployment require separately agreed scope and safeguards; they are not intended for unapproved networks or production use outside an authorized engagement.</p>
+                            </div>
+                            <ol class="case-update-log" aria-label="November 2026 development milestones">
+                                <li><span>REWORKED</span><strong>Engine architecture broadened for internal and external assessments</strong></li>
+                                <li><span>BUILDING</span><strong>CVE lookup, vulnerability discovery, and Active Directory assessment workflows</strong></li>
+                                <li><span>EXPANDED</span><strong>Authorized wireless resilience and simulated-malware exercises</strong></li>
+                                <li><span>CONNECTED</span><strong>MCP connectivity for LLM-assisted assessment scoping</strong></li>
+                                <li><span>PLANNED</span><strong>Deeper Metasploit and BeEF integrations</strong></li>
+                                <li><span>UPCOMING</span><strong>Complete tool inventory and further early-alpha validation</strong></li>
+                            </ol>
+                        </div>
+                    </details>
+                    <details name="development-journal">
                         <summary>
                             <span class="update-date">October 2026</span>
                             <span class="update-title">Core engine validated in early alpha</span>

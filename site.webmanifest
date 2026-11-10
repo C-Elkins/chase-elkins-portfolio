@@ -4,8 +4,8 @@
   "start_url": "/chase-elkins-portfolio/",
   "scope": "/chase-elkins-portfolio/",
   "display": "standalone",
-  "background_color": "#05080d",
-  "theme_color": "#05080d",
+  "background_color": "#eef3ef",
+  "theme_color": "#eef3ef",
   "icons": [
     { "src": "assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "assets/favicon.png", "sizes": "128x128", "type": "image/png", "purpose": "any" },

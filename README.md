@@ -52,7 +52,7 @@ I'm a **Full-Stack Developer** with 8+ years of IT infrastructure experience, no
 
 ## ✨ Portfolio Features
 
-- **🌙 Dark Mode** - Fully functional dark theme with localStorage persistence
+- **🌙 Shared themes** - Light by default on every page, with a persistent dark/light toggle across the portfolio, case study, lab, confirmation, and 404 pages
 - **🎨 Modern UI** - Gradient hero section with glassmorphism effects
 - **🎯 Project Filtering** - Filter projects by status (All, Completed, In Progress, Planned)
 - **🎪 Animated Skills** - Infinite scrolling skill icons in two directions
@@ -62,6 +62,41 @@ I'm a **Full-Stack Developer** with 8+ years of IT infrastructure experience, no
 - **🔝 Scroll to Top** - Smooth navigation back to hero section
 - **📧 Contact Form** - Functional form with Formspree integration
 - **🎭 Smooth Animations** - Intersection Observer API for scroll effects
+
+### Engineering Lab
+
+Open [`lab.html`](lab.html) through a local HTTP server to explore five browser-only experiments:
+
+- **Network studio:** drag devices from the palette, reposition them with a pointer or arrow keys, connect them with Cable mode, and follow DHCP/DNS/routing decisions. Includes office, home Wi-Fi, firewall, DNS-outage, and broken-cable scenarios plus phone/printer endpoints. Playback never refocuses devices or scrolls the page. Stop clears an unfinished trace without discarding completed leases. This is a bounded single-LAN educational model, not an emulator or real network scanner.
+- **Algorithm theater:** step through bubble or insertion sort, replay identical input, and compare operation counts.
+- **Signal room:** visualize a generated sine tone or a local audio file (up to 25 MB), with explicit play/stop and volume controls. Files are not uploaded or persisted.
+- **Compression bench:** inspect raw image pixels, PCM audio, logs, repeated binary data, or pseudorandom bytes in hex/decimal/binary. An optional local file inspector reads only its first 4,096 bytes. Explore byte RLE, step through a bounded LZ-style dictionary, inspect Huffman prefix codes, and measure real DEFLATE against RLE. Teaching-format costs and codebook/padding exclusions are labeled explicitly. Create real ZIPs from up to 20 local files (10 MB combined); raw DEFLATE is used when supported and smaller, otherwise entries are explicitly stored. Shows payload versus archive overhead. No extraction, encryption, or uploads; filenames are flattened, sanitized, and deduplicated.
+- **Encryption & Hashing Studio:** compare native SHA-256 digests with an exact 256-bit difference map. Generate a non-exportable AES-256-GCM session key, encrypt with fresh random 96-bit nonces and 128-bit authentication tags, decrypt, and demonstrate rejection of altered data or a different key. Input is bounded to 4,096 UTF-16 code units (at most 16,384 UTF-8 bytes). Messages and keys are never uploaded, exported, or persisted; Clear studio and page navigation discard the lab's references and inputs. There is no secure-memory-erasure guarantee. HTTPS or localhost and Web Crypto are required; unsupported browsers get an explicit explanation with crypto actions disabled. This teaches primitives, not password storage, identity verification, key exchange, or a production messaging protocol.
+
+The lab has no third-party runtime dependencies. Its CSP blocks outbound script connections and form submissions; no microphone permissions are requested. Audio stops when the tab is hidden or the experiment changes. Reduced-motion mode uses a static audio canvas.
+
+Run the dependency-free model checks with a working Node.js installation:
+
+```bash
+node tests/lab-model.test.mjs
+node tests/compression-model.test.mjs
+node tests/compression-lessons.test.mjs
+node tests/crypto-model.test.mjs
+```
+
+In the local browser preview, import `tests/lab-model.test.mjs` and call `runLabTests()`, import `tests/compression-model.test.mjs` and await `runCompressionTests()`, or import `tests/compression-lessons.test.mjs` and await `runCompressionLessonTests()`. ZIP checks verify headers, offsets, UTF-8 names, CRC-32, exact restored bytes, limits, and cancellation. Lesson checks verify binary dictionary round-trips, prefix-free Huffman decoding, bit costs, and dataset bounds.
+
+Import `tests/crypto-model.test.mjs` and await `runCryptoTests()` in the browser to check standard SHA-256/AES-GCM vectors, exact UTF-8 round-trips, non-exportable keys, bounds, fresh nonce generation, and rejection of altered ciphertext, tags, nonces, and wrong keys. Node.js cryptography checks require a modern runtime with global Web Crypto.
+
+On the Lab page, import `tests/crypto-studio.test.mjs` and await `runCryptoStudioTests()` for UI state, literal-text rendering, rejection demos, and stale-operation/clear behavior. This test clears studio inputs and keys and ends on the one-character hashing example.
+
+From the homepage preview (not the Lab, which blocks frames), import `tests/crypto-environment.test.mjs` and await `runCryptoEnvironmentTests("/chase-elkins-portfolio/")` for mobile/light/dark layouts, chapter links, navigation cleanup, and a simulated unsupported context. Use `"/"` instead when previewing without the GitHub Pages path prefix.
+
+From the homepage preview, import `tests/theme.test.mjs` and await `runThemeTests()` to exercise all pages, saved choices, storage synchronization, and blocked saves. For this all-page test, serve the repository at both `/` and `/chase-elkins-portfolio/` so the production-rooted 404 assets resolve. The lab itself intentionally disallows iframes, so run this test from the homepage rather than the lab.
+
+All five HTML pages load `js/theme.js` before their stylesheet to apply a saved preference without a dark-first flash. With no valid saved choice, light mode is used regardless of system theme; an explicit choice is shared through `portfolio-theme` local storage and synchronized across tabs. If storage is unavailable, the toggle still works for the current page and logs a warning. The 404 page uses root-relative `/chase-elkins-portfolio/` assets so nested missing URLs still resolve correctly on GitHub Pages.
+
+The custom 404 includes a fictional router help desk and a keyboard-accessible six-port packet hunt. These are local-only jokes, not diagnostics; no requested URL is reflected, no network checks run, and the Home/Lab links work without JavaScript. Router motion respects reduced-motion preferences.
 
 ## 🛠️ Technologies Used
 
@@ -79,13 +114,24 @@ I'm a **Full-Stack Developer** with 8+ years of IT infrastructure experience, no
 ```bash
 portfolio/
 ├── index.html              # Main HTML file
+├── lab.html                # Browser-only interactive Engineering Lab
 ├── 404.html               # Custom 404 error page
 ├── success.html           # Form submission success page
 ├── css/
 │   ├── style.css          # Main stylesheet (dark mode, responsive)
+│   ├── lab.css            # Engineering Lab styles
 │   └── animations.css     # Animation definitions & keyframes
 ├── js/
 │   ├── main.js           # Core functionality (nav, dark mode, scroll)
+│   ├── lab.js            # Lab controls, playback, and local audio
+│   ├── lab-model.mjs     # Pure topology and sorting models
+│   ├── network-icons.mjs # Local SVG network symbols
+│   ├── compression.js    # Compression lesson and ZIP UI
+│   ├── compression-model.mjs # RLE, CRC-32, and ZIP generation
+│   ├── compression-lessons.mjs # Binary samples, dictionary, and Huffman lessons
+│   ├── crypto-studio.js  # Local hash comparison and authenticated encryption UI
+│   ├── crypto-model.mjs  # Bounded browser-native SHA-256 and AES-GCM
+│   ├── theme.js          # Shared light-default theme and preference sync
 │   └── projects.js       # Dynamic project rendering & filtering
 ├── images/
 │   ├── profile.jpg       # Profile photo

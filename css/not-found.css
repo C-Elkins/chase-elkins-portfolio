@@ -1,0 +1,50 @@
+.not-found-page { min-height: 100vh; display: flex; flex-direction: column; }
+.missing-header, .missing-main, .missing-footer { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+.missing-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-block: 1.25rem; border-bottom: 1px solid var(--line); }
+.missing-main { flex: 1; display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; padding-block: 3rem; }
+.missing-code { font: 800 clamp(6rem, 14vw, 11rem)/1 var(--mono); letter-spacing: -.08em; color: var(--accent); margin: 1.5rem 0; }
+.missing-zero { display: inline-block; color: transparent; -webkit-text-stroke: 2px var(--cyan); transform: rotate(-12deg); }
+.missing-copy h1 { font-size: clamp(2.4rem, 4vw, 4rem); line-height: 1.05; margin: 1.5rem 0; }
+.missing-copy h1 span { background: none; animation: none; }
+.missing-lede { font-size: 1.1rem; max-width: 46ch; }
+.missing-explanation { color: var(--muted); max-width: 50ch; font-size: .9rem; }
+.missing-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+.missing-footnote, .missing-footer, .console-disclaimer { font: .65rem/1.7 var(--mono); color: var(--muted); }
+.missing-footnote { margin-top: 1.25rem; }
+.missing-console { min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: clamp(1.2rem, 3vw, 2rem); box-shadow: 0 15px 50px var(--accent-soft); }
+.console-heading { display: flex; align-items: center; gap: .6rem; font: .65rem/1.7 var(--mono); color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
+.missing-console h2 { font-size: 1.5rem; margin-top: 1.5rem; }
+.router-scene { position: relative; height: 190px; width: min(280px, 100%); margin: 2rem auto 0; }
+.router-body { position: absolute; inset: 45px 10px 35px; border: 2px solid var(--cyan); background: var(--bg-elevated); border-radius: 20px 20px 10px 10px; transform: rotate(-3deg); }
+.router-antenna { position: absolute; top: 0; width: 7px; height: 75px; background: var(--cyan); border-radius: 8px; }
+.antenna-left { left: 35px; transform: rotate(-15deg); }
+.antenna-right { right: 35px; transform: rotate(15deg); }
+.router-face { text-align: center; padding-top: 1.15rem; color: var(--text); font: 800 2rem var(--mono); white-space: pre; }
+.router-ports { display: flex; gap: 9px; align-items: center; padding: 1rem 1.25rem; }
+.router-ports i { width: 15px; height: 8px; border: 1px solid var(--muted); }
+.router-ports i:first-child { background: var(--accent); border-color: var(--accent); }
+.router-ports span { margin-left: auto; color: var(--cyan); font: 800 .85rem var(--mono); }
+.router-caption { position: absolute; bottom: 0; width: 100%; text-align: center; color: var(--muted); font: .55rem/1.5 var(--mono); }
+.router-bubble { min-height: 5.2em; padding: 1rem; border-left: 3px solid var(--accent); background: var(--accent-soft); font: .85rem/1.7 var(--mono); overflow-wrap: anywhere; }
+.router-button { background: var(--panel-bright); color: var(--text); width: 100%; }
+.missing-console button { cursor: pointer; }
+.missing-console button:disabled { opacity: .5; cursor: default; }
+.console-disclaimer { margin-block: 1rem; }
+.packet-hunt { border-top: 1px solid var(--line); padding-top: 1rem; font-size: .8rem; }
+.packet-hunt summary { cursor: pointer; color: var(--cyan); min-height: 44px; }
+.packet-hunt > p { color: var(--muted); }
+.packet-ports { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+.packet-ports button { min-height: 56px; padding: .5rem; color: var(--text); background: var(--bg-elevated); border: 1px solid var(--line); border-radius: 6px; font: .7rem var(--mono); }
+.packet-ports button:hover:not(:disabled) { border-color: var(--cyan); }
+.packet-ports button.found { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); opacity: 1; }
+#packet-result { min-height: 3.4em; font: .75rem/1.7 var(--mono); }
+.missing-footer { padding-block: 1.5rem; border-top: 1px solid var(--line); }
+@media (max-width: 850px) {
+    .missing-main { grid-template-columns: 1fr; }
+    .missing-console { width: 100%; max-width: 600px; }
+}
+@media (max-width: 400px) {
+    .missing-header, .missing-main, .missing-footer { width: calc(100% - 28px); }
+    .missing-actions { flex-direction: column; }
+    .missing-actions .button { font-size: .65rem; }
+}

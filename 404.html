@@ -1,22 +1,69 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
-    <meta name="theme-color" content="#05080d">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; base-uri 'none'; object-src 'none'">
+    <meta name="theme-color" content="#eef3ef">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'none'; base-uri 'none'; object-src 'none'; form-action 'none'">
+    <script src="/chase-elkins-portfolio/js/theme.js?v=2026-11-10"></script>
     <title>Page not found | Chase Elkins</title>
-    <link rel="icon" href="https://c-elkins.github.io/chase-elkins-portfolio/assets/favicon.svg?v=2" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="https://c-elkins.github.io/chase-elkins-portfolio/assets/apple-touch-icon.png">
-    <link rel="stylesheet" href="https://c-elkins.github.io/chase-elkins-portfolio/css/style.css?v=2026-10-28">
+    <link rel="icon" href="/chase-elkins-portfolio/assets/favicon.svg?v=2" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/chase-elkins-portfolio/assets/apple-touch-icon.png">
+    <link rel="stylesheet" href="/chase-elkins-portfolio/css/style.css?v=2026-11-10-themes">
+    <link rel="stylesheet" href="/chase-elkins-portfolio/css/not-found.css?v=1">
+    <script src="/chase-elkins-portfolio/js/not-found.js?v=1" defer></script>
 </head>
-<body class="status-page">
-    <main class="status-panel">
-        <p class="eyebrow">ERROR / 404</p>
-        <h1>Signal<br><span>lost.</span></h1>
-        <p>The page you requested moved, never existed, or slipped out of range.</p>
-        <a class="button button-primary" href="https://c-elkins.github.io/chase-elkins-portfolio/">Return home <span aria-hidden="true">↗</span></a>
+<body class="not-found-page">
+    <a class="skip-link" href="#missing-main">Skip to missing page report</a>
+    <header class="missing-header">
+        <a class="brand" href="/chase-elkins-portfolio/"><span class="brand-mark">&gt;_</span> C_ELKINS</a>
+        <button class="theme-switch" data-theme-toggle type="button" aria-label="Switch to dark theme" aria-pressed="false"><span aria-hidden="true">◐</span> <span data-theme-label>Dark mode</span></button>
+    </header>
+    <main id="missing-main" class="missing-main">
+        <section class="missing-copy" aria-labelledby="missing-title">
+            <p class="eyebrow">INCIDENT / 404 / SEVERITY: MILDLY AWKWARD</p>
+            <div class="missing-code" aria-hidden="true">4<span class="missing-zero">0</span>4</div>
+            <h1 id="missing-title">This page took<br><span>a wrong subnet.</span></h1>
+            <p class="missing-lede">We checked the DNS. We checked the cables. We even asked the router nicely. This page still isn't here.</p>
+            <p class="missing-explanation">The link may be outdated, mistyped, or pointing to a page that moved. Your device is fine. Probably deserves a snack, honestly.</p>
+            <div class="missing-actions">
+                <a class="button button-primary" href="/chase-elkins-portfolio/">Take me home <span aria-hidden="true">↗</span></a>
+                <a class="button" href="/chase-elkins-portfolio/lab.html">Get lost in the Lab <span aria-hidden="true">↗</span></a>
+            </div>
+            <p class="missing-footnote">No packets were harmed in the making of this error.</p>
+        </section>
+        <section class="missing-console" aria-labelledby="router-title">
+            <div class="console-heading"><span class="status-dot" aria-hidden="true"></span> LOST &amp; FOUND / NETWORK DIVISION</div>
+            <div class="router-scene" aria-hidden="true">
+                <div class="router-antenna antenna-left"></div><div class="router-antenna antenna-right"></div>
+                <div class="router-body">
+                    <div class="router-face" id="router-face">o _ o</div>
+                    <div class="router-ports"><i></i><i></i><i></i><i></i><span>?</span></div>
+                </div>
+                <span class="router-caption">EMPLOYEE OF THE MONTH / RUNNER-UP</span>
+            </div>
+            <h2 id="router-title">Meet the help desk.</h2>
+            <p class="router-bubble" id="router-message" role="status">“Have you tried turning the URL off and on again?”</p>
+            <button class="button router-button" id="router-boop" type="button" disabled>Ask the router for help</button>
+            <p class="console-disclaimer">A tiny joke, not a real diagnostic. No network checks run.</p>
+            <details class="packet-hunt">
+                <summary>While you're here: find the missing packet</summary>
+                <p id="hunt-instructions">One packet. Six ports. Absolutely no effect on your actual network.</p>
+                <div class="packet-ports" role="group" aria-labelledby="hunt-instructions">
+                    <button type="button" data-packet-port="0" disabled>Port 01</button>
+                    <button type="button" data-packet-port="1" disabled>Port 02</button>
+                    <button type="button" data-packet-port="2" disabled>Port 03</button>
+                    <button type="button" data-packet-port="3" disabled>Port 04</button>
+                    <button type="button" data-packet-port="4" disabled>Port 05</button>
+                    <button type="button" data-packet-port="5" disabled>Port 06</button>
+                </div>
+                <p id="packet-result" role="status">Pick a port. The packet promises it's in one of them.</p>
+                <button class="theme-switch" id="packet-restart" type="button" disabled>Hide another packet</button>
+            </details>
+            <noscript><p>The router's jokes and packet game need JavaScript. The links home and to the Lab still work.</p></noscript>
+        </section>
     </main>
+    <footer class="missing-footer">HTTP 404 / PAGE NOT FOUND / SENSE OF HUMOR: 200 OK</footer>
 </body>
 </html>

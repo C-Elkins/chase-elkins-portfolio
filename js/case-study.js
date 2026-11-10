@@ -4,6 +4,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const progress = document.getElementById("scroll-progress");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const updates = [...document.querySelectorAll('.update-archive details[name="development-journal"]')];
+    updates.forEach((entry) => {
+        const summary = entry.querySelector("summary");
+        summary.addEventListener("click", (event) => {
+            event.preventDefault();
+            const previousTop = summary.getBoundingClientRect().top;
+            const opening = !entry.open;
+            updates.forEach((other) => {
+                if (other !== entry) other.open = false;
+            });
+            entry.open = opening;
+
+            // Closing an entry above must not move the selected heading offscreen.
+            requestAnimationFrame(() => {
+                window.scrollBy({
+                    top: summary.getBoundingClientRect().top - previousTop,
+                    behavior: "instant"
+                });
+                updateProgress();
+            });
+        });
+    });
+
     const updateProgress = () => {
         const scrollable = document.documentElement.scrollHeight - window.innerHeight;
         const ratio = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;

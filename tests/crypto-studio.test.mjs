@@ -1,0 +1,91 @@
+export async function runCryptoStudioTests() {
+    const $ = id => document.getElementById(id);
+    let passed = 0;
+    const assert = (condition, label) => {
+        if (!condition) throw new Error(label);
+        passed++;
+    };
+    const waitFor = async (condition, label) => {
+        for (let i = 0; i < 200; i++) {
+            if (condition()) return;
+            await new Promise(resolve => setTimeout(resolve, 10));
+        }
+        throw new Error(`Timed out: ${label}`);
+    };
+    if (!$("crypto-support")?.textContent.includes("Web Crypto available")) throw new Error("Open the supported Lab preview before running UI checks.");
+    location.hash = "#crypto";
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+    $("crypto-clear").click();
+    assert($("crypto-encrypt").disabled && $("crypto-decrypt").disabled, "Encryption and decryption require a key/ciphertext");
+    $("hash-example").click();
+    $("hash-compare").click();
+    await waitFor(() => !$("hash-compare").disabled, "hash comparison");
+    assert($("hash-a-output").textContent.length === 64 && $("hash-b-output").textContent.length === 64, "Both digests show 64 hex characters");
+    assert($("hash-bits").children.length === 256, "Map contains all 256 output bits");
+    const changed = $("hash-bits").querySelectorAll(".hash-bit-changed").length;
+    assert($("hash-distance").textContent === `${changed} / 256 bits` && changed > 0, "Visual map matches exact changed-bit count");
+    $("hash-identical").click();
+    $("hash-compare").click();
+    await waitFor(() => !$("hash-compare").disabled, "identical comparison");
+    assert($("hash-distance").textContent === "0 / 256 bits", "Identical input has a matching digest in the UI");
+    $("hash-a").value = "x".repeat(4097);
+    $("hash-a").dispatchEvent(new Event("input"));
+    $("hash-compare").click();
+    await waitFor(() => !$("hash-compare").disabled, "bounded comparison");
+    assert($("hash-status").classList.contains("error") && !$("hash-bits").children.length, "Oversized hash input has explicit error and no stale map");
+    $("hash-example").click();
+    $("hash-compare").click();
+    $("hash-a").value = "new input";
+    $("hash-a").dispatchEvent(new Event("input"));
+    await new Promise(resolve => setTimeout(resolve, 50));
+    assert($("hash-a-output").textContent === "Not calculated", "Late hashes cannot overwrite edited input");
+    const sample = "<script>not executable</script> / café / 🖥";
+    $("crypto-message").value = sample;
+    $("crypto-message").dispatchEvent(new Event("input"));
+    $("crypto-generate").click();
+    await waitFor(() => !$("crypto-generate").disabled, "key generation");
+    assert(!$("crypto-encrypt").disabled && $("crypto-decrypt").disabled, "Key generation enables encryption, not premature decryption");
+    $("crypto-encrypt").click();
+    await waitFor(() => !$("crypto-encrypt").disabled, "encryption");
+    const iv = $("crypto-nonce").textContent;
+    const ciphertext = $("crypto-ciphertext").textContent;
+    assert(iv.length === 24 && $("crypto-tag").textContent.length === 32, "Nonce and tag have exact displayed hex sizes");
+    assert(!$("crypto-decrypt").disabled && !$("crypto-tamper").disabled && !$("crypto-wrong-key").disabled, "Encryption enables decrypt and both rejection demos");
+    $("crypto-decrypt").click();
+    await waitFor(() => !$("crypto-decrypt").disabled, "decryption");
+    assert($("crypto-restored").textContent === sample && !$("crypto-restored").querySelector("script"), "Verified plaintext is literal text, never executable markup");
+    for (const id of ["crypto-tamper", "crypto-wrong-key"]) {
+        $(id).click();
+        await waitFor(() => !$(id).disabled, id);
+        assert($("crypto-status").textContent.startsWith("Rejected as expected"), "Tampering/wrong key visibly fails authentication");
+        assert($("crypto-restored").textContent === "No verified plaintext for this attempt", "A rejected attempt never leaves success-shaped plaintext");
+        assert($("crypto-nonce").textContent === iv && $("crypto-ciphertext").textContent === ciphertext, "Rejection demos preserve original ciphertext/nonce");
+        $("crypto-decrypt").click();
+        await waitFor(() => !$("crypto-decrypt").disabled, "original decryption after demo");
+        assert($("crypto-restored").textContent === sample, "Original key and message still decrypt after rejection demo");
+    }
+    $("crypto-encrypt").click();
+    await waitFor(() => !$("crypto-encrypt").disabled, "fresh nonce");
+    assert($("crypto-nonce").textContent !== iv && $("crypto-ciphertext").textContent !== ciphertext, "Repeated encryption updates nonce and ciphertext");
+    $("crypto-message").value = "edited message";
+    $("crypto-message").dispatchEvent(new Event("input"));
+    assert($("crypto-decrypt").disabled && !$("crypto-encrypt").disabled, "Message edit invalidates old ciphertext, preserves session key");
+    $("crypto-generate").click();
+    $("crypto-clear").click();
+    await new Promise(resolve => setTimeout(resolve, 50));
+    assert($("crypto-encrypt").disabled && $("crypto-key-state").textContent === "No session key yet", "Clear discards a pending key rather than resurrecting it");
+    $("crypto-generate").click();
+    await waitFor(() => !$("crypto-generate").disabled, "key for cancellation");
+    $("crypto-message").value = "x".repeat(4096);
+    $("crypto-encrypt").click();
+    $("crypto-clear").click();
+    await new Promise(resolve => setTimeout(resolve, 50));
+    assert($("crypto-decrypt").disabled && $("crypto-ciphertext").textContent === "No ciphertext yet", "Clear prevents a late encryption result from reappearing");
+    assert(!$("hash-a").value && !$("hash-b").value && !$("crypto-message").value, "Clear removes every studio input");
+    const resources = performance.getEntriesByType("resource").length;
+    $("hash-example").click();
+    $("hash-compare").click();
+    await waitFor(() => !$("hash-compare").disabled, "final comparison");
+    assert(performance.getEntriesByType("resource").length === resources, "Hash actions make no network requests");
+    return { passed, message: `${passed} cryptography UI assertions passed.` };
+}

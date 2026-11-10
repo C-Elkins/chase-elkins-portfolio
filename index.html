@@ -1,22 +1,23 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Portfolio of Chase Elkins, a full-stack developer and IT professional building secure, reliable software.">
     <meta name="author" content="Chase Elkins">
-    <meta name="theme-color" content="#05080d">
+    <meta name="theme-color" content="#eef3ef">
     <script type="application/ld+json">
         {"@context":"https://schema.org","@type":"Person","name":"Chase Elkins","jobTitle":"Full-Stack Developer","url":"https://c-elkins.github.io/chase-elkins-portfolio/","image":"https://c-elkins.github.io/chase-elkins-portfolio/images/chase-elkins.jpg","sameAs":["https://github.com/C-Elkins"]}
     </script>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src https://formspree.io; form-action https://formspree.io; base-uri 'none'; object-src 'none'">
+    <script src="js/theme.js?v=2026-11-10"></script>
     <title>Chase Elkins | Full-Stack Developer</title>
     <link rel="canonical" href="https://c-elkins.github.io/chase-elkins-portfolio/">
     <link rel="manifest" href="site.webmanifest">
     <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <link rel="preload" as="image" href="images/chase-elkins.jpg" fetchpriority="high">
-    <link rel="stylesheet" href="css/style.css?v=2026-10-28">
+    <link rel="stylesheet" href="css/style.css?v=2026-11-10-themes">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Chase Elkins">
     <meta property="og:title" content="Chase Elkins | Full-Stack Developer">
@@ -26,7 +27,7 @@
     <meta property="og:image:alt" content="Chase Elkins portfolio preview">
     <meta name="twitter:card" content="summary_large_image">
     <script src="js/projects.js?v=3" defer></script>
-    <script src="js/main.js?v=4" defer></script>
+    <script src="js/main.js?v=2026-11-10-themes" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -54,10 +55,11 @@
                 <a href="#about">About</a>
                 <a href="#skills">Stack</a>
                 <a href="#projects">Work</a>
+                <a href="lab.html">Lab ↗</a>
                 <a href="#contact">Contact</a>
             </div>
             <div class="nav-actions">
-                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme">
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
                     <span aria-hidden="true">◐</span>
                 </button>
                 <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation" aria-controls="nav-menu" aria-expanded="false">
@@ -76,6 +78,7 @@
                     <p class="hero-lede">I’m Chase, a full-stack developer with 8+ years in IT infrastructure. I turn operational experience into fast, resilient software and thoughtful digital products.</p>
                     <div class="hero-actions">
                         <a class="button button-primary" href="#projects">Explore my work <span aria-hidden="true">↗</span></a>
+                        <a class="button button-ghost" href="lab.html">Enter the lab <span aria-hidden="true">↗</span></a>
                     </div>
                     <dl class="hero-metrics" aria-label="Professional highlights">
                         <div><dt>08+</dt><dd>Years in IT</dd></div>
@@ -84,7 +87,70 @@
                     </dl>
                 </div>
 
-                <div class="portrait-wrap reveal">
+                <div class="portrait-wrap reveal" id="portrait-stage">
+                    <div class="portrait-backdrop" aria-hidden="true">
+                        <svg viewBox="0 0 640 720" fill="none" focusable="false">
+                            <defs>
+                                <radialGradient id="signal-halo">
+                                    <stop stop-color="#70e1f5" stop-opacity=".12"/>
+                                    <stop offset="1" stop-color="#70e1f5" stop-opacity="0"/>
+                                </radialGradient>
+                                <radialGradient id="node-activity">
+                                    <stop stop-color="currentColor" stop-opacity=".65"/>
+                                    <stop offset=".35" stop-color="currentColor" stop-opacity=".22"/>
+                                    <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+                                </radialGradient>
+                                <g id="network-node">
+                                    <circle class="node-aura" r="18"/>
+                                    <circle class="node-ring" r="8"/>
+                                    <circle class="node-center" r="3"/>
+                                </g>
+                                <g id="network-hub">
+                                    <circle class="node-aura" r="25"/>
+                                    <circle class="node-orbit" r="14"/>
+                                    <circle class="node-ring" r="8"/>
+                                    <circle class="node-center" r="3"/>
+                                </g>
+                            </defs>
+                            <ellipse cx="320" cy="350" rx="310" ry="350" fill="url(#signal-halo)"/>
+                            <g class="backdrop-network">
+                                <g class="network-scaffold">
+                                    <path d="M38 182 96 114 194 58 320 74 442 50 548 118 602 216 566 310 612 404 548 506 592 596 478 652 350 680 226 654 126 606 50 532 84 434 32 338 92 250Z"/>
+                                    <path d="M96 114 92 250 32 338 84 434 50 532 126 606 226 654M548 118 566 310 612 404 548 506 478 652M38 182 92 250 194 58M602 216 548 118 442 50M84 434 126 606M566 310 548 506M226 654 350 680 478 652"/>
+                                    <path class="network-inner" d="M92 250 200 310 84 434M566 310 446 376 548 506M194 58 240 182M442 50 400 180M126 606 250 540M478 652 410 540"/>
+                                </g>
+                                <g id="network-traffic" class="network-traffic"></g>
+                                <g class="network-nodes">
+                                    <use href="#network-node" x="38" y="182"/>
+                                    <use href="#network-hub" x="96" y="114"/>
+                                    <use href="#network-node" x="194" y="58"/>
+                                    <use href="#network-node" x="320" y="74"/>
+                                    <use href="#network-node" x="92" y="250"/>
+                                    <use href="#network-node" x="32" y="338"/>
+                                    <use href="#network-hub" x="84" y="434"/>
+                                    <use href="#network-node" x="50" y="532"/>
+                                    <use href="#network-hub" x="126" y="606"/>
+                                    <use href="#network-node" x="226" y="654"/>
+                                    <use href="#network-node" x="442" y="50"/>
+                                    <use href="#network-hub" x="548" y="118"/>
+                                    <use href="#network-node" x="602" y="216"/>
+                                    <use href="#network-hub" x="566" y="310"/>
+                                    <use href="#network-node" x="612" y="404"/>
+                                    <use href="#network-hub" x="548" y="506"/>
+                                    <use href="#network-node" x="592" y="596"/>
+                                    <use href="#network-node" x="478" y="652"/>
+                                    <use href="#network-node" x="350" y="680"/>
+                                </g>
+                                <g class="network-labels">
+                                    <text x="112" y="89">EDGE_01</text>
+                                    <text x="532" y="88" text-anchor="end">RELAY_02</text>
+                                    <text x="66" y="320">AUTH</text>
+                                    <text x="636" y="447" text-anchor="end">TLS / 1.3</text>
+                                    <text x="238" y="690">NETWORK / PACKET FLOW</text>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
                     <div class="portrait-terminal" aria-hidden="true">
                         <span>chase@portfolio:~$</span>
                         <span class="terminal-text">whoami</span>
