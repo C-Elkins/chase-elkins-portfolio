@@ -10,13 +10,14 @@
     <title>Engineering Lab | Chase Elkins</title>
     <link rel="canonical" href="https://c-elkins.github.io/chase-elkins-portfolio/lab.html">
     <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
-    <link rel="stylesheet" href="css/lab.css?v=2026-11-10-crypto">
-    <script type="module" src="js/lab.js"></script>
+    <link rel="preload" href="assets/fonts/share-tech-mono.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="css/lab.css?v=2026-11-11-module-view-1">
+    <script type="module" src="js/lab.js?v=2026-11-11-module-view-1"></script>
 </head>
-<body>
+<body class="lab-compact">
     <a class="skip" href="#main">Skip to experiments</a>
     <header class="lab-header">
-        <a class="brand" href="./"><span>&gt;_</span> C_ELKINS</a>
+        <a class="brand" href="./"><span>&gt;_</span> C_ELKINS<span id="lab-section-title" class="lab-section-title"> / NETWORK STUDIO</span></a>
         <div class="header-actions">
             <a href="./">← Portfolio</a>
             <button data-theme-toggle type="button" aria-label="Switch to dark theme" aria-pressed="false"><span aria-hidden="true">◐</span> <span data-theme-label>Dark mode</span></button>
@@ -30,6 +31,7 @@
             <p class="privacy"><span aria-hidden="true">●</span> Lab inputs stay in your browser. No uploads, microphone access, analytics, or real network probes.</p>
         </div>
         <nav class="lab-tabs" aria-label="Choose an experiment">
+            <a href="#learn">00 / Networking 101</a>
             <a href="#network" aria-current="location">01 / Network studio</a>
             <a href="#algorithms">02 / Algorithm theater</a>
             <a href="#audio">03 / Signal room</a>
@@ -37,13 +39,315 @@
             <a href="#crypto">05 / Encryption &amp; hashing</a>
         </nav>
 
+        <section id="learn" class="experiment learn" hidden>
+            <div id="learn-overview">
+            <div class="section-top"><div><p class="eyebrow">00 / NETWORKING 101</p><h2>Start here. Then go deeper.</h2></div><span class="badge">BEGINNER FRIENDLY / NO JARGON FIRST</span></div>
+            <p class="section-intro">A network is just devices agreeing on how to pass messages. Build that mental model through 14 open modules: learn the idea, work through a real-world scenario, then try an optional three-question check. Explore in any order, revisit explanations, and use the Network Studio to see protocols in motion.</p>
+            <div class="panel learn-course" aria-labelledby="learn-course-title">
+                <div class="learn-course-heading"><div><p class="learn-kicker">YOUR LEARNING PATH</p><h3 id="learn-course-title">Pick a module. Nothing is locked.</h3></div><span class="badge">14 MODULES / 42 QUESTIONS</span></div>
+                <p>Each module includes goals, deeper explanations and a practice scenario with a revealable answer. Quizzes are for learning, not certification. You can retry as often as you like.</p>
+                <div class="learn-course-progress"><label for="learn-course-progress">Quizzes checked this visit</label><progress id="learn-course-progress" max="14" value="0"></progress><span id="learn-course-count" role="status">0 of 14</span></div>
+                <p class="hint">Answers and latest scores stay in this page's memory only. Switching Lab tabs keeps them; reloading clears them. No accounts, uploads or saved tracking.</p>
+                <a id="learn-resume" class="learn-next-module" hidden>Return to your last module</a>
+                <nav id="learn-module-map" class="learn-module-map" aria-label="Networking course modules"></nav>
+            </div>
+            </div>
+            <div id="learn-workspace" class="learn-workspace" hidden>
+                <aside class="learn-sidebar" aria-label="Course navigator">
+                    <a class="learn-all-modules" href="#learn">All modules</a>
+                    <p class="learn-kicker">NETWORKING 101</p>
+                    <nav id="learn-sidebar-nav" aria-label="Choose a course module"></nav>
+                </aside>
+                <div class="learn-module-main">
+                    <div class="panel learn-module-toolbar" id="learn-module-toolbar">
+                        <div class="learn-course-heading"><div><p id="learn-module-position" class="learn-kicker"></p><h3 id="learn-module-title" tabindex="-1"></h3></div><a class="learn-all-modules" href="#learn">All modules</a></div>
+                        <label class="learn-mobile-picker">Jump to a module<select id="learn-module-select"></select></label>
+                        <nav class="learn-module-paging" aria-label="Previous or next module"><a id="learn-module-prev">Previous module</a><a id="learn-module-next">Next module</a></nav>
+                    </div>
+                    <div id="learn-module-content"></div>
+                </div>
+            </div>
+
+            <article class="panel learn-chapter" id="learn-what">
+                <p class="learn-kicker">CHAPTER 01</p>
+                <h3>What is a network?</h3>
+                <p>A network is two or more devices connected so they can exchange data. Your phone, laptop, TV and printer at home form a <strong>local area network (LAN)</strong>. The internet is a huge “network of networks”: millions of LANs joined together by routers owned by internet providers, companies and universities.</p>
+                <div class="learn-cards">
+                    <div class="learn-card"><strong>Messages are chopped up</strong><span>Data travels in small pieces called <em>packets</em>. A photo becomes hundreds of packets that are put back together on arrival.</span></div>
+                    <div class="learn-card"><strong>Every piece is labeled</strong><span>Each packet carries a source and destination address, like an envelope, so devices along the way know where it goes.</span></div>
+                    <div class="learn-card"><strong>Rules make it work</strong><span>A <em>protocol</em> is an agreed set of rules. Both sides must speak the same protocol, the way two people need a shared language.</span></div>
+                </div>
+                <p class="learn-takeaway"><span>KEY IDEA</span>Networks move labeled packets between devices using shared rules called protocols.</p>
+            </article>
+
+            <article class="panel learn-chapter" id="learn-hardware">
+                <p class="learn-kicker">CHAPTER 02</p>
+                <h3>The hardware and what each box does</h3>
+                <p>Home routers often combine several of these jobs into one box, which is why the names get blurry. It helps to learn them separately.</p>
+                <div class="learn-devices">
+                    <div class="learn-device"><span class="learn-art" data-art="client"></span><strong>Endpoint</strong><span>Laptops, phones, printers and servers. They create and consume data. Each has a <em>network interface card (NIC)</em>.</span></div>
+                    <div class="learn-device"><span class="learn-art" data-art="switch"></span><strong>Switch</strong><span>Connects wired devices in the same LAN and forwards frames only to the port that needs them, using MAC addresses.</span></div>
+                    <div class="learn-device"><span class="learn-art" data-art="ap"></span><strong>Access point</strong><span>A switch for radio. It bridges Wi-Fi devices onto the wired LAN.</span></div>
+                    <div class="learn-device"><span class="learn-art" data-art="router"></span><strong>Router</strong><span>Connects different networks and picks the next hop toward a destination using IP addresses. At home it is your <em>default gateway</em>.</span></div>
+                    <div class="learn-device"><span class="learn-art" data-art="firewall"></span><strong>Firewall</strong><span>Allows or blocks traffic based on rules. Home routers include a basic one that blocks unsolicited inbound connections.</span></div>
+                    <div class="learn-device"><span class="learn-art" data-art="internet"></span><strong>Modem / ISP</strong><span>Converts your provider’s line (cable, fiber, DSL, cellular) into Ethernet and hands traffic to the wider internet.</span></div>
+                </div>
+                <p class="learn-takeaway"><span>KEY IDEA</span>Switches and access points connect devices <em>within</em> a network. Routers connect <em>between</em> networks.</p>
+                <p class="learn-try">Watch it: <a href="#network" data-studio-lesson="ethernet">Ethernet frames</a> <a href="#network" data-studio-lesson="wifi">Wi-Fi association</a></p>
+            </article>
+
+            <article class="panel learn-chapter" id="learn-addresses">
+                <p class="learn-kicker">CHAPTER 03</p>
+                <h3>Addresses: MAC, IP, subnet and gateway</h3>
+                <div class="learn-cards">
+                    <div class="learn-card"><strong>MAC address</strong><code>3c:22:fb:9a:10:4e</code><span>A hardware ID on the network card. Used only on the <em>local</em> link, like a name tag inside one room.</span></div>
+                    <div class="learn-card"><strong>IP address</strong><code>192.168.1.20</code><span>A logical address that says which network you are on and which device you are. Used to route across networks, like a postal address.</span></div>
+                    <div class="learn-card"><strong>Subnet mask / prefix</strong><code>255.255.255.0 = /24</code><span>Splits an IP into a network part and a device part. With /24, the first three numbers name the network.</span></div>
+                    <div class="learn-card"><strong>Default gateway</strong><code>192.168.1.1</code><span>The router address. Anything not on your subnet is handed to the gateway to forward.</span></div>
+                </div>
+                <h4>Private vs public</h4>
+                <p>Home and office devices usually get <strong>private</strong> addresses (10.x.x.x, 172.16–31.x.x, 192.168.x.x) that are not reachable from the internet. Your router shares one <strong>public</strong> address for the whole house using <em>NAT</em> (network address translation). IPv6 offers so many addresses that every device can have its own globally routable one, with a firewall still deciding what may come in.</p>
+                <div class="learn-tool" aria-labelledby="subnet-tool-title">
+                    <h4 id="subnet-tool-title">Try it: are these two devices on the same subnet?</h4>
+                    <div class="control-grid learn-subnet-inputs">
+                        <label>Device A IPv4<input id="subnet-a" value="192.168.1.20" inputmode="decimal" autocomplete="off" spellcheck="false" maxlength="15"></label>
+                        <label>Device B IPv4<input id="subnet-b" value="192.168.1.45" inputmode="decimal" autocomplete="off" spellcheck="false" maxlength="15"></label>
+                        <label>Prefix or mask<input id="subnet-prefix" value="/24" autocomplete="off" spellcheck="false" maxlength="15"></label>
+                    </div>
+                    <div class="toolbar"><button id="subnet-printer" type="button">Example: laptop and printer</button><button id="subnet-guest" type="button">Example: guest Wi-Fi printer</button></div>
+                    <div id="subnet-result" class="learn-result" role="status" aria-live="polite"></div>
+                </div>
+                <p class="learn-try">Watch it: <a href="#network" data-studio-lesson="ip">IPv4 routing</a> <a href="#network" data-studio-lesson="ipv6">IPv6</a></p>
+            </article>
+
+            <article class="panel learn-chapter" id="learn-join">
+                <p class="learn-kicker">CHAPTER 04</p>
+                <h3>Joining a network and finding names</h3>
+                <div class="learn-split">
+                    <div><h4>DHCP: getting settings automatically</h4><p>When a device connects it has no address yet. It broadcasts a request, and a DHCP server (usually your router) offers an IP address, subnet mask, gateway and DNS servers for a set lease time. The four messages are <strong>Discover, Offer, Request, Acknowledge</strong>, often remembered as “DORA.”</p><p class="learn-try"><a href="#network" data-studio-lesson="dhcp">Watch DHCP in the Studio</a></p></div>
+                    <div><h4>DNS: turning names into addresses</h4><p>People remember <code>example.com</code>; computers need an IP address. Your device asks a DNS resolver, which looks up the answer (or returns a cached one). Without DNS, a working network can still look “down” because nothing resolves.</p><p class="learn-try"><a href="#network" data-studio-lesson="dns">Watch DNS in the Studio</a></p></div>
+                </div>
+                <p class="learn-takeaway"><span>KEY IDEA</span>DHCP gives a device its address. DNS turns names into addresses. Both happen before most apps send a single byte.</p>
+            </article>
+
+            <article class="panel learn-chapter" id="learn-ports">
+                <p class="learn-kicker">CHAPTER 05</p>
+                <h3>Ports and protocols</h3>
+                <p>An IP address gets data to the right <em>device</em>. A <strong>port number</strong> gets it to the right <em>program</em> on that device, like an apartment number. Transport protocols decide how the data is carried:</p>
+                <div class="learn-split">
+                    <div class="learn-card"><strong>TCP: reliable stream</strong><span>Sets up a connection, numbers every byte, retransmits losses and delivers in order. Used for web pages, email and file transfer.</span><a href="#network" data-studio-lesson="tcp">Watch the TCP handshake</a></div>
+                    <div class="learn-card"><strong>UDP: quick datagrams</strong><span>No connection and no built-in retries. Fast and simple. Used for DNS, DHCP, voice and games, where the app handles losses itself.</span><a href="#network" data-studio-lesson="udp">Watch UDP</a></div>
+                </div>
+                <div class="table-wrap"><table class="learn-table"><caption>Common ports worth recognizing</caption><thead><tr><th scope="col">Port</th><th scope="col">Protocol</th><th scope="col">What it is for</th></tr></thead><tbody>
+                    <tr><td>53</td><td>DNS</td><td>Name lookups (UDP, and TCP for large answers)</td></tr>
+                    <tr><td>67 / 68</td><td>DHCP</td><td>Address assignment (UDP)</td></tr>
+                    <tr><td>80 / 443</td><td>HTTP / HTTPS</td><td>Websites; 443 is encrypted with TLS</td></tr>
+                    <tr><td>22</td><td>SSH</td><td>Secure remote command line</td></tr>
+                    <tr><td>445</td><td>SMB</td><td>Windows file and printer sharing</td></tr>
+                    <tr><td>631</td><td>IPP / IPPS</td><td>Modern network printing</td></tr>
+                </tbody></table></div>
+            </article>
+
+            <article class="panel learn-chapter" id="learn-layers">
+                <p class="learn-kicker">CHAPTER 06</p>
+                <h3>Layers: why there are so many protocols</h3>
+                <p>Instead of one giant protocol, networking is stacked in layers. Each layer does one job and relies on the layer below. The <strong>OSI model</strong> has seven layers and is mainly a teaching tool; the real internet follows the simpler four-layer <strong>TCP/IP model</strong>. Hover over the 1–7 numbers in the Network Studio header to see each one.</p>
+                <ol class="learn-layers" id="learn-layer-list"></ol>
+                <p class="hint">Real protocols don’t always fit neatly into one layer. TLS, for example, is often described between transport and application.</p>
+            </article>
+
+            <article class="panel learn-chapter" id="learn-journey">
+                <p class="learn-kicker">CHAPTER 07</p>
+                <h3>Putting it together: what happens when you open a website</h3>
+                <ol class="learn-steps">
+                    <li><strong>Join.</strong> Your laptop connects to Wi-Fi and gets an address, gateway and DNS server from DHCP.</li>
+                    <li><strong>Look up.</strong> It asks DNS for the IP address of the site’s name.</li>
+                    <li><strong>Decide where to send.</strong> The site is not on the local subnet, so the packet goes to the default gateway (the router).</li>
+                    <li><strong>Translate.</strong> The router uses NAT to swap your private address for the home’s public address and sends it to the ISP.</li>
+                    <li><strong>Connect.</strong> TCP (or QUIC) sets up a connection to port 443, and TLS encrypts it.</li>
+                    <li><strong>Request and respond.</strong> HTTP asks for the page; the server sends it back through the same chain in reverse.</li>
+                </ol>
+                <p class="learn-try">Watch each step: <a href="#network" data-studio-lesson="dhcp">DHCP</a> <a href="#network" data-studio-lesson="dns">DNS</a> <a href="#network" data-studio-lesson="tcp">TCP</a> <a href="#network" data-studio-lesson="tls">TLS</a> <a href="#network" data-studio-lesson="https">HTTPS</a></p>
+            </article>
+
+            <article class="panel learn-chapter" id="learn-fix">
+                <p class="learn-kicker">CHAPTER 08</p>
+                <h3>Basic troubleshooting, bottom up</h3>
+                <p>Start at the bottom of the stack and work up. Most problems are found in the first three checks.</p>
+                <ol class="learn-steps">
+                    <li><strong>Link.</strong> Is the cable plugged in, or is Wi-Fi connected? Are the lights on?</li>
+                    <li><strong>Address.</strong> Does the device have the expected IP configuration? A 169.254.x.x IPv4 link-local address often means no usable DHCP lease was obtained.</li>
+                    <li><strong>Gateway.</strong> Can you reach the router? If not, the problem is local.</li>
+                    <li><strong>Internet by number.</strong> Can you reach a known public IP? If yes but names fail, it is DNS.</li>
+                    <li><strong>Names.</strong> Does a lookup return an address? Try a different DNS resolver.</li>
+                    <li><strong>The app itself.</strong> If everything else works, check the service, port, firewall or VPN.</li>
+                </ol>
+                <p class="hint">Useful built-in tools: <code>ipconfig</code> / <code>ifconfig</code> / <code>ip addr</code> to see your address, <code>ping</code> to test reachability, <code>nslookup</code> to test DNS, and <code>tracert</code> / <code>traceroute</code> to see the path. Only test networks you own or are allowed to use.</p>
+                <p class="learn-try">Watch it: <a href="#network" data-studio-lesson="icmp">ICMP ping</a></p>
+            </article>
+
+            <article class="panel learn-chapter" id="learn-wireless">
+                <p class="learn-kicker">MODULE 09</p>
+                <h3>Wi-Fi is a link, not the whole internet</h3>
+                <p>A wireless device uses radio to reach an access point. From there, it uses the same IP addressing, routing, DNS and application protocols as a wired device. That distinction explains why a phone can say “connected” while websites, printers or casting still fail.</p>
+                <div class="learn-cards">
+                    <div class="learn-card"><strong>Association</strong><span>Join an access point advertising your chosen SSID. Device support, signal and authentication all matter.</span></div>
+                    <div class="learn-card"><strong>Configuration</strong><span>Get a usable address, prefix, gateway and resolver. Joining a radio network does not guarantee these settings are correct.</span></div>
+                    <div class="learn-card"><strong>Reachability</strong><span>Check the actual destination. Guest isolation, routing, DNS or the service itself may limit access even with strong signal.</span></div>
+                </div>
+                <p class="learn-try">Watch it: <a href="#network" data-studio-lesson="wifi">Wi-Fi association</a> <a href="#network" data-studio-lesson="wpa3">WPA3 authentication</a></p>
+            </article>
+
+            <article class="panel learn-chapter" id="learn-security">
+                <p class="learn-kicker">MODULE 10</p>
+                <h3>Make the network safer without breaking it</h3>
+                <p>Security is not a single switch. Protect device administration, encrypt sensitive traffic, keep software supported and limit which devices can reach each other. Start with the smallest set of permissions that lets the intended task work.</p>
+                <div class="learn-split">
+                    <div class="learn-card"><strong>Encryption</strong><span>HTTPS, IPPS and VPN tunnels protect particular connections. Check where each protected connection starts and ends.</span></div>
+                    <div class="learn-card"><strong>Access control</strong><span>Authentication and firewall policy decide who may connect and what they may do. Encryption alone does not grant or restrict permissions.</span></div>
+                </div>
+                <p class="learn-try">Watch it: <a href="#network" data-studio-lesson="tls">TLS</a> <a href="#network" data-studio-lesson="wireguard">WireGuard</a></p>
+            </article>
+
+            <div class="learn-subsection" id="learn-printers">
+                <div class="section-top"><div><p class="eyebrow">SUBSECTION / SHARED DEVICES</p><h2>Networking printers <span>and other shared devices</span></h2></div><span class="badge">THE #1 HELP-DESK TICKET</span></div>
+                <p class="section-intro">Printers are the classic “it worked yesterday” device. They have their own IP address, advertise themselves on the network, and speak a few printing protocols. Once you understand those pieces, most printer problems become quick to solve.</p>
+                <nav class="lesson-nav" aria-label="Printer chapters"><a href="#printer-connect">P1 / Connect</a><a href="#printer-address">P2 / Address</a><a href="#printer-discover">P3 / Discover</a><a href="#printer-protocols">P4 / Print protocols</a><a href="#printer-drivers">P5 / Drivers</a><a href="#printer-secure">P6 / Secure</a><a href="#printer-fix">P7 / Fix “offline”</a><a href="#printer-others">P8 / Other devices</a></nav>
+
+                <article class="panel learn-chapter" id="printer-connect">
+                    <p class="learn-kicker">P1</p>
+                    <h3>Three ways to connect a printer</h3>
+                    <div class="learn-devices learn-devices-3">
+                        <div class="learn-device"><span class="learn-art" data-art="switch"></span><strong>Ethernet</strong><span>Most reliable. Plug it into a switch or router port. Best for offices and busy printers.</span></div>
+                        <div class="learn-device"><span class="learn-art" data-art="ap"></span><strong>Wi-Fi</strong><span>Convenient, but sleep modes, weak signal and guest-network separation can make it “disappear.”</span></div>
+                        <div class="learn-device"><span class="learn-art" data-art="client"></span><strong>USB shared by a computer</strong><span>The printer talks only to one computer, which shares it. If that computer is off, nobody can print.</span></div>
+                    </div>
+                    <p class="hint">Many printers also offer <strong>Wi-Fi Direct</strong>, a small private network the printer creates itself so a phone can print without your main Wi-Fi.</p>
+                </article>
+
+                <article class="panel learn-chapter" id="printer-address">
+                    <p class="learn-kicker">P2</p>
+                    <h3>Give the printer an address that doesn’t move</h3>
+                    <p>By default a printer gets its IP from DHCP, like any device. If the lease expires and it comes back with a different address, computers that saved the old address can no longer find it. Two fixes:</p>
+                    <div class="learn-split">
+                        <div class="learn-card"><strong>DHCP reservation (recommended)</strong><span>In the router, tie the printer’s MAC address to one IP. The printer still uses DHCP, but always gets the same address. Easy to manage centrally.</span></div>
+                        <div class="learn-card"><strong>Static IP on the printer</strong><span>Typed into the printer’s menu. Works, but choose an address <em>outside</em> the DHCP pool to avoid two devices claiming the same IP.</span></div>
+                    </div>
+                    <p class="learn-try">Watch it: <a href="#network" data-studio-lesson="dhcp">DHCP leases</a></p>
+                </article>
+
+                <article class="panel learn-chapter" id="printer-discover">
+                    <p class="learn-kicker">P3</p>
+                    <h3>How computers find printers automatically</h3>
+                    <p>When you click “Add printer” and it just appears, the printer is <strong>advertising</strong> itself. These discovery messages are usually multicast, so they only reach devices on the same local network segment.</p>
+                    <div class="learn-cards">
+                        <div class="learn-card"><strong>mDNS + DNS-SD (Bonjour)</strong><span>The printer announces a name like <code>office-printer.local</code> and the services it offers. Used by Apple devices, most Linux systems, and modern Windows and Android.</span></div>
+                        <div class="learn-card"><strong>WSD</strong><span>Web Services for Devices, a Microsoft discovery method common on Windows networks.</span></div>
+                        <div class="learn-card"><strong>Manual by IP</strong><span>When discovery is blocked, add the printer directly by its IP address. This is often the fastest fix.</span></div>
+                    </div>
+                    <p class="learn-takeaway"><span>KEY IDEA</span>If a printer is on a different subnet or VLAN, it usually won’t appear automatically even though printing to its IP may still work.</p>
+                </article>
+
+                <article class="panel learn-chapter" id="printer-protocols">
+                    <p class="learn-kicker">P4</p>
+                    <h3>The protocols that actually print</h3>
+                    <div class="table-wrap"><table class="learn-table"><caption>Printing protocols</caption><thead><tr><th scope="col">Protocol</th><th scope="col">Port</th><th scope="col">Notes</th></tr></thead><tbody>
+                        <tr><td>IPP / IPPS</td><td>631 (TCP)</td><td>Internet Printing Protocol, built on HTTP. Modern default. Reports status, ink and errors. IPPS adds TLS encryption.</td></tr>
+                        <tr><td>Raw / JetDirect</td><td>9100 (TCP)</td><td>Sends the print data straight to the printer with little status feedback. Simple and widely supported.</td></tr>
+                        <tr><td>LPD / LPR</td><td>515 (TCP)</td><td>An older Unix-era queue protocol. Still found on legacy systems.</td></tr>
+                        <tr><td>SMB</td><td>445 (TCP)</td><td>Used when a Windows computer or print server shares a printer.</td></tr>
+                    </tbody></table></div>
+                    <p class="learn-try">Related lessons: <a href="#network" data-studio-lesson="http">HTTP</a> (IPP is built on it) <a href="#network" data-studio-lesson="tls">TLS</a> <a href="#network" data-studio-lesson="smb">SMB</a></p>
+                </article>
+
+                <article class="panel learn-chapter" id="printer-drivers">
+                    <p class="learn-kicker">P5</p>
+                    <h3>Drivers vs driverless printing</h3>
+                    <p>A <strong>driver</strong> translates your document into the printer’s own language. Drivers must match your operating system and are a common source of trouble. Most modern printers support <strong>driverless</strong> standards such as <strong>IPP Everywhere</strong>, <strong>AirPrint</strong> (Apple) and <strong>Mopria</strong> (Android and Windows), which use IPP and common formats such as PDF or PWG Raster so any compatible device can print without installing anything.</p>
+                    <h4>Direct printing vs a print server</h4>
+                    <p>At home, each computer prints <em>directly</em> to the printer. In larger offices, jobs go to a <strong>print server</strong> that manages queues, drivers, quotas and secure release. It adds control but becomes one more thing that must be running.</p>
+                </article>
+
+                <article class="panel learn-chapter" id="printer-secure">
+                    <p class="learn-kicker">P6</p>
+                    <h3>Printers are computers too: secure them</h3>
+                    <ul class="learn-checks">
+                        <li>Change the default admin password on the printer’s web page.</li>
+                        <li>Install firmware updates from the manufacturer.</li>
+                        <li>Turn off protocols you don’t use (for example FTP, Telnet, LPD or old SNMP versions).</li>
+                        <li>Prefer encrypted options: IPPS and an HTTPS admin page.</li>
+                        <li>Never expose a printer directly to the internet. Disable remote/cloud features you don’t need.</li>
+                        <li>In offices, place printers and other IoT devices on their own VLAN or network segment, allowing only the traffic they need.</li>
+                        <li>Wipe or remove stored jobs and storage before a printer is resold or recycled.</li>
+                    </ul>
+                </article>
+
+                <article class="panel learn-chapter" id="printer-fix">
+                    <p class="learn-kicker">P7</p>
+                    <h3>Interactive: why does my printer say “offline”?</h3>
+                    <p>Answer one question at a time. The checks follow the same bottom-up order as Chapter 08.</p>
+                    <div class="learn-tool learn-troubleshooter">
+                        <ol id="printer-trail" class="learn-trail" aria-label="Answers so far"></ol>
+                        <p id="printer-question" class="learn-question"></p>
+                        <div class="toolbar" id="printer-answers"><button id="printer-yes" type="button">Yes</button><button id="printer-no" type="button">No</button><button id="printer-restart" type="button" class="quiet">Start over</button></div>
+                        <p id="printer-fix-result" class="learn-result" role="status" aria-live="polite"></p>
+                    </div>
+                </article>
+
+                <article class="panel learn-chapter" id="printer-others">
+                    <p class="learn-kicker">P8</p>
+                    <h3>The same ideas apply to other shared devices</h3>
+                    <div class="learn-devices">
+                        <div class="learn-device"><span class="learn-art" data-art="server"></span><strong>NAS / file storage</strong><span>Shares files over SMB or NFS. Reserve its address, keep it updated and never port-forward its admin page.</span></div>
+                        <div class="learn-device"><span class="learn-art" data-art="client"></span><strong>Smart TVs &amp; casting</strong><span>Discovered with mDNS/SSDP. Casting usually fails when the phone and TV are on different networks.</span></div>
+                        <div class="learn-device"><span class="learn-art" data-art="phone"></span><strong>IoT &amp; smart home</strong><span>Plugs, bulbs and speakers. Often 2.4 GHz only. Put them on a separate IoT or guest network.</span></div>
+                        <div class="learn-device"><span class="learn-art" data-art="firewall"></span><strong>Cameras</strong><span>Change default passwords, update firmware and avoid exposing them to the internet. Prefer local recording or a trusted service.</span></div>
+                    </div>
+                    <p class="learn-takeaway"><span>REMEMBER</span>Stable address, working discovery, the right protocol, and sensible security. That checklist solves most shared-device problems.</p>
+                    <p class="learn-try">Keep exploring all 39 protocol lessons in the <a href="#network">Network Studio</a>.</p>
+                </article>
+            </div>
+        </section>
+
         <section id="network" class="experiment">
             <div class="section-top">
                 <div><p class="eyebrow">01 / NETWORK STUDIO</p><h2>How does a network work?</h2></div>
                 <span class="badge">SIMULATION ONLY</span>
             </div>
-            <p class="section-intro">Start with the office network, or build your own. Select a client, request an address, then trace a DNS lookup and a simulated web request. Break a connection or block the firewall to see what changes.</p>
+            <p class="section-intro">Follow a packet from your device to the outside world. Choose a protocol, explore the exchange in two views, or open the builder and make the network your own. All traffic is a local teaching simulation.</p>
+            <div class="studio-topbar">
+                <div class="studio-primary">
+                    <button id="network-library" type="button" aria-haspopup="dialog"><span aria-hidden="true">☰</span> Protocols</button>
+                    <div class="studio-identity"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 14 24 5 41 14V34L24 43 7 34ZM7 14l17 10 17-10M24 24v19M15 19v11l9 5 10-5V19"></path><circle cx="24" cy="24" r="4"></circle></svg><div><strong>NETWORK <em>STUDIO</em></strong><span>TRACE THE INVISIBLE</span></div></div>
+                    <div class="studio-learning"><span id="network-now" tabindex="-1">NOW LEARNING / DHCP</span><progress id="network-progress" value="0" max="1" aria-label="Current trace progress"></progress></div>
+                    <label class="studio-mode">Workspace<select id="network-mode"><option value="guided">Guided explorer</option><option value="sandbox">Editable sandbox</option></select></label>
+                    <details class="studio-settings"><summary>View settings <span aria-hidden="true">⌄</span></summary><div class="studio-settings-menu">
+                        <button id="network-focus" type="button" aria-pressed="false">Diagram focus</button>
+                        <button id="network-fullscreen" type="button">Full screen</button>
+                        <button id="network-compact" type="button" aria-pressed="true">Show lab introduction</button>
+                        <p class="hint">Drag actors or use arrow keys to arrange. Guided scenes keep labels apart. Reduced-motion preferences are respected.</p>
+                    </div></details>
+                </div>
+                <div class="studio-secondary">
+                    <button id="network-command" type="button" aria-haspopup="dialog"><span aria-hidden="true">⌕</span> Search protocols &amp; phases <kbd>⌘ / Ctrl K</kbd></button>
+                    <div class="osi-indicator"><div class="osi-heading"><span>OSI LAYER</span><strong id="network-layer-name" aria-live="polite">APPLICATION</strong></div><div id="network-layers" class="network-layers" role="group" aria-label="OSI focus: application layer"></div><div id="osi-tooltip" class="osi-tooltip" role="tooltip" hidden><span class="osi-tooltip-layer"></span><strong class="osi-tooltip-name"></strong><span class="osi-tooltip-summary"></span><span class="osi-tooltip-examples"></span><span class="osi-tooltip-focus">Current lesson focus</span></div><button id="network-osi-guide" type="button" class="quiet" aria-haspopup="dialog">About these layers</button></div>
+                    <button id="network-shortcuts" type="button" aria-haspopup="dialog" aria-label="Keyboard shortcuts"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M5 9h2m2 0h2m2 0h2m2 0h2M5 12h2m2 0h2m2 0h2m2 0h2M7 16h10"/></svg><span>Shortcuts</span></button>
+                </div>
+            </div>
             <div class="network-layout">
+                <span id="protocol-library-home" hidden></span>
+                <details class="protocol-library" open>
+                    <summary>Protocol library <span id="protocol-total">39 guided lessons</span></summary>
+                    <div class="course-progress"><label for="course-progress">Exchanges explored this visit</label><progress id="course-progress" value="0" max="39"></progress><p id="course-status" class="hint">0 / 39 guided lessons explored</p><button id="course-reset" type="button" class="quiet">Reset visit progress</button></div>
+                    <label class="protocol-search">Find a protocol<input id="protocol-search" type="search" maxlength="80" placeholder="Name, purpose, or port…" autocomplete="off"></label>
+                    <div id="protocol-categories" class="protocol-categories" role="group" aria-label="Protocol categories">
+                        <button type="button" data-category="all" aria-pressed="true">All</button><button type="button" data-category="core" aria-pressed="false">Core</button><button type="button" data-category="application" aria-pressed="false">Application</button><button type="button" data-category="security" aria-pressed="false">Security</button>
+                    </div>
+                    <nav id="protocol-picker" class="protocol-picker" aria-label="Protocol lessons"></nav>
+                    <p id="protocol-empty" class="hint" hidden>No matching lessons. Try a different name or category.</p>
+                </details>
+                <details class="network-builder">
+                    <summary>Build &amp; troubleshoot <span>Drag devices, connect cables, change scenarios and service settings</span></summary>
                 <aside class="panel toolbox" aria-label="Network controls">
                     <h3>Choose a scenario</h3>
                     <label>Learning setup<select id="network-scenario">
@@ -72,49 +376,183 @@
                     <hr>
                     <label class="check"><input id="dhcp-on" type="checkbox" checked> Router DHCP enabled</label>
                     <label class="check"><input id="dns-on" type="checkbox" checked> DNS service enabled</label>
-                    <label class="check"><input id="firewall-on" type="checkbox"> Firewall blocks web traffic</label>
-                    <label>Simulation pace<select id="network-speed"><option value="1200">Slow / learning</option><option value="650" selected>Normal</option><option value="250">Fast</option></select></label>
+                    <label class="check"><input id="firewall-on" type="checkbox"> Firewall blocks TCP / web connections</label>
                     <button id="network-reset" type="button">Load office example</button>
                     <button id="network-clear" type="button" class="quiet">Clear topology</button>
                 </aside>
+                </details>
                 <div class="network-workspace">
                     <div class="panel topology">
-                        <div class="panel-heading"><span>LIVE TOPOLOGY</span><span id="topology-count"></span></div>
+                        <div class="panel-heading"><span>PACKET WORKSPACE</span><span id="topology-count"></span></div>
                         <p id="scenario-lesson" class="hint"></p>
+                        <ol id="protocol-phases" class="protocol-phases" aria-label="Lesson phases"></ol>
                         <div class="simulation-controls">
                             <label>Source client<select id="source-client"></select></label>
-                            <button id="run-dhcp" type="button">Request IP / DHCP</button>
-                            <button id="run-web" type="button">Visit demo.test / DNS + web</button>
+                            <button id="run-dhcp" type="button" class="quiet">Request IP / DHCP</button>
+                            <button id="run-web" type="button" class="quiet">Visit demo.test / HTTP</button>
                         </div>
-                        <div class="playback">
-                            <button id="network-play" type="button" disabled>Play</button>
-                            <button id="network-step" type="button" disabled>Next hop →</button>
-                            <button id="network-stop" type="button" disabled>Stop / clear trace</button>
+                        <div class="scene-stage">
+                        <div class="network-view-controls" role="group" aria-label="Workspace view">
+                            <button id="network-view" type="button" aria-pressed="true" aria-controls="network-map-view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 9-5 9 5-9 5ZM3 12l9 5 9-5M3 17l9 5 9-5"/></svg>Network</button>
+                            <button id="sequence-view" type="button" aria-pressed="false" aria-controls="network-sequence-view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2v20M19 2v20M5 7h14m-4-4 4 4-4 4M19 17H5m4-4-4 4 4 4"/></svg>Sequence</button>
                             <button id="network-connect" type="button" aria-pressed="false">Cable mode</button>
-                            <span id="packet-status" role="status">Choose an action to prepare a trace.</span>
+                            <button id="network-fit" type="button" aria-pressed="true" title="Fit the diagram to the viewing area; toggle off for actual size">Fit diagram</button>
+                            <button id="network-follow-scene" type="button" aria-pressed="true" title="Frame the active message's route, including its forwarding devices; enabling this also fits the diagram">Follow packet</button>
+                            <button id="scene-reset-layout" type="button">Reset layout</button>
+                            <button id="run-protocol" type="button">Prepare DHCP lesson</button>
                         </div>
-                        <div class="topology-scroll">
+                        <div id="network-map-view">
+                        <div class="topology-scroll" tabindex="0" role="region" aria-label="Scrollable network diagram">
+                            <div class="scene-shot-heading" aria-hidden="true"><span id="scene-shot-number">NETWORK MAP</span><strong id="scene-shot-label">Explore the topology</strong></div>
+                            <svg id="scene-flight-tether" class="scene-flight-tether" aria-hidden="true" hidden><line/></svg>
+                            <div id="scene-flight-label" class="scene-flight-label" aria-hidden="true" hidden><strong id="scene-flight-title"></strong><span id="scene-flight-command"></span><small id="scene-flight-state"></small></div>
+                            <div id="topology-viewport">
                             <div class="topology-board" id="topology-board">
                                 <svg id="topology-lines" viewBox="0 0 760 440" aria-hidden="true"></svg>
                                 <div id="topology-devices" aria-label="Network devices"></div>
+                                <div id="scene-callout" class="scene-callout" aria-hidden="true" hidden>
+                                    <strong id="scene-callout-title"></strong>
+                                    <span class="scene-command-line"><span class="scene-command-prompt">›</span><span class="scene-command-copy"><span id="scene-callout-detail"></span><span id="scene-command-caret" class="scene-command-caret" hidden></span></span></span>
+                                    <span id="scene-command-context" class="scene-command-context"></span>
+                                </div>
+                            </div>
                             </div>
                         </div>
-                        <p class="hint">Dashed links = Wi-Fi. Select a device to inspect it. In Cable mode, select two devices to connect them; use Manage connections to disconnect.</p>
+                        <p id="network-edit-hint" class="hint">Dashed links = Wi-Fi. Drag devices or use arrow keys to arrange the diagram. Switch to the editable sandbox to build your own network.</p>
+                        </div>
+                        <div id="network-sequence-view" class="sequence-scroll" hidden>
+                            <p id="sequence-empty" class="hint">Prepare a lesson to see its messages in order.</p>
+                            <div id="sequence-actors" class="sequence-actors" aria-label="Sequence participants"></div>
+                            <svg id="network-sequence" role="img" aria-label="Protocol message sequence"></svg>
+                        </div>
+                        <div class="scene-packet"><div><span class="scene-signal" aria-hidden="true"></span><strong id="scene-packet-name">READY TO EXPLORE</strong><span id="scene-packet-state">SIMULATION ONLY</span></div><p id="scene-packet-detail"></p><span id="scene-packet-hop"></span></div>
+                        </div>
                         <div id="device-inspector" class="inspector"></div>
                         <details class="cable-list"><summary>Manage connections</summary><ul id="link-list"></ul></details>
                     </div>
-                    <div class="panel simulation">
-                        <h3>Packet journal</h3>
-                        <label class="check"><input id="network-follow" type="checkbox" checked> Follow latest journal entry (never moves the page)</label>
-                        <ol id="network-log" class="event-log" aria-label="Packet trace"></ol>
-                        <p id="network-status" class="status" role="status"></p>
+                </div>
+                <aside class="panel protocol-overview" aria-label="Protocol overview">
+                    <div class="overview-heading"><p class="eyebrow">Protocol overview</p>
+                    <div class="overview-controls" role="group" aria-label="Field guide view"><button id="protocol-overview-show" type="button" aria-pressed="true" aria-controls="protocol-overview-content">Overview</button><button id="protocol-step-show" type="button" aria-pressed="false" aria-controls="protocol-phase-content" disabled>Step</button></div></div>
+                    <div id="protocol-overview-content">
+                    <h3 id="protocol-name">DHCP</h3>
+                    <p id="protocol-fullname" class="protocol-fullname"></p>
+                    <p id="protocol-intro" class="protocol-intro"></p>
+                    <dl id="protocol-fact-grid" class="protocol-facts protocol-fact-grid"><div><dt>OSI focus</dt><dd id="protocol-layer"></dd></div><div><dt>Ports / identifiers</dt><dd id="protocol-ports"></dd></div></dl>
+                    <details class="guide-extra"><summary>Lesson goal, format &amp; operations</summary><p class="protocol-goal"><strong id="protocol-title"></strong></p><p id="protocol-description" class="hint"></p><dl class="protocol-facts"><div><dt>Transport</dt><dd id="protocol-transport"></dd></div><div><dt>Data format</dt><dd id="protocol-format"></dd></div><div><dt>Operations</dt><dd id="protocol-operations"></dd></div></dl></details>
                     </div>
+                    <div id="protocol-phase-content" hidden>
+                        <p id="protocol-phase-count" class="phase-counter"></p>
+                        <h3 id="protocol-phase-title"></h3>
+                        <p id="protocol-phase-tagline" class="phase-tagline"></p>
+                        <p id="protocol-phase-explain" class="phase-explain"></p>
+                        <div id="scene-result" class="scene-result" hidden><p class="eyebrow">Lesson complete</p><h4 id="scene-result-title"></h4><p id="scene-result-detail"></p><span>Illustrative exchange / no real traffic</span></div>
+                        <div id="phase-live-card" class="phase-live-card" hidden>
+                            <div><strong id="phase-live-name"></strong><span id="phase-live-state"></span></div>
+                            <p id="phase-live-endpoints"></p>
+                            <p id="phase-live-detail"></p>
+                            <span id="phase-live-location"></span>
+                        </div>
+                        <details class="guide-extra phase-message-list"><summary>Messages in this phase / inspect</summary>
+                        <p id="protocol-phase-description" class="hint"></p>
+                        <ol id="protocol-phase-messages"></ol>
+                        </details>
+                    </div>
+                    <details class="protocol-caveats"><summary>Model limits &amp; standards</summary>
+                    <p id="network-mode-note" class="hint">Guided diagrams are preconfigured conceptual scenarios, not real protocol implementations. No traffic leaves your browser.</p>
+                    <p id="protocol-note" class="hint"></p>
+                    <div id="protocol-references" class="protocol-references"></div>
+                    <div class="packet-insight"><p class="eyebrow">CURRENT HOP</p><p id="packet-explanation">Prepare a lesson, then Play or step through the exchange.</p><p id="packet-location" class="hint"></p><button id="network-inspect" type="button" disabled>Inspect this message</button></div>
+                    </details>
+                </aside>
+                <div class="panel simulation">
+                        <div class="packet-toolbar">
+                            <div><p class="eyebrow">FOLLOW THE EXCHANGE</p><h3>Packet flow <span id="packet-live-indicator">READY</span></h3></div>
+                            <div id="packet-legend" class="packet-legend" aria-label="Protocol colors"></div>
+                            <div class="playback">
+                                <label class="playback-pace"><span class="sr-only">Playback speed</span><select id="network-speed"><option value="1200" selected>0.5×</option><option value="600">1×</option><option value="400">1.5×</option><option value="300">2×</option></select></label>
+                                <button id="network-back" type="button" disabled aria-label="Previous hop" title="Previous selected step">‹</button>
+                                <button id="network-play" type="button" disabled>Play</button>
+                                <button id="network-step" type="button" disabled>Next hop →</button>
+                                <button id="network-replay" type="button" disabled aria-label="Reset playback" title="Reset playback">↺</button>
+                            </div>
+                        </div>
+                        <p id="packet-status" class="status" role="status">Choose a lesson to prepare a trace.</p>
+                        <div id="packet-table-scroll" class="packet-table-scroll" tabindex="0" role="region" aria-label="Scrollable packet flow">
+                            <table class="packet-table"><caption id="packet-table-caption" class="sr-only">Conceptual messages, not captured packets or measured timings. Endpoints identify actors, not every wire-header address. Select a row to inspect.</caption><thead><tr><th id="packet-number-heading" scope="col">No.</th><th scope="col">Source</th><th scope="col">Destination</th><th scope="col">Protocol</th><th id="packet-route-heading" class="packet-route" scope="col">Diagram route</th><th scope="col">Info</th></tr></thead><tbody id="packet-rows"></tbody></table>
+                            <p id="packet-empty" class="hint">No messages yet. Press Play or Step to begin the exchange.</p>
+                        </div>
+                        <details class="packet-options"><summary>Playback options &amp; message index</summary><div class="packet-options-grid">
+                            <label>Step by<select id="network-step-unit"><option value="hop">Forwarding hop</option><option value="message">Whole message</option><option value="phase">Lesson phase</option></select></label>
+                            <label class="table-unit">Table detail<select id="network-table-unit"><option value="message">Logical messages</option><option value="hop">Every forwarding hop</option></select></label>
+                            <label class="check"><input id="network-show-upcoming" type="checkbox"> Preview upcoming messages</label>
+                            <button id="network-stop" type="button" disabled>Stop / clear trace</button>
+                        </div><div id="message-flow" class="message-flow" role="group" aria-label="Logical messages"></div><p class="hint">Teaching events, not captured packets. Playback speed is illustrative; no real latency or packet sizes are invented. Play runs the full trace; Step animates the selected unit.</p>
+                        <details class="packet-journal"><summary>Text journal</summary>
+                        <label class="check"><input id="network-follow" type="checkbox" checked> Follow latest packet &amp; journal entry (never moves the page)</label>
+                        <ol id="network-log" class="event-log" aria-label="Packet trace"></ol>
+                        </details>
+                        </details>
+                        <p id="network-status" class="status" role="status"></p>
                 </div>
             </div>
+            <dialog id="protocol-drawer" class="explorer-dialog explorer-drawer" aria-labelledby="drawer-title">
+                <div class="dialog-heading"><h3 id="drawer-title">Protocol library</h3><button type="button" data-close-dialog aria-label="Close protocol library">Close ×</button></div>
+                <div id="protocol-drawer-content"></div>
+            </dialog>
+            <dialog id="protocol-command" class="explorer-dialog" aria-labelledby="command-title">
+                <div class="dialog-heading"><h3 id="command-title">Find a protocol or lesson phase</h3><button type="button" data-close-dialog aria-label="Close search">Esc / close</button></div>
+                <label>Search all guided lessons<input id="command-query" type="search" maxlength="100" placeholder="Try TLS, 443, routing, or handshake" autocomplete="off" role="combobox" aria-controls="command-results" aria-expanded="true" aria-autocomplete="list"></label>
+                <p id="command-count" class="hint" role="status"></p>
+                <div id="command-results" role="listbox" aria-label="Matching protocols and phases"></div>
+                <p class="hint">↑ ↓ choose · Enter open · Escape close. Selecting a result opens its guided lesson; your sandbox is preserved.</p>
+            </dialog>
+            <dialog id="protocol-shortcuts" class="explorer-dialog" aria-labelledby="shortcuts-title">
+                <div class="dialog-heading"><h3 id="shortcuts-title">Your explorer keyboard</h3><button type="button" data-close-dialog aria-label="Close shortcuts">Close ×</button></div>
+                <p class="hint">Shortcuts apply only in Network Studio. Typing fields and native button Space behavior are preserved. Focus a device to move it with arrow keys instead.</p>
+                <dl class="shortcut-grid">
+                    <div><dt><kbd>Space</kbd></dt><dd>Play / pause</dd></div><div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Previous / next selected step unit</dd></div>
+                    <div><dt><kbd>S</kbd></dt><dd>Cycle hop / message / phase stepping</dd></div><div><dt><kbd>1</kbd>–<kbd>9</kbd></dt><dd>Jump to a lesson phase</dd></div>
+                    <div><dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Slower / faster playback</dd></div><div><dt><kbd>R</kbd></dt><dd>Replay the prepared trace</dd></div>
+                    <div><dt><kbd>V</kbd></dt><dd>Network / sequence view</dd></div><div><dt><kbd>D</kbd></dt><dd>Diagram focus</dd></div>
+                    <div><dt><kbd>L</kbd></dt><dd>Open protocol library</dd></div><div><dt><kbd>F</kbd></dt><dd>Full screen</dd></div>
+                    <div><dt><kbd>T</kbd></dt><dd>Light / dark theme</dd></div><div><dt><kbd>N</kbd> <kbd>P</kbd></dt><dd>Next / previous guided protocol</dd></div>
+                    <div><dt><kbd>⌘ / Ctrl K</kbd> <kbd>/</kbd></dt><dd>Find protocols and phases</dd></div><div><dt><kbd>I</kbd></dt><dd>Inspect current message</dd></div>
+                    <div><dt><kbd>?</kbd></dt><dd>This guide</dd></div><div><dt><kbd>Esc</kbd></dt><dd>Close dialog, or leave diagram focus</dd></div>
+                </dl>
+                <p class="hint">In the message inspector, ← / → selects the previous / next message. Tab and Shift-Tab stay within each open dialog.</p>
+            </dialog>
+            <dialog id="protocol-osi" class="explorer-dialog" aria-labelledby="osi-title">
+                <div class="dialog-heading"><h3 id="osi-title">Seven layers, one useful mental model</h3><button type="button" data-close-dialog aria-label="Close OSI guide">Close ×</button></div>
+                <p id="osi-current" class="packet-insight"></p>
+                <p>The OSI model separates responsibilities. Internet protocols do not always map one-to-one to its layers. The header highlights the lesson's primary teaching focus, not a claim that its entire exchange stays at one layer.</p>
+                <ol class="osi-guide" id="osi-guide-list">
+                    <li><strong>Physical</strong><span>Signals, radio, electrical or optical links move bits.</span></li>
+                    <li><strong>Data link</strong><span>Frames and local-link delivery: Ethernet, Wi-Fi, MAC addresses.</span></li>
+                    <li><strong>Network</strong><span>IP addressing and forwarding between networks.</span></li>
+                    <li><strong>Transport</strong><span>Endpoint transport: TCP byte streams, UDP datagrams, QUIC transport.</span></li>
+                    <li><strong>Session</strong><span>Conceptually organizes conversations and session lifetimes.</span></li>
+                    <li><strong>Presentation</strong><span>Conceptually represents data; encoding and cryptographic functions can span boundaries.</span></li>
+                    <li><strong>Application</strong><span>Application exchanges such as HTTP, DNS, DHCP and email.</span></li>
+                </ol>
+                <p class="hint">A DHCP lesson still uses UDP, IP, link frames, and a physical medium. TLS is shown as a cross-layer security mechanism rather than a literal OSI presentation-layer implementation.</p>
+            </dialog>
+            <dialog id="protocol-inspector" class="explorer-dialog message-inspector" aria-labelledby="inspector-title">
+                <div class="dialog-heading"><div><p id="inspector-count" class="eyebrow"></p><h3 id="inspector-title">Message inspector</h3></div><button type="button" data-close-dialog aria-label="Close message inspector">Close ×</button></div>
+                <div class="inspector-navigation"><button id="inspect-previous" type="button">← Previous message</button><button id="inspect-next" type="button">Next message →</button></div>
+                <p id="inspector-route" class="hint"></p><p id="inspector-summary"></p>
+                <dl id="inspector-fields" class="protocol-facts"></dl>
+                <details id="inspector-wire"><summary>Explore a synthetic wire-format example</summary>
+                    <p id="wire-note" class="hint"></p><div id="wire-fields"></div>
+                    <p id="wire-selection" class="hint" role="status">Choose a decoded field to highlight its bytes.</p>
+                    <pre id="wire-bytes" class="wire-bytes" tabindex="0" aria-label="Synthetic example hexadecimal bytes"></pre>
+                </details>
+                <p id="inspector-unavailable" class="hint"></p>
+            </dialog>
             <div class="lesson-grid">
                 <article><span>01</span><h3>DHCP gives you an address</h3><p>Discover → Offer → Request → Acknowledge. A new client broadcasts on its local LAN; the server offers a lease containing an IP, gateway, and DNS server. Routers do not forward these broadcasts without a DHCP relay.</p></article>
                 <article><span>02</span><h3>DNS translates a name</h3><p>After obtaining an address, the client asks a DNS server for demo.test. Our server returns the documentation-only address 203.0.113.10. No real DNS query leaves this page.</p></article>
-                <article><span>03</span><h3>Each device has a job</h3><p>APs bridge wireless clients into a LAN. Switches forward local traffic. Routers connect networks. Firewalls allow or deny traffic. This model abstracts ARP, VLANs, NAT, TCP, RF, and routing tables; it is not a network emulator.</p></article>
+                <article><span>03</span><h3>A connection is not encryption</h3><p>TCP establishes a connection. HTTP carries a request and response. HTTPS adds TLS to protect application data and authenticate the server. Switches, routers, APs, and firewalls still forward or filter the underlying traffic. This is not a network emulator.</p></article>
             </div>
         </section>
 

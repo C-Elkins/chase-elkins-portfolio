@@ -1,0 +1,46 @@
+// Ports describe common deployments, not a requirement for every implementation.
+const rows = {
+    http: ["80; HTTPS usually 443", "HTTP/1.1 text start-line, headers and optional body", "GET, HEAD, POST, PUT, DELETE; status responses"],
+    https: ["443", "HTTP carried inside authenticated TLS records", "Certificate validation, protected requests and responses"],
+    websocket: ["80 (ws), 443 (wss)", "HTTP upgrade followed by binary-framed messages", "Upgrade, text/binary messages, ping/pong, close"],
+    webrtc: ["Dynamic media ports; STUN/TURN commonly 3478", "ICE connectivity checks, DTLS handshake, SRTP media", "Signaling, candidate selection, secure media exchange"],
+    sip: ["5060; TLS commonly 5061", "Text request/response messages; media is separate", "REGISTER, INVITE, ACK, BYE"],
+    rtsp: ["554", "Text control messages with a session identifier", "DESCRIBE, SETUP, PLAY, TEARDOWN"],
+    rtmp: ["1935; RTMPS deployments vary", "Binary chunks multiplex media and command messages", "Handshake, connect, createStream, publish"],
+    quic: ["UDP 443 for HTTP/3; other applications vary", "Binary protected packets containing frames", "Initial handshake, streams, ACK, loss recovery"],
+    tcp: ["Application-selected ports", "Binary segments with sequence numbers and flags", "SYN, ACK, ordered byte delivery, retransmission, FIN"],
+    udp: ["Application-selected ports", "8-byte header plus a datagram payload", "Send independent datagrams; no built-in delivery guarantee"],
+    ip: ["No ports; IPv4 protocol number selects the payload", "IPv4 header plus payload; options are optional", "Address, route, decrement TTL, report delivery errors"],
+    bgp: ["TCP 179", "Binary messages and path attributes", "OPEN, KEEPALIVE, UPDATE, NOTIFICATION"],
+    ipv6: ["No ports; Next Header selects the payload", "40-byte base header; optional extension headers", "Link-local addressing, RA, SLAAC, DAD, neighbor discovery"],
+    dns: ["UDP/TCP 53", "Binary header, names, questions and resource records", "A/AAAA queries, referrals, caching, answers"],
+    doh: ["HTTPS 443", "DNS wire-format messages inside HTTPS", "POST or GET DNS requests; encrypted responses"],
+    dnssec: ["DNS UDP/TCP 53", "DNS records plus DNSKEY, DS and RRSIG", "Authenticate DNS data with a chain of trust; not encryption"],
+    dhcp: ["UDP 68 (client), 67 (server)", "BOOTP-compatible header plus typed DHCP options", "DISCOVER, OFFER, REQUEST, ACK; leases and renewal"],
+    icmp: ["No ports; IPv4 protocol 1", "Type, code, checksum and message-specific data", "Echo Request/Reply, Time Exceeded, Destination Unreachable"],
+    igmp: ["No ports; IPv4 protocol 2", "Binary group membership queries and reports", "Query, membership report, leave; multicast forwarding"],
+    ntp: ["UDP 123", "Binary timestamps, clock state and synchronization fields", "Request/reply, offset and delay estimation"],
+    ethernet: ["No TCP/UDP ports; EtherType identifies the payload", "Destination/source MAC, type, payload and FCS", "MAC learning, unknown-unicast flooding, selective forwarding"],
+    pppoe: ["EtherType 0x8863 discovery; 0x8864 session", "PPPoE discovery tags, then PPP session frames", "PADI, PADO, PADR, PADS, PPP negotiation"],
+    wifi: ["Radio channels, not TCP/UDP ports", "802.11 management, control and data frames", "Open System authentication and association here; WPA2/WPA3 require additional key exchange"],
+    wpa3: ["802.11 management and EAPOL; no application port", "SAE authentication and protected wireless frames", "SAE commit/confirm, association, key installation"],
+    radius: ["UDP 1812 authentication; 1813 accounting", "Binary code/identifier header and typed attributes", "Access-Request, Challenge, Accept/Reject; EAP relay"],
+    captive: ["HTTPS 443 for CAPPORT; DHCP/RA discovery", "API JSON over HTTPS; discovery options on the local link", "Discover portal API, check status, consent, recheck"],
+    smtp: ["587 submission; 25 relay; 465 implicit TLS", "Text commands/replies; MIME message content", "EHLO, STARTTLS, MAIL FROM, RCPT TO, DATA, QUIT"],
+    pop3: ["995 implicit TLS; 110 traditional POP3", "Line-oriented commands and server replies", "Authentication, STAT, LIST, RETR, DELE, QUIT"],
+    imap: ["993 implicit TLS; 143 traditional IMAP", "Tagged commands, untagged updates and literals", "SELECT, UID FETCH, STORE, EXPUNGE, LOGOUT"],
+    ftp: ["TCP 21 control; negotiated data port", "Text control channel plus separate data connection", "USER, PASS, TYPE, EPSV, RETR, QUIT"],
+    smb: ["TCP 445", "Binary SMB2/3 headers and operation payloads", "NEGOTIATE, SESSION_SETUP, TREE_CONNECT, CREATE, READ, CLOSE"],
+    ssh: ["TCP 22", "Version banner, then binary protected packets", "Key exchange, host verification, authentication, channels"],
+    tls: ["No dedicated port; application selects the transport", "Binary records wrapping handshake or protected application data", "ClientHello, ServerHello, authentication, Finished, records"],
+    "http-proxy": ["Configured; often 8080 or 3128", "HTTP absolute-form requests or CONNECT tunnels", "Forward requests, CONNECT, relay tunnel bytes"],
+    socks5: ["Configured; commonly TCP 1080", "Binary negotiation, address/port request and replies", "Select authentication method, CONNECT; optional UDP ASSOCIATE"],
+    "reverse-proxy": ["Public HTTPS commonly 443; upstream varies", "Client TLS records; separate upstream HTTP exchange", "TLS termination, routing, upstream request, response relay"],
+    wireguard: ["Configurable UDP port; commonly 51820", "Binary Noise-based handshake and encrypted transport messages", "Peer handshake, key derivation, protected IP tunneling"],
+    ipsec: ["UDP 500 IKE; UDP 4500 NAT-T; ESP IP protocol 50", "IKEv2 payloads and ESP-protected IP traffic", "IKE_SA_INIT, IKE_AUTH, CHILD_SA, ESP"],
+    modbus: ["TCP 502", "MBAP header followed by a binary Modbus PDU", "Read holding registers (03); write operations require care"]
+};
+
+export const protocolFacts = Object.freeze(Object.fromEntries(
+    Object.entries(rows).map(([id, [ports, format, operations]]) => [id, Object.freeze({ ports, format, operations })])
+));
