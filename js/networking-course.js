@@ -1,4 +1,4 @@
-import { networkingModules, gradeModule } from "./networking-course.mjs";
+import { networkingModules as defaultModules, gradeModule } from "./networking-course.mjs";
 
 const make = (tag, text, className) => {
     const node = document.createElement(tag);
@@ -7,19 +7,21 @@ const make = (tag, text, className) => {
     return node;
 };
 
-export function initializeNetworkingCourse() {
+export function initializeNetworkingCourse({ prefix = "learn", modules = defaultModules, legacy = true } = {}) {
+    const networkingModules = modules;
+    const part = suffix => document.getElementById(`${prefix}-${suffix}`);
     const scores = new Map();
     const statuses = new Map();
-    const map = document.getElementById("learn-module-map");
-    const sidebar = document.getElementById("learn-sidebar-nav");
-    const picker = document.getElementById("learn-module-select");
-    const content = document.getElementById("learn-module-content");
+    const map = part("module-map");
+    const sidebar = part("sidebar-nav");
+    const picker = part("module-select");
+    const content = part("module-content");
     const views = new Map();
     const sidebarLinks = new Map();
     let activeModule = null;
     const updateProgress = () => {
-        document.getElementById("learn-course-progress").value = scores.size;
-        document.getElementById("learn-course-count").textContent = `${scores.size} of ${networkingModules.length}`;
+        part("course-progress").value = scores.size;
+        part("course-count").textContent = `${scores.size} of ${networkingModules.length}`;
         for (const [id, labels] of statuses) {
             const score = scores.get(id);
             labels.forEach(status => {
@@ -175,7 +177,7 @@ export function initializeNetworkingCourse() {
         const navigation = make("nav", undefined, "learn-module-footer");
         navigation.setAttribute("aria-label", `Module ${number} navigation`);
         const back = make("a", "Back to all modules", "learn-next-module");
-        back.href = "#learn-module-map";
+        back.href = `#${prefix}-module-map`;
         navigation.append(back);
         if (index + 1 < networkingModules.length) {
             const next = make("a", `Next suggested module: ${networkingModules[index + 1].title}`, "learn-next-module");
@@ -184,7 +186,7 @@ export function initializeNetworkingCourse() {
         }
         last.append(navigation);
     });
-    document.getElementById("learn-printers").hidden = true;
+    if (legacy) document.getElementById("learn-printers").hidden = true;
     picker.addEventListener("change", () => {
         const selected = networkingModules.find(module => module.id === picker.value);
         window.location.hash = selected.chapters[0];
@@ -194,9 +196,9 @@ export function initializeNetworkingCourse() {
         const target = document.getElementById(requested);
         const chapter = target?.closest(".learn-chapter");
         const module = networkingModules.find(item => item.chapters.includes(chapter?.id) || `module-${item.id}` === requested)
-            || (requested === "learn-printers" ? networkingModules.find(item => item.id === "printer-setup") : null);
-        document.getElementById("learn-overview").hidden = Boolean(module);
-        document.getElementById("learn-workspace").hidden = !module;
+            || (legacy && requested === "learn-printers" ? networkingModules.find(item => item.id === "printer-setup") : null);
+        part("overview").hidden = Boolean(module);
+        part("workspace").hidden = !module;
         for (const [id, view] of views) {
             view.hidden = id !== module?.id;
             const link = sidebarLinks.get(id);
@@ -204,10 +206,10 @@ export function initializeNetworkingCourse() {
             else link.removeAttribute("aria-current");
         }
         if (!module) {
-            if (requested === "learn-module-map" || requested === "learn-course-title") map.scrollIntoView();
+            if (requested === `${prefix}-module-map` || requested === `${prefix}-course-title`) map.scrollIntoView();
             else window.scrollTo({ top: 0 });
             if (activeModule) {
-                const heading = document.getElementById("learn-course-title");
+                const heading = part("course-title");
                 heading.tabIndex = -1;
                 heading.focus({ preventScroll: true });
             }
@@ -215,14 +217,14 @@ export function initializeNetworkingCourse() {
             return;
         }
         const index = networkingModules.indexOf(module);
-        document.getElementById("learn-module-position").textContent = `MODULE ${String(index + 1).padStart(2, "0")} OF ${networkingModules.length} / ~${module.minutes} MIN / ${module.chapters.length} ${module.chapters.length === 1 ? "LESSON" : "LESSONS"}`;
-        const title = document.getElementById("learn-module-title");
+        part("module-position").textContent = `MODULE ${String(index + 1).padStart(2, "0")} OF ${networkingModules.length} / ~${module.minutes} MIN / ${module.chapters.length} ${module.chapters.length === 1 ? "LESSON" : "LESSONS"}`;
+        const title = part("module-title");
         title.textContent = module.title;
         picker.value = module.id;
         const selectedLink = sidebarLinks.get(module.id);
         sidebar.scrollTop = selectedLink.offsetTop - sidebar.clientHeight / 2;
-        const previous = document.getElementById("learn-module-prev");
-        const next = document.getElementById("learn-module-next");
+        const previous = part("module-prev");
+        const next = part("module-next");
         previous.hidden = index === 0;
         next.hidden = index === networkingModules.length - 1;
         if (index > 0) {
@@ -233,7 +235,7 @@ export function initializeNetworkingCourse() {
             next.href = `#${networkingModules[index + 1].chapters[0]}`;
             next.textContent = `Next: ${networkingModules[index + 1].title}`;
         }
-        const resume = document.getElementById("learn-resume");
+        const resume = part("resume");
         resume.hidden = false;
         resume.href = `#${module.chapters[0]}`;
         resume.textContent = `Return to module ${index + 1}: ${module.title}`;
@@ -245,7 +247,7 @@ export function initializeNetworkingCourse() {
             if (!quiz) focus.tabIndex = -1;
             focus.focus({ preventScroll: true });
         } else {
-            document.getElementById("learn-module-toolbar").scrollIntoView();
+            part("module-toolbar").scrollIntoView();
             title.focus({ preventScroll: true });
         }
         activeModule = module.id;

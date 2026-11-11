@@ -19,6 +19,7 @@ function initializeNavigation() {
     links.forEach((link) => link.addEventListener("click", () => {
         menu.classList.remove("open");
         toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Open navigation");
     }));
 
     const sections = [...document.querySelectorAll("main section[id]")];

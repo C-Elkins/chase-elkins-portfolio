@@ -1,6 +1,6 @@
 import { networkIcon } from "./network-icons.mjs?v=2026-11-10-directed-2";
 import { osiLayers, compareSubnet, printerTroubleshooter, troubleshootStep, troubleshootAnswer } from "./networking-basics-model.mjs";
-import { initializeNetworkingCourse } from "./networking-course.js?v=2026-11-11-module-view-1";
+import { initializeNetworkingCourse } from "./networking-course.js?v=2026-11-12-course-102-2";
 
 const $ = id => document.getElementById(id);
 const make = (tag, text, className) => {

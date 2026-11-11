@@ -57,7 +57,7 @@ export async function runNetworkingCourseUITests() {
         await new Promise(resolve => requestAnimationFrame(resolve));
     };
     await go("#learn");
-    const quizzes = [...document.querySelectorAll(".learn-quiz")];
+    const quizzes = [...document.querySelectorAll("#learn .learn-quiz")];
     quizzes.forEach(quiz => quiz.querySelector("form").reset());
     const links = [...$("learn-module-map").children];
     assert(links.length === 14 && quizzes.length === 14, "Every module has a map card and end check");
@@ -81,8 +81,8 @@ export async function runNetworkingCourseUITests() {
             input.checked = true;
             input.dispatchEvent(new Event("change", { bubbles: true }));
         };
-        assert(document.querySelectorAll(".learn-module-view:not([hidden])").length === 1 && !first.parentElement.hidden, `${module.id}: only the selected module is shown`);
-        assert([...document.querySelectorAll(".learn-chapter")].filter(chapter => chapter.getClientRects().length).length === module.chapters.length, `${module.id}: other modules do not lengthen the page`);
+        assert(document.querySelectorAll("#learn .learn-module-view:not([hidden])").length === 1 && !first.parentElement.hidden, `${module.id}: only the selected module is shown`);
+        assert([...document.querySelectorAll("#learn .learn-chapter")].filter(chapter => chapter.getClientRects().length).length === module.chapters.length, `${module.id}: other modules do not lengthen the page`);
         assert(document.querySelector("#learn-sidebar-nav [aria-current]").hash === `#${first.id}`, `${module.id}: navigator marks the selected module`);
         assert(links[moduleIndex].hash === `#${first.id}`, `${module.id}: map targets the module start`);
         assert(first.querySelector(".learn-module-goals li") && quiz.parentElement === last, `${module.id}: goals at start and test at end`);
@@ -189,7 +189,7 @@ export async function runNetworkingCourseNavigationTests() {
     $("learn-module-select").value = "addressing";
     $("learn-module-select").dispatchEvent(new Event("change", { bubbles: true }));
     await settle();
-    assert(location.hash === "#learn-addresses" && document.querySelectorAll(".learn-module-view:not([hidden])").length === 1, "Compact module picker changes the visible module");
+    assert(location.hash === "#learn-addresses" && document.querySelectorAll("#learn .learn-module-view:not([hidden])").length === 1, "Compact module picker changes the visible module");
     assert(document.documentElement.scrollWidth <= innerWidth, "Module workspace has no horizontal page overflow");
     await go("#learn-what");
     $("quiz-foundations").querySelector("form").reset();

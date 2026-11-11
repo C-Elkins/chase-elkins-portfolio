@@ -4,15 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self' blob:; connect-src 'none'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-    <meta name="description" content="Chase Elkins' interactive engineering lab: networks, algorithms, audio, compression, and browser-local encryption and hashing.">
+    <meta name="description" content="Chase Elkins' interactive engineering lab: Networking 101, 102, Applied Networking with hands-on challenges, networks, algorithms, audio, compression, and browser-local encryption and hashing.">
     <meta name="theme-color" content="#eef3ef">
     <script src="js/theme.js?v=2026-11-10"></script>
     <title>Engineering Lab | Chase Elkins</title>
     <link rel="canonical" href="https://c-elkins.github.io/chase-elkins-portfolio/lab.html">
     <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
     <link rel="preload" href="assets/fonts/share-tech-mono.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="stylesheet" href="css/lab.css?v=2026-11-11-module-view-1">
-    <script type="module" src="js/lab.js?v=2026-11-11-module-view-1"></script>
+    <link rel="stylesheet" href="css/lab.css?v=2026-11-13-practice-labs">
+    <link rel="stylesheet" href="css/guided-course.css?v=2026-11-13-practice-labs">
+    <link rel="stylesheet" href="css/practice-labs.css?v=2026-11-13-practice-labs">
+    <script type="module" src="js/lab.js?v=2026-11-13-practice-labs"></script>
 </head>
 <body class="lab-compact">
     <a class="skip" href="#main">Skip to experiments</a>
@@ -30,13 +32,41 @@
             <p>Build a network. Hear a signal. Compress a file. Lock a message. A hands-on workspace for understanding what happens beneath the interface.</p>
             <p class="privacy"><span aria-hidden="true">●</span> Lab inputs stay in your browser. No uploads, microphone access, analytics, or real network probes.</p>
         </div>
-        <nav class="lab-tabs" aria-label="Choose an experiment">
-            <a href="#learn">00 / Networking 101</a>
-            <a href="#network" aria-current="location">01 / Network studio</a>
-            <a href="#algorithms">02 / Algorithm theater</a>
-            <a href="#audio">03 / Signal room</a>
-            <a href="#compression">04 / Compression bench</a>
-            <a href="#crypto">05 / Encryption &amp; hashing</a>
+        <nav class="lab-tabs" aria-label="Courses and experiments">
+            <details id="lab-switcher" class="lab-switcher">
+                <summary aria-controls="lab-library"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M2 2h6v6H2zm10 0h6v6h-6zM2 12h6v6H2zm10 0h6v6h-6z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Explore lab<span class="lab-switcher-chevron" aria-hidden="true">⌄</span></summary>
+                <div id="lab-library" class="lab-library">
+                    <label class="lab-library-search" for="lab-library-search">Find your next topic<input id="lab-library-search" type="search" placeholder="Search courses and labs" autocomplete="off"></label>
+                    <div class="lab-library-groups">
+                        <div class="lab-library-group" data-kind="Course">
+                            <h2>Courses</h2>
+                            <p>Follow a learning path.</p>
+                            <div class="lab-library-links">
+                                <a href="#learn">00 / Networking 101</a>
+                                <a href="#learn102">00B / Networking 102</a>
+                                <a href="#applied-networking">00C / Applied networking</a>
+                            </div>
+                        </div>
+                        <div class="lab-library-group" data-kind="Interactive lab">
+                            <h2>Interactive labs</h2>
+                            <p>Explore a system hands-on.</p>
+                            <div class="lab-library-links">
+                                <a href="#network" aria-current="location">01 / Network studio</a>
+                                <a href="#algorithms">02 / Algorithm theater</a>
+                                <a href="#audio">03 / Signal room</a>
+                                <a href="#compression">04 / Compression bench</a>
+                                <a href="#crypto">05 / Encryption &amp; hashing</a>
+                                <a href="#subnet">06 / Subnet sprint</a>
+                                <a href="#firewall">07 / Firewall rule builder</a>
+                            </div>
+                        </div>
+                    </div>
+                    <p id="lab-library-status" class="lab-library-status" role="status" hidden></p>
+                </div>
+            </details>
+            <div class="lab-current"><span id="lab-current-kind">Interactive lab</span><strong id="lab-current-title">Network studio</strong></div>
+            <button id="applied-studio-return" type="button" class="quiet" hidden aria-label="Return to your Applied Networking lesson">Back to course</button>
+            <span class="lab-library-hint">Courses + interactive labs</span>
         </nav>
 
         <section id="learn" class="experiment learn" hidden>
@@ -46,7 +76,7 @@
             <div class="panel learn-course" aria-labelledby="learn-course-title">
                 <div class="learn-course-heading"><div><p class="learn-kicker">YOUR LEARNING PATH</p><h3 id="learn-course-title">Pick a module. Nothing is locked.</h3></div><span class="badge">14 MODULES / 42 QUESTIONS</span></div>
                 <p>Each module includes goals, deeper explanations and a practice scenario with a revealable answer. Quizzes are for learning, not certification. You can retry as often as you like.</p>
-                <div class="learn-course-progress"><label for="learn-course-progress">Quizzes checked this visit</label><progress id="learn-course-progress" max="14" value="0"></progress><span id="learn-course-count" role="status">0 of 14</span></div>
+                <div class="learn-course-progress"><label for="learn-course-progress">Quizzes checked this visit</label><progress id="learn-course-progress" max="14" value="0"></progress><span id="learn-course-count" class="learn-course-count" role="status">0 of 14</span></div>
                 <p class="hint">Answers and latest scores stay in this page's memory only. Switching Lab tabs keeps them; reloading clears them. No accounts, uploads or saved tracking.</p>
                 <a id="learn-resume" class="learn-next-module" hidden>Return to your last module</a>
                 <nav id="learn-module-map" class="learn-module-map" aria-label="Networking course modules"></nav>
@@ -56,7 +86,7 @@
                 <aside class="learn-sidebar" aria-label="Course navigator">
                     <a class="learn-all-modules" href="#learn">All modules</a>
                     <p class="learn-kicker">NETWORKING 101</p>
-                    <nav id="learn-sidebar-nav" aria-label="Choose a course module"></nav>
+                    <nav id="learn-sidebar-nav" class="learn-sidebar-nav" aria-label="Choose a course module"></nav>
                 </aside>
                 <div class="learn-module-main">
                     <div class="panel learn-module-toolbar" id="learn-module-toolbar">
@@ -308,6 +338,43 @@
                 </article>
             </div>
         </section>
+
+        <section id="learn102" class="experiment learn learn-102" hidden>
+            <div id="learn102-overview">
+            <div class="section-top"><div><p class="eyebrow">00B / NETWORKING 102</p><h2>Go deeper. <span>Do the math.</span></h2></div><span class="badge">FOLLOWS NETWORKING 101 / GRAPHS INCLUDED</span></div>
+            <p class="section-intro">Networking 101 built the mental model. Networking 102 shows the machinery underneath it: subnet math, routing decisions, NAT, VLANs, Spanning Tree, IPv6, TCP congestion control, performance math, DNS, wireless design, tunnels, QoS and packet analysis. Every module has worked examples, original graphs, a practice scenario and a four-question test.</p>
+            <div class="panel learn-course" aria-labelledby="learn102-course-title">
+                <div class="learn-course-heading"><div><p class="learn-kicker">YOUR DEEPER LEARNING PATH</p><h3 id="learn102-course-title">Fourteen modules. Still nothing locked.</h3></div><span class="badge">14 MODULES / 56 QUESTIONS</span></div>
+                <p>The order builds from addressing to routing, switching, transport, services, wireless and analysis, but every module is open. When a module relies on a 101 idea, it links back to that lesson instead of repeating it.</p>
+                <div class="course-prereqs" aria-label="Networking 101 lessons this course assumes">
+                    <strong>Before you start, be comfortable with:</strong>
+                    <a href="#learn-addresses">Addresses &amp; subnets</a><a href="#learn-ports">Ports &amp; transport</a><a href="#learn-layers">Layers &amp; encapsulation</a><a href="#learn-join">DHCP &amp; DNS</a><a href="#learn-fix">Troubleshoot with evidence</a>
+                </div>
+                <div class="learn-course-progress"><label for="learn102-course-progress">Tests checked this visit</label><progress id="learn102-course-progress" max="14" value="0"></progress><span id="learn102-course-count" class="learn-course-count" role="status">0 of 14</span></div>
+                <p class="hint">Answers and latest scores stay in this page's memory only. Switching Lab tabs keeps them; reloading clears them. No accounts, uploads or saved tracking.</p>
+                <a id="learn102-resume" class="learn-next-module" hidden>Return to your last module</a>
+                <nav id="learn102-module-map" class="learn-module-map" aria-label="Networking 102 modules"></nav>
+            </div>
+            </div>
+            <div id="learn102-workspace" class="learn-workspace" hidden>
+                <aside class="learn-sidebar" aria-label="Networking 102 navigator">
+                    <a class="learn-all-modules" href="#learn102">All modules</a>
+                    <p class="learn-kicker">NETWORKING 102</p>
+                    <nav id="learn102-sidebar-nav" class="learn-sidebar-nav" aria-label="Choose a Networking 102 module"></nav>
+                </aside>
+                <div class="learn-module-main">
+                    <div class="panel learn-module-toolbar" id="learn102-module-toolbar">
+                        <div class="learn-course-heading"><div><p id="learn102-module-position" class="learn-kicker"></p><h3 id="learn102-module-title" tabindex="-1"></h3></div><a class="learn-all-modules" href="#learn102">All modules</a></div>
+                        <label class="learn-mobile-picker">Jump to a module<select id="learn102-module-select"></select></label>
+                        <nav class="learn-module-paging" aria-label="Previous or next Networking 102 module"><a id="learn102-module-prev">Previous module</a><a id="learn102-module-next">Next module</a></nav>
+                    </div>
+                    <div id="learn102-module-content"></div>
+                </div>
+            </div>
+            <div id="learn102-chapters" hidden></div>
+        </section>
+
+        <section id="applied-networking" class="experiment" hidden aria-label="Applied Networking course"></section>
 
         <section id="network" class="experiment">
             <div class="section-top">
@@ -750,6 +817,135 @@
                 <article><h3>Encoding ≠ encryption</h3><p>Hex and Base64 change representation and need no secret to reverse. Hex uses two characters per byte. Compression exploits patterns; it does not keep data secret. Ciphertext is usually not usefully compressible.</p></article>
                 <article><h3>A hash needs trust, too</h3><p>A file hash helps detect changes if the expected digest came from a trusted source. Anyone can hash a message. Authenticating its sender needs something else, such as a keyed MAC or digital signature; this studio does not implement signatures.</p></article>
                 <article><h3>Authentication has limits</h3><p>An AES-GCM tag checks data using a shared secret key. It does not identify a person, prevent replay by itself, or solve key exchange. Real secure messaging needs a complete, reviewed protocol—not just an encryption function.</p></article>
+            </div>
+        </section>
+        <section id="subnet" class="experiment practice-lab" hidden>
+            <div class="section-top"><div><p class="eyebrow">06 / SUBNET SPRINT</p><h2>Think in binary. Answer in seconds.</h2></div><span class="badge">PUZZLES / LOCAL ONLY</span></div>
+            <p class="section-intro">Subnetting gets easier with practice. Every puzzle here is generated in your browser. Ask for a hint, reveal the full binary working, then try another. Practice mode is untimed. Sprint mode gives you 90 seconds. Scores last only for this visit.</p>
+            <nav class="lesson-nav" aria-label="Subnet study material"><a href="#learn-addresses">Review / Addresses &amp; subnets (101)</a><a href="#learn102-subnetting">Deep dive / Subnet math &amp; VLSM (102)</a><a href="#firewall">Use it / Firewall rule builder</a></nav>
+            <div class="sprint-layout">
+                <div class="panel sprint-setup">
+                    <fieldset class="practice-options" id="sprint-difficulty">
+                        <legend>Difficulty</legend>
+                        <label><input type="radio" name="sprint-difficulty" value="warmup"><span><strong>Warm-up</strong><small>Masks, host counts and octet-aligned networks</small></span></label>
+                        <label><input type="radio" name="sprint-difficulty" value="core" checked><span><strong>Core</strong><small>/17 to /30: ranges, broadcasts, same subnet</small></span></label>
+                        <label><input type="radio" name="sprint-difficulty" value="expert"><span><strong>Expert</strong><small>/8 to /32, wildcards, VLSM, /31 and /32</small></span></label>
+                    </fieldset>
+                    <fieldset class="practice-options practice-options-row" id="sprint-mode">
+                        <legend>Mode</legend>
+                        <label><input type="radio" name="sprint-mode" value="practice" checked><span><strong>Practice</strong><small>Untimed</small></span></label>
+                        <label><input type="radio" name="sprint-mode" value="sprint"><span><strong>Sprint</strong><small>90 seconds</small></span></label>
+                    </fieldset>
+                    <button id="sprint-start" type="button" class="primary">Start practice</button>
+                    <div id="sprint-clock" class="sprint-clock" hidden>
+                        <div><span>Time left</span><strong id="sprint-time">1:30</strong></div>
+                        <progress id="sprint-progress" max="90" value="90" aria-label="Sprint time remaining">90 seconds</progress>
+                        <button id="sprint-pause" type="button" class="quiet">Pause</button>
+                    </div>
+                    <dl class="practice-score">
+                        <div><dt>Solved</dt><dd id="sprint-solved">0</dd></div>
+                        <div><dt>Streak</dt><dd id="sprint-streak">0</dd></div>
+                        <div><dt>Best streak</dt><dd id="sprint-best">0</dd></div>
+                        <div><dt>Accuracy</dt><dd id="sprint-accuracy">—</dd></div>
+                    </dl>
+                    <details class="sprint-cheats">
+                        <summary>Cheat sheet / last octet</summary>
+                        <table>
+                            <caption class="sr-only">Prefix, mask, block size and usable hosts</caption>
+                            <thead><tr><th scope="col">Prefix</th><th scope="col">Mask</th><th scope="col">Block</th><th scope="col">Hosts</th></tr></thead>
+                            <tbody>
+                                <tr><th scope="row">/24</th><td>.0</td><td>256</td><td>254</td></tr>
+                                <tr><th scope="row">/25</th><td>.128</td><td>128</td><td>126</td></tr>
+                                <tr><th scope="row">/26</th><td>.192</td><td>64</td><td>62</td></tr>
+                                <tr><th scope="row">/27</th><td>.224</td><td>32</td><td>30</td></tr>
+                                <tr><th scope="row">/28</th><td>.240</td><td>16</td><td>14</td></tr>
+                                <tr><th scope="row">/29</th><td>.248</td><td>8</td><td>6</td></tr>
+                                <tr><th scope="row">/30</th><td>.252</td><td>4</td><td>2</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="hint">The same pattern repeats in the third octet for /16 to /23 and the second octet for /8 to /15.</p>
+                    </details>
+                </div>
+                <div id="sprint-board" class="panel sprint-board" data-state="idle">
+                    <div class="practice-meta"><span id="sprint-type">Ready</span><span id="sprint-count">No puzzle yet</span></div>
+                    <h3 id="sprint-prompt" class="sprint-prompt">Pick a difficulty, then press Start.</h3>
+                    <div id="sprint-given" class="sprint-given"></div>
+                    <form id="sprint-form" class="sprint-form" novalidate>
+                        <label for="sprint-answer" id="sprint-answer-label">Your answer</label>
+                        <div class="sprint-entry"><input id="sprint-answer" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="24" disabled><button id="sprint-check" type="submit" class="primary" disabled>Check</button></div>
+                        <div id="sprint-choices" class="sprint-choices" role="group" aria-labelledby="sprint-prompt" hidden></div>
+                    </form>
+                    <p id="sprint-feedback" class="status sprint-feedback" role="status" aria-live="polite"></p>
+                    <div class="toolbar sprint-actions"><button id="sprint-hint" type="button" disabled>Hint</button><button id="sprint-reveal" type="button" disabled>Show solution</button><button id="sprint-next" type="button" disabled>Next puzzle →</button></div>
+                    <p id="sprint-hint-text" class="sprint-hint" hidden></p>
+                    <div id="sprint-solution" class="sprint-solution" hidden>
+                        <h4>Worked solution</h4>
+                        <div id="sprint-bits" class="sprint-bits"></div>
+                        <p id="sprint-bit-legend" class="sprint-legend" hidden><span class="bit-key net">Network bits</span><span class="bit-key host">Host bits</span></p>
+                        <ol id="sprint-steps" class="sprint-steps"></ol>
+                    </div>
+                    <div id="sprint-summary" class="sprint-summary" role="status" hidden></div>
+                </div>
+            </div>
+            <div class="lesson-grid">
+                <article><span>01</span><h3>Count the bits</h3><p>A prefix is a count of leading 1 bits in the mask. Everything after them is the host part. 32 minus the prefix tells you how many host bits you have.</p></article>
+                <article><span>02</span><h3>Use the block size</h3><p>In the octet where the mask stops being 255, subtract the mask value from 256. Networks start at multiples of that block, so round the address down.</p></article>
+                <article><span>03</span><h3>Know the edge cases</h3><p>Normal subnets lose two addresses, one for the network and one for broadcast. A /31 point-to-point link uses both addresses. A /32 names exactly one host.</p></article>
+            </div>
+        </section>
+        <section id="firewall" class="experiment practice-lab" hidden>
+            <div class="section-top"><div><p class="eyebrow">07 / FIREWALL RULE BUILDER</p><h2>First match wins. Default decides the rest.</h2></div><span class="badge">SANDBOX / LOCAL ONLY</span></div>
+            <p class="section-intro">Write the rules for a small company firewall, then watch every test packet walk down your rule table. Complete seven missions or use the sandbox to try your own policy. This is a simulator: nothing touches a real network, and missions reset when you leave the page.</p>
+            <nav class="lesson-nav" aria-label="Firewall study material"><a href="#learn-security">Review / Safer network habits (101)</a><a href="#learn102-nat">Deep dive / NAT &amp; stateful firewalls (102)</a><a href="#subnet">Practice CIDR / Subnet sprint</a></nav>
+            <div id="fw-missions" class="fw-missions" role="group" aria-label="Firewall missions"></div>
+            <div class="fw-layout">
+                <div class="panel fw-brief">
+                    <div class="practice-meta"><span id="fw-level">Starter</span><span id="fw-progress-label">0 of 7 missions complete</span></div>
+                    <h3 id="fw-title">Mission</h3>
+                    <p id="fw-brief"></p>
+                    <p id="fw-teach" class="fw-teach"></p>
+                    <h4>Address book</h4>
+                    <dl id="fw-zones" class="fw-zones"></dl>
+                    <details id="fw-solution-box" class="fw-solution"><summary>Stuck? Show one solution</summary><p id="fw-solution"></p></details>
+                    <button id="fw-reset" type="button" class="quiet">Reset this mission</button>
+                </div>
+                <div class="panel fw-rules">
+                    <div class="panel-heading"><span>RULE TABLE / READ TOP TO BOTTOM</span><span id="fw-rule-count">0 / 20 rules</span></div>
+                    <div class="fw-rule-head" aria-hidden="true"><span>#</span><span>Action</span><span>Protocol</span><span>Source</span><span>Destination</span><span>Port</span><span></span></div>
+                    <ol id="fw-rule-list" class="fw-rule-list" aria-label="Firewall rules in evaluation order"></ol>
+                    <p id="fw-empty" class="fw-empty">No rules yet. Every packet falls through to the default policy.</p>
+                    <div class="fw-footer">
+                        <button id="fw-add" type="button" class="primary">+ Add rule</button>
+                        <label class="fw-default">Default policy, used when no rule matches<select id="fw-default"><option value="deny">Deny (recommended)</option><option value="allow">Allow</option></select></label>
+                    </div>
+                    <ul id="fw-warnings" class="fw-warnings" aria-label="Policy warnings"></ul>
+                </div>
+            </div>
+            <div class="fw-layout fw-layout-bottom">
+                <div class="panel fw-checks">
+                    <div class="panel-heading"><span>MISSION CHECKS / LIVE</span><span id="fw-score">0 / 0 passing</span></div>
+                    <progress id="fw-score-bar" max="1" value="0" aria-label="Mission checks passing">0</progress>
+                    <p id="fw-status" class="status" role="status" aria-live="polite"></p>
+                    <ol id="fw-results" class="fw-results"></ol>
+                </div>
+                <div class="panel fw-tester">
+                    <div class="panel-heading"><span>PACKET TESTER / TRACE</span><span>New connections only</span></div>
+                    <form id="fw-packet-form" class="fw-packet" novalidate>
+                        <label>Protocol<select id="fw-packet-protocol"><option value="tcp">TCP</option><option value="udp">UDP</option><option value="icmp">ICMP</option></select></label>
+                        <label>Source IP<input id="fw-packet-source" autocomplete="off" spellcheck="false" maxlength="15" value="198.51.100.24"></label>
+                        <label>Destination IP<input id="fw-packet-destination" autocomplete="off" spellcheck="false" maxlength="15" value="10.0.1.10"></label>
+                        <label>Destination port<input id="fw-packet-port" autocomplete="off" spellcheck="false" maxlength="5" inputmode="numeric" value="443"></label>
+                        <button type="submit" class="primary">Test packet</button>
+                    </form>
+                    <p id="fw-packet-error" class="status error" role="alert"></p>
+                    <div id="fw-verdict" class="fw-verdict" role="status" aria-live="polite" tabindex="-1">Send a packet to see which rule decides it.</div>
+                    <ol id="fw-trace" class="fw-trace"></ol>
+                </div>
+            </div>
+            <div class="lesson-grid">
+                <article><span>01</span><h3>Top to bottom</h3><p>The firewall compares a new connection with each rule in order. The first rule where protocol, source, destination and port all match decides. Specific exceptions belong above broad rules.</p></article>
+                <article><span>02</span><h3>Replies ride along</h3><p>These rules describe new connections. A stateful firewall remembers each allowed connection and lets its replies back automatically, so you don't need a rule for the return traffic.</p></article>
+                <article><span>03</span><h3>Default deny</h3><p>Allow only what a service needs, from the people who need it, then let everything else fall through to deny. A firewall is one layer of defense, not a replacement for patching and strong authentication.</p></article>
             </div>
         </section>
         <noscript><p class="status error">These experiments need JavaScript. Enable it to use the local simulations; no external services are required.</p></noscript>

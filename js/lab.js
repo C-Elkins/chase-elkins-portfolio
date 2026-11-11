@@ -8,7 +8,12 @@ import { layoutScene, sceneDimensions, sceneDevice, sceneLane, sceneBounds, scen
 import { createStudioMotion, sceneCommand, studioTiming } from "./network-motion.mjs?v=2026-11-10-teaching-1";
 import { initializeCompression } from "./compression.js";
 import { initializeCryptoStudio } from "./crypto-studio.js";
-import { initializeNetworkingBasics } from "./networking-basics.js?v=2026-11-11-module-view-1";
+import { initializeNetworkingBasics } from "./networking-basics.js?v=2026-11-12-course-102-2";
+import { initializeNetworking102 } from "./networking-102.js?v=2026-11-12-course-102-2";
+import { appliedCourse } from "./networking-applied.mjs";
+import { initializeGuidedCourse } from "./guided-course.js";
+import { initializeSubnetSprint } from "./subnet-sprint.js?v=2026-11-13-practice-labs";
+import { initializeFirewallBuilder } from "./firewall-builder.js?v=2026-11-13-practice-labs";
 
 const $ = id => document.getElementById(id);
 const make = (tag, text, className) => {
@@ -1588,36 +1593,111 @@ const pauseSorting = initializeSorting();
 const pauseAudio = initializeAudio();
 const pauseCompression = initializeCompression();
 initializeCryptoStudio();
+const pauseSubnetSprint = initializeSubnetSprint();
+initializeFirewallBuilder();
 const showNetworkingCourse = initializeNetworkingBasics();
-const experiments = ["learn", "network", "algorithms", "audio", "compression", "crypto"];
+const showNetworking102 = initializeNetworking102();
+const showAppliedCourse = initializeGuidedCourse({ course: appliedCourse, root: $("applied-networking") });
+const experiments = ["learn", "learn102", "applied-networking", "network", "algorithms", "audio", "compression", "crypto", "subnet", "firewall"];
+let courseReturn = null;
+document.addEventListener("click", event => {
+    if (event.target instanceof Element && event.target.closest("#applied-networking [data-studio-lesson]")) courseReturn = window.location.hash;
+}, true);
+$("applied-studio-return").addEventListener("click", () => { window.location.hash = courseReturn || "#applied-networking"; });
+const labSwitcher = $("lab-switcher");
+const labSearch = $("lab-library-search");
+const labLinks = [...document.querySelectorAll(".lab-library a")];
+function positionLabLibrary() {
+    if (!labSwitcher.open) return;
+    const bounds = labSwitcher.closest("nav").getBoundingClientRect();
+    const below = Math.max(0, innerHeight - bounds.bottom - 12);
+    const above = Math.max(0, bounds.top - 12);
+    $("lab-library").classList.toggle("opens-up", above > below);
+    $("lab-library").style.setProperty("--lab-library-space", `${Math.max(above, below)}px`);
+}
+function filterLabLibrary() {
+    const query = labSearch.value.trim().toLowerCase();
+    let matches = 0;
+    document.querySelectorAll(".lab-library-group").forEach(group => {
+        const links = [...group.querySelectorAll("a")];
+        const category = `${group.dataset.kind} ${group.querySelector("h2").textContent}`;
+        links.forEach(link => {
+            link.hidden = !`${category} ${link.textContent}`.toLowerCase().includes(query);
+            if (!link.hidden) matches++;
+        });
+        group.hidden = links.every(link => link.hidden);
+    });
+    $("lab-library-status").hidden = !query;
+    $("lab-library-status").textContent = matches ? `${matches} matching ${matches === 1 ? "destination" : "destinations"}.` : "No matches. Try networking, subnet, firewall or encryption.";
+}
+function closeLabLibrary() {
+    if (!labSwitcher.open) return;
+    const restoreFocus = labSwitcher.contains(document.activeElement);
+    labSwitcher.open = false;
+    if (restoreFocus) labSwitcher.querySelector("summary").focus({ preventScroll: true });
+}
+labSearch.addEventListener("input", filterLabLibrary);
+labSwitcher.addEventListener("toggle", () => {
+    if (labSwitcher.open) positionLabLibrary();
+    else {
+        labSearch.value = "";
+        filterLabLibrary();
+    }
+});
+window.addEventListener("resize", positionLabLibrary);
+window.addEventListener("scroll", positionLabLibrary, { passive: true });
+labLinks.forEach(link => link.addEventListener("click", closeLabLibrary));
+document.addEventListener("pointerdown", event => {
+    if (!labSwitcher.contains(event.target)) closeLabLibrary();
+});
+labSwitcher.addEventListener("keydown", event => {
+    if (event.key === "Escape" && labSwitcher.open) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeLabLibrary();
+    }
+});
+labSwitcher.addEventListener("focusout", event => {
+    if (event.relatedTarget && !labSwitcher.contains(event.relatedTarget)) closeLabLibrary();
+});
 let activeExperiment = null;
 function showExperiment() {
     const requested = window.location.hash.slice(1);
     const chapter = document.getElementById(requested)?.closest(".experiment")?.id;
-    const current = experiments.includes(requested) ? requested : chapter || activeExperiment || "network";
+    const current = requested.startsWith("applied-") ? "applied-networking" : experiments.includes(requested) ? requested : chapter || activeExperiment || "network";
     const switched = activeExperiment !== current;
     if (switched) {
         pauseNetwork(); pauseSorting();
         pauseCompression();
+        pauseSubnetSprint();
         if (activeExperiment === "audio") pauseAudio();
+        if (activeExperiment === "applied-networking") showAppliedCourse.pause();
     }
     activeExperiment = current;
+    if (current !== "network") courseReturn = null;
+    $("applied-studio-return").hidden = current !== "network" || !courseReturn;
     document.body.classList.toggle("lab-compact", document.body.dataset.networkCompact !== "false");
     document.body.classList.toggle("network-app", current === "network" && document.body.dataset.networkCompact !== "false");
     experiments.forEach(id => { $(id).hidden = id !== current; });
-    document.querySelectorAll(".lab-tabs a").forEach(link => {
+    labLinks.forEach(link => {
         if (link.hash === `#${current}`) {
             link.setAttribute("aria-current", "location");
-            $("lab-section-title").textContent = ` / ${link.textContent.split(" / ")[1].toUpperCase()}`;
+            const title = link.textContent.split(" / ")[1];
+            $("lab-section-title").textContent = ` / ${title.toUpperCase()}`;
+            $("lab-current-title").textContent = title;
+            $("lab-current-kind").textContent = link.closest(".lab-library-group").dataset.kind;
         }
         else link.removeAttribute("aria-current");
     });
+    closeLabLibrary();
     if (current === "learn") showNetworkingCourse(requested);
+    else if (current === "learn102") showNetworking102(requested);
+    else if (current === "applied-networking") showAppliedCourse(requested);
     else if (switched && chapter && requested !== current) document.getElementById(requested).scrollIntoView();
 }
 window.addEventListener("hashchange", showExperiment);
-window.addEventListener("pagehide", () => { pauseNetwork(); pauseSorting(); });
+window.addEventListener("pagehide", () => { pauseNetwork(); pauseSorting(); pauseSubnetSprint(); showAppliedCourse.pause(); });
 document.addEventListener("visibilitychange", () => {
-    if (document.hidden) { pauseNetwork(); pauseSorting(); pauseCompression(); }
+    if (document.hidden) { pauseNetwork(); pauseSorting(); pauseCompression(); pauseSubnetSprint(); showAppliedCourse.pause(); }
 });
 showExperiment();
