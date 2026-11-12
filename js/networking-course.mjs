@@ -1,3 +1,5 @@
+import { extra101Questions, placeFoundationQuestions } from "./foundation-questions.mjs";
+
 const question = (prompt, options, answer, explanation) => ({ prompt, options, answer, explanation });
 
 export const networkingModules = [
@@ -213,7 +215,10 @@ export const networkingModules = [
             question("A printer admin page does not open. Does that alone prove printing cannot work?", ["Yes, web administration is required for every print job", "Yes, HTTP and IPP always share an access rule", "No, management access might be disabled or separately restricted", "Only if the device uses Ethernet"], 2, "Management and printing can have different services and firewall policies. Use several relevant checks rather than one verdict.")
         ]
     }
-];
+].map((module, index) => ({
+    ...module,
+    questions: [...module.questions, ...placeFoundationQuestions(extra101Questions[module.id], index * 2)]
+}));
 
 export function gradeModule(module, answers) {
     if (!Array.isArray(answers) || answers.length !== module.questions.length) {

@@ -1,4 +1,4 @@
-/* Applied course: all colors follow the shared Lab light/dark palette. */
+/* Guided courses use the shared Lab light/dark palette. */
 .guided-course {
     --gc-radius: 12px;
     --gc-gap: clamp(1rem, 2vw, 1.65rem);
@@ -63,6 +63,14 @@
 .gc-module-status .gc-passed::before { background: currentColor; }
 .gc-study-guide { margin-block: 2rem; padding: clamp(1.25rem, 3vw, 2.5rem); border: 1px solid var(--line); border-left: 3px solid var(--cyan); border-radius: var(--gc-radius); background: var(--panel); }
 .gc-study-guide > p { max-width: 82ch; }
+.gc-prerequisite-checklist { margin-block: 1.5rem; padding: clamp(1rem, 2.5vw, 2rem); background: var(--panel); border: 1px solid var(--line); border-radius: var(--gc-radius); }
+.gc-prerequisite-checklist details { border-top: 1px solid var(--line); }
+.gc-prerequisite-checklist li { margin-block: .55rem; }
+.gc-progress-checklist { margin-block: 1.5rem 2rem; padding: clamp(1rem, 2.5vw, 2rem); border: 1px solid var(--line); border-left: 3px solid var(--cyan); border-radius: var(--gc-radius); background: var(--panel); }
+.gc-progress-checklist h3 { margin-top: 0; }
+.gc-progress-checklist details { border-top: 1px solid var(--line); }
+.gc-progress-checklist li { margin-block: .55rem; }
+.gc-progress-checklist summary { color: var(--text); }
 .gc-study-links { columns: 2; column-gap: 2.5rem; padding-left: 1.3rem; }
 .gc-study-links li { margin-bottom: .7rem; break-inside: avoid; font-size: .93rem; }
 .gc-objective-topics { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; padding: 0; }
@@ -116,6 +124,16 @@
 .gc-result { border: 1px solid var(--warn); background: var(--panel); padding: 1.5rem; border-radius: var(--gc-radius); margin-block: 1.5rem; }
 .gc-result-passed { border-color: var(--accent); }
 .gc-error { color: var(--error); border-left: 3px solid var(--error); padding: .7rem 1rem; background: var(--panel); font-size: .9rem; }
+
+.advanced-workbench { display: grid; gap: 1rem; padding: var(--gc-gap); border: 1px solid var(--line); border-radius: 14px; background: var(--board); scroll-margin-top: 64px; }
+.advanced-workbench > header { max-width: 90ch; }
+.advanced-workbench > details { padding-inline: 1rem; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.advanced-workbench-status { color: var(--cyan); font-weight: 650; }
+.advanced-workbench-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .8rem; margin-block: 1rem; }
+.advanced-workbench-field { font: 650 .85rem/1.5 system-ui, sans-serif; color: var(--text); }
+.advanced-workbench-testing form { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; }
+.advanced-workbench-testing form label { flex: 1 1 200px; }
+.advanced-workbench-output, .advanced-workbench .wb-evidence-card pre { max-width: 100%; padding: 1rem; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid var(--line); border-radius: 6px; background: var(--control); color: var(--text); font: .82rem/1.6 var(--mono); }
 
 /* Hybrid workbench: real state is shared by the inspector, console and trace. */
 .network-workbench { border: 1px solid var(--line); border-radius: 14px; padding: var(--gc-gap); background: var(--board); scroll-margin-top: 64px; }

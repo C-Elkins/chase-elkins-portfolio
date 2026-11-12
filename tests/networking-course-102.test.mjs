@@ -11,7 +11,7 @@ export function runNetworking102ModelTests() {
     const text101 = new Set(networkingModules.flatMap(module => [...module.goals, ...module.lessons.flat(), ...module.practice, ...module.questions.map(item => item.prompt)]));
     const answers = [0, 0, 0, 0];
     assert(networkingModules102.length === 14, "Networking 102 contains 14 modules");
-    assert(networkingModules102.reduce((count, module) => count + module.questions.length, 0) === 56, "Networking 102 contains 56 questions");
+    assert(networkingModules102.reduce((count, module) => count + module.questions.length, 0) === 70, "Networking 102 contains 70 questions");
     for (const module of networkingModules102) {
         assert(module.id.startsWith("n102-") && !ids.has(module.id), `${module.id}: unique 102 module ID`);
         ids.add(module.id);
@@ -33,9 +33,9 @@ export function runNetworking102ModelTests() {
             answers[item.answer]++;
         }
         const correct = module.questions.map(item => item.answer);
-        assert(gradeModule(module, correct).correct === 4, `${module.id}: all correct scores 4/4`);
-        assert(gradeModule(module, correct.map(answer => (answer + 1) % 4)).correct === 0, `${module.id}: all wrong scores 0/4`);
-        assert(!gradeModule(module, [correct[0], null, correct[2], correct[3]]).complete, `${module.id}: missing answer is incomplete`);
+        assert(module.questions.length === 5 && gradeModule(module, correct).correct === 5, `${module.id}: all correct scores 5/5`);
+        assert(gradeModule(module, correct.map(answer => (answer + 1) % 4)).correct === 0, `${module.id}: all wrong scores 0/5`);
+        assert(!gradeModule(module, [correct[0], null, correct[2], correct[3], correct[4]]).complete, `${module.id}: missing answer is incomplete`);
     }
     assert(answers.every(count => count >= 10), "Correct answers are spread across every option position");
     const prompts = networkingModules102.flatMap(module => module.questions.map(item => item.prompt));
@@ -92,7 +92,7 @@ export async function runNetworking102UITests() {
             input.dispatchEvent(new Event("change", { bubbles: true }));
         });
         form.requestSubmit();
-        assert(quiz.querySelector(".learn-quiz-result").textContent.startsWith("4 of 4"), `${module.id}: test scores 4/4`);
+        assert(quiz.querySelector(".learn-quiz-result").textContent.startsWith("5 of 5"), `${module.id}: test scores 5/5`);
         assert($("learn102-course-progress").value === moduleIndex + 1, `${module.id}: 102 progress advances`);
         assert(document.documentElement.scrollWidth <= innerWidth, `${module.id}: no horizontal overflow`);
     }
@@ -108,7 +108,7 @@ export async function runNetworking102UITests() {
     await settle();
     assert(!$("learn102-overview").hidden && !$("learn102-resume").hidden && $("learn102-resume").hash === "#learn102-dynamic", "Overview offers a 102 return link");
     quizzes.forEach(quiz => { quiz.querySelector("form").reset(); quiz.open = false; });
-    assert($("learn102-course-progress").value === 0, "Resetting 102 tests clears progress");
+    assert($("learn102-course-progress").value === 14, "Starting new attempts retains earned 102 passes");
     await go("#learn-what");
     assert(!$("learn").hidden && $("learn102").hidden, "101 links still route to Networking 101");
     await go("#learn102");

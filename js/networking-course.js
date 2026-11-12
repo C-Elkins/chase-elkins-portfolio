@@ -1,4 +1,5 @@
 import { networkingModules as defaultModules, gradeModule } from "./networking-course.mjs";
+import { assessmentGrade, openAssessment, openModulePassed, recordOpenAttempt } from "./open-course-progress.mjs";
 
 const make = (tag, text, className) => {
     const node = document.createElement(tag);
@@ -7,11 +8,13 @@ const make = (tag, text, className) => {
     return node;
 };
 
-export function initializeNetworkingCourse({ prefix = "learn", modules = defaultModules, legacy = true } = {}) {
+export function initializeNetworkingCourse({ prefix = "learn", modules = defaultModules, legacy = true, store, adapter } = {}) {
+    if (!store || !adapter) throw new TypeError("Course progress storage is required.");
     const networkingModules = modules;
     const part = suffix => document.getElementById(`${prefix}-${suffix}`);
-    const scores = new Map();
     const statuses = new Map();
+    const studiedControls = new Map();
+    const requiredForApplied = prefix === "learn" || prefix === "learn102";
     const map = part("module-map");
     const sidebar = part("sidebar-nav");
     const picker = part("module-select");
@@ -19,17 +22,120 @@ export function initializeNetworkingCourse({ prefix = "learn", modules = default
     const views = new Map();
     const sidebarLinks = new Map();
     let activeModule = null;
+    const progressSummary = make("section", undefined, "learn-progress-summary");
+    progressSummary.setAttribute("aria-label", `${prefix === "learn" ? "Networking 101" : prefix === "learn102" ? "Networking 102" : "Printer Networking"} completion summary`);
+    map.before(progressSummary);
+    const caseDefinitions = prefix === "learnprint"
+        ? [...adapter.assessments.keys()]
+            .filter(id => id !== "final" && !networkingModules.some(module => module.id === id))
+            .map(id => ({ id, title: id.replaceAll("-", " "), href: `#learnprint-${id}`, questions: adapter.assessments.get(id) }))
+        : [];
+    const finalQuestions = prefix === "learnprint" ? adapter.assessments.get("final") : null;
+    const renderProgressSummary = progress => {
+        const completed = [];
+        const remaining = [];
+        const addActivity = (label, done, href) => (done ? completed : remaining).push({ label, href });
+        const totalLessons = networkingModules.reduce((count, module) => count + module.chapters.length, 0);
+        const studiedLessons = networkingModules.flatMap(module => module.chapters)
+            .filter(chapter => progress.studied.includes(chapter));
+        networkingModules.forEach(module => {
+            const result = progress.assessments[module.id];
+            const grade = result && assessmentGrade(module.questions, result.best);
+            const passed = openModulePassed(progress, module);
+            const checked = Boolean(result?.latest);
+            const requiredLabel = requiredForApplied ? "quiz passed (4/5)" : "module check completed";
+            addActivity(`${requiredLabel} · ${module.title}${grade ? ` · best ${grade.correct}/${grade.total}` : ""}`, requiredForApplied ? passed : checked, `#quiz-${module.id}`);
+        });
+        studiedLessons.forEach(chapter => {
+            const title = document.getElementById(chapter)?.querySelector("h3")?.textContent || chapter;
+            addActivity(`Lesson studied · ${title}`, true, `#${chapter}`);
+        });
+        const unstudied = networkingModules.flatMap(module => module.chapters).filter(chapter => !progress.studied.includes(chapter));
+        unstudied.forEach(chapter => {
+            const title = document.getElementById(chapter)?.querySelector("h3")?.textContent || chapter;
+            addActivity(`Lesson not yet marked studied · ${title}`, false, `#${chapter}`);
+        });
+        caseDefinitions.forEach(item => {
+            const result = progress.assessments[item.id];
+            const grade = result && assessmentGrade(item.questions, result.latest);
+            addActivity(`Troubleshooting case · ${item.title}${grade ? ` · ${grade.correct}/${grade.total}` : ""}`, Boolean(grade), item.href);
+        });
+        if (finalQuestions) {
+            const result = progress.assessments.final;
+            const best = result && assessmentGrade(finalQuestions, result.best);
+            const reached = Boolean(best && best.correct >= 16);
+            addActivity(`Final test · ${best ? `${best.correct}/${best.total}` : "not submitted"} · 16/20 target`, reached, "#learnprint-final");
+        }
+        const completionCount = completed.length;
+        const list = (items, emptyText) => {
+            const ul = make("ul");
+            if (!items.length) ul.append(make("li", emptyText));
+            items.forEach(item => {
+                const li = make("li");
+                const action = make("a", item.label);
+                action.href = item.href;
+                li.append(action);
+                ul.append(li);
+            });
+            return ul;
+        };
+        const completedDetails = make("details");
+        completedDetails.append(make("summary", `Completed · ${completionCount} course activities`), list(completed, "No course activities completed yet."));
+        const remainingDetails = make("details");
+        remainingDetails.append(make("summary", `Not completed · ${remaining.length} activities${requiredForApplied ? " · all 14 quiz passes required for Applied" : ""}`), list(remaining, "No outstanding course activities."));
+        const summary = make("div", undefined, "learn-progress-summary-body");
+        summary.append(
+            make("h3", "Progress checklist"),
+            make("p", `${studiedLessons.length}/${totalLessons} lessons marked studied · self-reported, separate from quiz results. ${requiredForApplied ? `${networkingModules.filter(module => openModulePassed(progress, module)).length}/${networkingModules.length} quizzes passed; 4/5 is required for Applied readiness.` : `${networkingModules.filter(module => progress.assessments[module.id]?.latest).length}/${networkingModules.length} module checks completed.`}`),
+            completedDetails,
+            remainingDetails
+        );
+        progressSummary.replaceChildren(summary);
+    };
     const updateProgress = () => {
-        part("course-progress").value = scores.size;
-        part("course-count").textContent = `${scores.size} of ${networkingModules.length}`;
+        const progress = store.load();
+        const completed = networkingModules.filter(module => requiredForApplied ? openModulePassed(progress, module) : Boolean(progress.assessments[module.id]?.latest)).length;
+        part("course-progress").value = completed;
+        part("course-count").textContent = `${completed} of ${networkingModules.length}`;
         for (const [id, labels] of statuses) {
-            const score = scores.get(id);
+            const module = networkingModules.find(item => item.id === id);
+            const saved = progress.assessments[id];
+            const latest = saved && assessmentGrade(module.questions, saved.latest);
+            const best = saved && assessmentGrade(module.questions, saved.best);
+            const studied = module.chapters.filter(chapter => progress.studied.includes(chapter)).length;
+            const quizStatus = best
+                ? `${requiredForApplied && openModulePassed(progress, module) ? "Quiz passed" : "Check completed"} · best ${best.correct}/${best.total}${latest ? ` · latest ${latest.correct}/${latest.total}` : ""}`
+                : saved?.answers.some(answer => answer !== null) ? "Quiz in progress" : "Quiz not started";
             labels.forEach(status => {
-                status.textContent = score ? `Latest check: ${score.correct} / ${score.total}` : "Quiz not checked";
-                status.dataset.checked = String(Boolean(score));
+                status.textContent = `${quizStatus} · ${studied}/${module.chapters.length} studied`;
+                status.dataset.checked = String(Boolean(best));
             });
         }
+        studiedControls.forEach((control, id) => {
+            const studied = progress.studied.includes(id);
+            control.textContent = studied ? "Studied ✓ · mark unread" : "Mark lesson as studied";
+            control.setAttribute("aria-pressed", String(studied));
+        });
+        const resume = part("resume");
+        if (progress.resume) {
+            const module = networkingModules.find(item => item.chapters.includes(progress.resume) || [`module-${item.id}`, `quiz-${item.id}`].includes(progress.resume));
+            resume.hidden = false;
+            resume.href = `#${progress.resume}`;
+            resume.textContent = module ? `Return to module ${networkingModules.indexOf(module) + 1}: ${module.title}` : "Return to your last activity";
+        } else resume.hidden = true;
+        renderProgressSummary(progress);
     };
+    const resetStatus = make("p", "", "learn-reset-status");
+    resetStatus.setAttribute("role", "status");
+    const resetCourse = make("button", "Reset this course's progress", "quiet");
+    resetCourse.type = "button";
+    resetCourse.addEventListener("click", () => {
+        const downstream = requiredForApplied ? " Applied and Advanced will lock again until these quizzes are passed; their saved work will be kept." : "";
+        if (!window.confirm(`Reset this course's saved lessons, answers, and scores? Other courses and your theme are not erased.${downstream}`)) return;
+        if (!store.reset()) { resetStatus.textContent = store.issue; return; }
+        window.location.reload();
+    });
+    part("course-progress").closest(".learn-course-progress").after(resetCourse, resetStatus);
 
     networkingModules.forEach((module, index) => {
         const number = String(index + 1).padStart(2, "0");
@@ -38,11 +144,11 @@ export function initializeNetworkingCourse({ prefix = "learn", modules = default
         const link = make("a", undefined, "learn-module-link");
         link.href = `#${first.id}`;
         link.append(make("span", `MODULE ${number} / ~${module.minutes} MIN`, "learn-module-meta"), make("strong", module.title));
-        const status = make("span", "Quiz not checked", "learn-module-status");
+        const status = make("span", "Quiz not started", "learn-module-status");
         const sidebarLink = make("a", undefined, "learn-sidebar-link");
         sidebarLink.href = link.href;
         sidebarLink.append(make("span", number, "learn-sidebar-number"), make("strong", module.title));
-        const sidebarStatus = make("span", "Quiz not checked", "learn-module-status");
+        const sidebarStatus = make("span", "Quiz not started", "learn-module-status");
         sidebarLink.append(sidebarStatus);
         sidebar.append(sidebarLink);
         sidebarLinks.set(module.id, sidebarLink);
@@ -62,6 +168,17 @@ export function initializeNetworkingCourse({ prefix = "learn", modules = default
             const chapter = document.getElementById(id);
             chapter.dataset.module = module.id;
             chapter.querySelector(".learn-kicker").textContent = `MODULE ${number}${module.chapters.length > 1 ? ` / LESSON ${chapterIndex + 1} OF ${module.chapters.length}` : ""}`;
+            const studied = make("button", "Mark lesson as studied", "quiet learn-studied");
+            studied.type = "button";
+            studied.title = "Self-reported reading progress; this does not pass a quiz.";
+            studied.addEventListener("click", () => {
+                const progress = store.load();
+                progress.studied = progress.studied.includes(id) ? progress.studied.filter(item => item !== id) : [...progress.studied, id];
+                store.save(progress);
+                updateProgress();
+            });
+            studiedControls.set(id, studied);
+            chapter.querySelector("h3").after(studied);
             view.append(chapter);
         });
         const goals = make("div", undefined, "learn-module-goals");
@@ -86,7 +203,9 @@ export function initializeNetworkingCourse({ prefix = "learn", modules = default
         const quiz = make("details", undefined, "learn-quiz");
         quiz.id = `quiz-${module.id}`;
         const summary = make("summary", `Module ${number} check / ${module.questions.length} questions`);
-        quiz.append(summary, make("p", "Optional: choose one answer per question, then check your understanding. Your score never locks another module."));
+        quiz.append(summary, make("p", requiredForApplied
+            ? "All modules remain open. A score of 4/5 is required for the Applied Networking prerequisite; studied marks do not replace a quiz pass."
+            : "Optional: choose one answer per question, then check your understanding. Module checks do not lock another lesson."));
         const form = make("form");
         form.noValidate = true;
         const fields = module.questions.map((question, questionIndex) => {
@@ -134,19 +253,40 @@ export function initializeNetworkingCourse({ prefix = "learn", modules = default
                 feedback.textContent = "";
                 inputs.forEach(input => input.removeAttribute("aria-invalid"));
             }
-            scores.delete(module.id);
-            updateProgress();
         };
+        const answersFromForm = () => fields.map(({ inputs }) => {
+            const selected = inputs.find(input => input.checked);
+            return selected ? Number(selected.value) : null;
+        });
+        const renderFeedback = grade => {
+            fields.forEach(({ field, feedback }, questionIndex) => {
+                const correct = grade.results[questionIndex];
+                const question = module.questions[questionIndex];
+                field.dataset.correct = String(correct);
+                feedback.textContent = `${correct ? "Correct." : "Not quite."} ${correct ? "" : `Correct answer: ${question.options[question.answer]}. `}${question.explanation}`;
+                feedback.hidden = false;
+            });
+            const passed = grade.correct / grade.total >= .8;
+            result.textContent = `${grade.correct} of ${grade.total} correct. ${requiredForApplied ? passed ? "Quiz passed. The best pass is kept after retries." : "4/5 is required for the Applied prerequisite. Review the explanations and retry." : "Review the explanations; this optional check does not lock the course."}`;
+        };
+        const initial = openAssessment(store.load(), adapter, module.id);
+        initial.answers.forEach((answer, index) => {
+            if (answer !== null) fields[index].inputs[answer].checked = true;
+        });
+        if (initial.latest && JSON.stringify(initial.answers) === JSON.stringify(initial.latest)) renderFeedback(gradeModule(module, initial.latest));
+        else if (initial.answers.some(answer => answer !== null)) result.textContent = "Your unfinished answers were restored. Check them when you are ready.";
         form.addEventListener("change", () => {
             clearFeedback();
-            result.textContent = "Answers updated. Check them when you are ready.";
+            const progress = store.load();
+            const saved = openAssessment(progress, adapter, module.id);
+            progress.assessments[module.id] = { ...saved, answers: answersFromForm() };
+            const savedLocally = store.save(progress);
+            updateProgress();
+            result.textContent = savedLocally ? "Draft saved. Your latest completed result and best score remain available in the module status." : store.issue;
         });
         form.addEventListener("submit", event => {
             event.preventDefault();
-            const answers = fields.map(({ inputs }) => {
-                const selected = inputs.find(input => input.checked);
-                return selected ? Number(selected.value) : null;
-            });
+            const answers = answersFromForm();
             const grade = gradeModule(module, answers);
             clearFeedback();
             if (!grade.complete) {
@@ -158,20 +298,20 @@ export function initializeNetworkingCourse({ prefix = "learn", modules = default
                 fields[grade.missing[0]].inputs[0].focus();
                 return;
             }
-            fields.forEach(({ field, feedback }, questionIndex) => {
-                const correct = grade.results[questionIndex];
-                const question = module.questions[questionIndex];
-                field.dataset.correct = String(correct);
-                feedback.textContent = `${correct ? "Correct." : "Not quite."} ${correct ? "" : `Correct answer: ${question.options[question.answer]}. `}${question.explanation}`;
-                feedback.hidden = false;
-            });
-            scores.set(module.id, { correct: grade.correct, total: grade.total });
-            result.textContent = `${grade.correct} of ${grade.total} correct. ${grade.correct === grade.total ? "All correct. You can explore any module next." : "Review the explanations above, then change an answer or start again. Every module is still open."}`;
+            const progress = store.load();
+            progress.assessments[module.id] = recordOpenAttempt(module.questions, openAssessment(progress, adapter, module.id), answers);
+            store.save(progress);
+            renderFeedback(grade);
             updateProgress();
         });
         form.addEventListener("reset", () => {
             clearFeedback();
-            result.textContent = "Quiz reset. Try again whenever you like.";
+            const progress = store.load();
+            const saved = openAssessment(progress, adapter, module.id);
+            progress.assessments[module.id] = { ...saved, answers: Array(module.questions.length).fill(null) };
+            store.save(progress);
+            updateProgress();
+            result.textContent = "Quiz reset for a new attempt. Earlier results and earned passes are kept.";
             fields[0].inputs[0].focus();
         });
         const navigation = make("nav", undefined, "learn-module-footer");
@@ -191,6 +331,7 @@ export function initializeNetworkingCourse({ prefix = "learn", modules = default
         const selected = networkingModules.find(module => module.id === picker.value);
         window.location.hash = selected.chapters[0];
     });
+    store.subscribe(updateProgress);
     updateProgress();
     return requested => {
         const target = document.getElementById(requested);
@@ -235,11 +376,11 @@ export function initializeNetworkingCourse({ prefix = "learn", modules = default
             next.href = `#${networkingModules[index + 1].chapters[0]}`;
             next.textContent = `Next: ${networkingModules[index + 1].title}`;
         }
-        const resume = part("resume");
-        resume.hidden = false;
-        resume.href = `#${module.chapters[0]}`;
-        resume.textContent = `Return to module ${index + 1}: ${module.title}`;
         const quiz = target?.closest(".learn-quiz");
+        const progress = store.load();
+        progress.resume = quiz?.id || chapter?.id || `module-${module.id}`;
+        store.save(progress);
+        updateProgress();
         if (quiz) quiz.open = true;
         if (chapter && requested !== module.chapters[0]) {
             target.scrollIntoView();

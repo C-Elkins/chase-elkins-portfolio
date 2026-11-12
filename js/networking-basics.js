@@ -1,6 +1,6 @@
 import { networkIcon } from "./network-icons.mjs?v=2026-11-10-directed-2";
 import { osiLayers, compareSubnet, printerTroubleshooter, troubleshootStep, troubleshootAnswer } from "./networking-basics-model.mjs";
-import { initializeNetworkingCourse } from "./networking-course.js?v=2026-11-12-course-102-2";
+import { initializeNetworkingCourse } from "./networking-course.js?v=2026-11-15-progress-checklist";
 
 const $ = id => document.getElementById(id);
 const make = (tag, text, className) => {
@@ -10,7 +10,13 @@ const make = (tag, text, className) => {
     return node;
 };
 
-export function initializeNetworkingBasics() {
+export function initializeNetworkingBasics({ store, adapter }) {
+    const savedExercises = store.load().exercises;
+    if (savedExercises.subnet) {
+        $("subnet-a").value = savedExercises.subnet.a;
+        $("subnet-b").value = savedExercises.subnet.b;
+        $("subnet-prefix").value = savedExercises.subnet.prefix;
+    }
     document.querySelectorAll("#learn .learn-art[data-art]").forEach(slot => slot.replaceChildren(networkIcon(slot.dataset.art, true)));
 
     $("learn-layer-list").replaceChildren(...osiLayers.map((layer, index) => {
@@ -32,40 +38,57 @@ export function initializeNetworkingBasics() {
             .forEach(([label, value]) => { const row = make("div"); row.append(make("dt", label), make("dd", value)); facts.append(row); });
         box.replaceChildren(make("strong", result.same ? "✓ Same subnet" : "↔ Different subnets"), make("span", verdict), facts);
     };
-    ["subnet-a", "subnet-b", "subnet-prefix"].forEach(id => $(id).addEventListener("input", renderSubnet));
-    const example = (a, b, prefix) => () => { $("subnet-a").value = a; $("subnet-b").value = b; $("subnet-prefix").value = prefix; renderSubnet(); };
+    const saveSubnet = () => {
+        const progress = store.load();
+        progress.exercises.subnet = { a: $("subnet-a").value, b: $("subnet-b").value, prefix: $("subnet-prefix").value };
+        store.save(progress);
+        renderSubnet();
+    };
+    ["subnet-a", "subnet-b", "subnet-prefix"].forEach(id => $(id).addEventListener("input", saveSubnet));
+    const example = (a, b, prefix) => () => { $("subnet-a").value = a; $("subnet-b").value = b; $("subnet-prefix").value = prefix; saveSubnet(); };
     $("subnet-printer").addEventListener("click", example("192.168.1.20", "192.168.1.45", "/24"));
     $("subnet-guest").addEventListener("click", example("192.168.1.20", "192.168.50.12", "255.255.255.0"));
     renderSubnet();
 
     let current = printerTroubleshooter.start;
+    let trail = savedExercises.printerTrail || [];
     const renderPrinter = () => {
+        current = printerTroubleshooter.start;
+        $("printer-trail").replaceChildren();
+        $("printer-fix-result").textContent = "";
+        for (const yes of trail) {
+            const step = troubleshootStep(current);
+            const result = troubleshootAnswer(current, yes);
+            const item = make("li");
+            item.append(make("span", step.question), make("strong", yes ? "Yes" : "No"));
+            $("printer-trail").append(item);
+            current = result.next || null;
+            if (!current) $("printer-fix-result").textContent = `Try this: ${result.fix}`;
+        }
         const step = troubleshootStep(current);
         $("printer-question").textContent = step ? step.question : "";
         $("printer-question").hidden = !step;
         $("printer-yes").hidden = $("printer-no").hidden = !step;
     };
     const answer = yes => {
-        const step = troubleshootStep(current);
-        const result = troubleshootAnswer(current, yes);
-        if (!step || !result) return;
-        const trail = make("li");
-        trail.append(make("span", step.question), make("strong", yes ? "Yes" : "No"));
-        $("printer-trail").append(trail);
-        if (result.next) { current = result.next; $("printer-fix-result").textContent = ""; }
-        else { current = null; $("printer-fix-result").textContent = `Try this: ${result.fix}`; }
+        if (!troubleshootStep(current) || !troubleshootAnswer(current, yes)) return;
+        trail.push(yes);
+        const progress = store.load();
+        progress.exercises.printerTrail = [...trail];
+        store.save(progress);
         renderPrinter();
         (current ? $("printer-yes") : $("printer-restart")).focus({ preventScroll: true });
     };
     $("printer-yes").addEventListener("click", () => answer(true));
     $("printer-no").addEventListener("click", () => answer(false));
     $("printer-restart").addEventListener("click", () => {
-        current = printerTroubleshooter.start;
-        $("printer-trail").replaceChildren();
-        $("printer-fix-result").textContent = "";
+        trail = [];
+        const progress = store.load();
+        progress.exercises.printerTrail = [];
+        store.save(progress);
         renderPrinter();
         $("printer-yes").focus({ preventScroll: true });
     });
     renderPrinter();
-    return initializeNetworkingCourse();
+    return initializeNetworkingCourse({ store, adapter });
 }

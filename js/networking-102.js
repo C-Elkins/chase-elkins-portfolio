@@ -1,5 +1,5 @@
 import { networkingModules102 } from "./networking-course-102.mjs";
-import { initializeNetworkingCourse } from "./networking-course.js?v=2026-11-12-course-102-2";
+import { initializeNetworkingCourse } from "./networking-course.js?v=2026-11-15-progress-checklist";
 import { buildFigure, buildTable } from "./course-charts.js?v=2026-11-12-course-102-2";
 
 const make = (tag, text, className) => {
@@ -9,7 +9,7 @@ const make = (tag, text, className) => {
     return node;
 };
 
-function buildChapter(module) {
+export function buildChapter(module) {
     const id = module.chapters[0];
     const article = make("article", undefined, "panel learn-chapter course-102-chapter");
     article.id = id;
@@ -48,10 +48,10 @@ function buildChapter(module) {
     return article;
 }
 
-export function initializeNetworking102() {
+export function initializeNetworking102({ store, adapter }) {
     const staging = document.getElementById("learn102-chapters");
     staging.append(...networkingModules102.map(buildChapter));
-    const route = initializeNetworkingCourse({ prefix: "learn102", modules: networkingModules102, legacy: false });
+    const route = initializeNetworkingCourse({ prefix: "learn102", modules: networkingModules102, legacy: false, store, adapter });
     staging.remove();
     return route;
 }

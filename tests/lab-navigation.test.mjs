@@ -48,7 +48,8 @@ export async function runLabNavigationTests() {
         assert(navigation.querySelectorAll(".lab-library-group").length === 2, "Courses and labs have separate groups");
         assert(links.every(link => !link.hidden && link.getBoundingClientRect().height >= 44), "Every destination has a visible touch-sized target");
         await filter("networking");
-        assert(links.filter(link => !link.hidden).length === 3, "Search narrows to all networking courses");
+        const courses = [...navigation.querySelector('[data-kind="Course"]').querySelectorAll("a")];
+        assert(links.filter(link => !link.hidden).length === courses.length && courses.every(link => !link.hidden), "Search narrows to all networking courses");
         assert(navigation.querySelector('[data-kind="Interactive lab"]').hidden, "Empty groups disappear from search");
         await filter("courses");
         assert(links.filter(link => !link.hidden).length === navigation.querySelector('[data-kind="Course"]').querySelectorAll("a").length, "Search also recognizes category names");

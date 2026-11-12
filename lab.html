@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self' blob:; connect-src 'none'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-    <meta name="description" content="Chase Elkins' interactive engineering lab: Networking 101, 102, Applied Networking with hands-on challenges, networks, algorithms, audio, compression, and browser-local encryption and hashing.">
+    <meta name="description" content="Chase Elkins' interactive engineering lab: Networking 101, 102, Applied and Advanced Networking, printer networking, hands-on simulations, and more.">
     <meta name="theme-color" content="#eef3ef">
     <script src="js/theme.js?v=2026-11-10"></script>
     <title>Engineering Lab | Chase Elkins</title>
     <link rel="canonical" href="https://c-elkins.github.io/chase-elkins-portfolio/lab.html">
     <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
     <link rel="preload" href="assets/fonts/share-tech-mono.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="stylesheet" href="css/lab.css?v=2026-11-13-practice-labs">
-    <link rel="stylesheet" href="css/guided-course.css?v=2026-11-13-practice-labs">
-    <link rel="stylesheet" href="css/practice-labs.css?v=2026-11-13-practice-labs">
-    <script type="module" src="js/lab.js?v=2026-11-13-practice-labs"></script>
+    <link rel="stylesheet" href="css/lab.css?v=2026-11-15-progress-checklist">
+    <link rel="stylesheet" href="css/guided-course.css?v=2026-11-15-progress-checklist">
+    <link rel="stylesheet" href="css/practice-labs.css?v=2026-11-14-printers">
+    <script type="module" src="js/lab.js?v=2026-11-15-advanced"></script>
 </head>
 <body class="lab-compact">
     <a class="skip" href="#main">Skip to experiments</a>
@@ -45,6 +45,8 @@
                                 <a href="#learn">00 / Networking 101</a>
                                 <a href="#learn102">00B / Networking 102</a>
                                 <a href="#applied-networking">00C / Applied networking</a>
+                                <a href="#advanced-networking">00D / Advanced networking</a>
+                                <a href="#learnprint">00E / Printer networking</a>
                             </div>
                         </div>
                         <div class="lab-library-group" data-kind="Interactive lab">
@@ -65,19 +67,49 @@
                 </div>
             </details>
             <div class="lab-current"><span id="lab-current-kind">Interactive lab</span><strong id="lab-current-title">Network studio</strong></div>
-            <button id="applied-studio-return" type="button" class="quiet" hidden aria-label="Return to your Applied Networking lesson">Back to course</button>
+            <button id="learning-backup-open" class="quiet learning-backup-trigger" type="button" aria-label="Save or restore course progress">Save / restore <span class="sr-only">progress</span><small id="learning-backup-reminder"></small></button>
+            <button id="applied-studio-return" type="button" class="quiet" hidden aria-label="Return to your course lesson">Back to course</button>
             <span class="lab-library-hint">Courses + interactive labs</span>
         </nav>
+        <p id="learning-storage-status" class="learning-storage-status" role="alert" hidden></p>
+        <dialog id="learning-backup" class="learning-backup-dialog" aria-labelledby="learning-backup-title">
+            <header class="learning-backup-header">
+                <div><p class="eyebrow">YOUR LEARNING / LOCAL ONLY</p><h2 id="learning-backup-title">Save / restore progress</h2></div>
+                <button id="learning-backup-close" type="button" class="quiet">Close</button>
+            </header>
+            <p>Progress is stored in this browser without an account. Generate a new backup after changes and save it outside this site's browser data. Generating a code does not prove it was saved elsewhere; a stale backup cannot recover later work.</p>
+            <p class="learning-backup-warning"><strong>Privacy:</strong> The code and file are not encrypted and may contain quiz responses and entered lab settings. Do not enter passwords or sensitive information. Anyone with a copy can read or edit it. The checksum detects accidental damage, not tampering; these learning locks are not secure certification.</p>
+            <div class="learning-backup-columns">
+                <section aria-labelledby="learning-backup-export-title">
+                    <h3 id="learning-backup-export-title">1 / Export current work</h3>
+                    <p>Create a portable offline snapshot of all course progress.</p>
+                    <div class="learning-backup-actions"><button id="learning-backup-generate" type="button">Generate backup</button><button id="learning-backup-copy" type="button" class="quiet">Copy code</button><a id="learning-backup-download" class="learning-backup-download" download="networking-progress-backup.txt" hidden>Download backup file</a></div>
+                    <label for="learning-backup-code">Recovery code (select and copy manually if needed)</label>
+                    <textarea id="learning-backup-code" rows="4" readonly spellcheck="false"></textarea>
+                </section>
+                <section aria-labelledby="learning-backup-import-title">
+                    <h3 id="learning-backup-import-title">2 / Preview a backup</h3>
+                    <p>Paste a recovery code or select a backup file. Nothing changes until you confirm replacement.</p>
+                    <label for="learning-backup-file">Choose a backup file</label>
+                    <input id="learning-backup-file" type="file" accept=".txt,text/plain">
+                    <label for="learning-backup-import">Or paste a recovery code</label>
+                    <textarea id="learning-backup-import" rows="4" maxlength="2800000" spellcheck="false"></textarea>
+                    <div class="learning-backup-actions"><button id="learning-backup-preview" type="button">Preview backup</button><button id="learning-backup-replace" type="button" disabled>Replace progress</button></div>
+                </section>
+            </div>
+            <p id="learning-backup-status" role="status" aria-live="polite"></p>
+            <div id="learning-backup-comparison" class="learning-backup-comparison" hidden></div>
+        </dialog>
 
         <section id="learn" class="experiment learn" hidden>
             <div id="learn-overview">
             <div class="section-top"><div><p class="eyebrow">00 / NETWORKING 101</p><h2>Start here. Then go deeper.</h2></div><span class="badge">BEGINNER FRIENDLY / NO JARGON FIRST</span></div>
-            <p class="section-intro">A network is just devices agreeing on how to pass messages. Build that mental model through 14 open modules: learn the idea, work through a real-world scenario, then try an optional three-question check. Explore in any order, revisit explanations, and use the Network Studio to see protocols in motion.</p>
+            <p class="section-intro">A network is just devices agreeing on how to pass messages. Build that mental model through 14 open modules: learn the idea, work through a real-world scenario, then try a five-question check. Explore in any order, revisit explanations, and use the Network Studio to see protocols in motion.</p>
             <div class="panel learn-course" aria-labelledby="learn-course-title">
-                <div class="learn-course-heading"><div><p class="learn-kicker">YOUR LEARNING PATH</p><h3 id="learn-course-title">Pick a module. Nothing is locked.</h3></div><span class="badge">14 MODULES / 42 QUESTIONS</span></div>
+                <div class="learn-course-heading"><div><p class="learn-kicker">YOUR LEARNING PATH</p><h3 id="learn-course-title">Pick a module. Nothing is locked.</h3></div><span class="badge">14 MODULES / 70 QUESTIONS</span></div>
                 <p>Each module includes goals, deeper explanations and a practice scenario with a revealable answer. Quizzes are for learning, not certification. You can retry as often as you like.</p>
-                <div class="learn-course-progress"><label for="learn-course-progress">Quizzes checked this visit</label><progress id="learn-course-progress" max="14" value="0"></progress><span id="learn-course-count" class="learn-course-count" role="status">0 of 14</span></div>
-                <p class="hint">Answers and latest scores stay in this page's memory only. Switching Lab tabs keeps them; reloading clears them. No accounts, uploads or saved tracking.</p>
+                <div class="learn-course-progress"><label for="learn-course-progress">Module quizzes passed (4/5)</label><progress id="learn-course-progress" max="14" value="0"></progress><span id="learn-course-count" class="learn-course-count" role="status">0 of 14</span></div>
+                <p class="hint">Lessons and drafts save locally in this browser. Quizzes do not lock 101, but passing all 101 and 102 checks is required for Applied Networking. Studied marks are self-reported.</p>
                 <a id="learn-resume" class="learn-next-module" hidden>Return to your last module</a>
                 <nav id="learn-module-map" class="learn-module-map" aria-label="Networking course modules"></nav>
             </div>
@@ -342,16 +374,16 @@
         <section id="learn102" class="experiment learn learn-102" hidden>
             <div id="learn102-overview">
             <div class="section-top"><div><p class="eyebrow">00B / NETWORKING 102</p><h2>Go deeper. <span>Do the math.</span></h2></div><span class="badge">FOLLOWS NETWORKING 101 / GRAPHS INCLUDED</span></div>
-            <p class="section-intro">Networking 101 built the mental model. Networking 102 shows the machinery underneath it: subnet math, routing decisions, NAT, VLANs, Spanning Tree, IPv6, TCP congestion control, performance math, DNS, wireless design, tunnels, QoS and packet analysis. Every module has worked examples, original graphs, a practice scenario and a four-question test.</p>
+            <p class="section-intro">Networking 101 built the mental model. Networking 102 shows the machinery underneath it: subnet math, routing decisions, NAT, VLANs, Spanning Tree, IPv6, TCP congestion control, performance math, DNS, wireless design, tunnels, QoS and packet analysis. Every module has worked examples, original graphs, a practice scenario and a five-question test.</p>
             <div class="panel learn-course" aria-labelledby="learn102-course-title">
-                <div class="learn-course-heading"><div><p class="learn-kicker">YOUR DEEPER LEARNING PATH</p><h3 id="learn102-course-title">Fourteen modules. Still nothing locked.</h3></div><span class="badge">14 MODULES / 56 QUESTIONS</span></div>
+                <div class="learn-course-heading"><div><p class="learn-kicker">YOUR DEEPER LEARNING PATH</p><h3 id="learn102-course-title">Fourteen modules. Still nothing locked.</h3></div><span class="badge">14 MODULES / 70 QUESTIONS</span></div>
                 <p>The order builds from addressing to routing, switching, transport, services, wireless and analysis, but every module is open. When a module relies on a 101 idea, it links back to that lesson instead of repeating it.</p>
                 <div class="course-prereqs" aria-label="Networking 101 lessons this course assumes">
                     <strong>Before you start, be comfortable with:</strong>
                     <a href="#learn-addresses">Addresses &amp; subnets</a><a href="#learn-ports">Ports &amp; transport</a><a href="#learn-layers">Layers &amp; encapsulation</a><a href="#learn-join">DHCP &amp; DNS</a><a href="#learn-fix">Troubleshoot with evidence</a>
                 </div>
-                <div class="learn-course-progress"><label for="learn102-course-progress">Tests checked this visit</label><progress id="learn102-course-progress" max="14" value="0"></progress><span id="learn102-course-count" class="learn-course-count" role="status">0 of 14</span></div>
-                <p class="hint">Answers and latest scores stay in this page's memory only. Switching Lab tabs keeps them; reloading clears them. No accounts, uploads or saved tracking.</p>
+                <div class="learn-course-progress"><label for="learn102-course-progress">Module quizzes passed (4/5)</label><progress id="learn102-course-progress" max="14" value="0"></progress><span id="learn102-course-count" class="learn-course-count" role="status">0 of 14</span></div>
+                <p class="hint">Lessons and drafts save locally in this browser. Quizzes do not lock 102, but passing all 101 and 102 checks is required for Applied Networking. Studied marks are self-reported.</p>
                 <a id="learn102-resume" class="learn-next-module" hidden>Return to your last module</a>
                 <nav id="learn102-module-map" class="learn-module-map" aria-label="Networking 102 modules"></nav>
             </div>
@@ -373,8 +405,57 @@
             </div>
             <div id="learn102-chapters" hidden></div>
         </section>
+        <section id="learnprint" class="experiment learn learn-print" hidden>
+            <div id="learnprint-overview">
+            <div class="section-top"><div><p class="eyebrow">00E / PRINTER NETWORKING</p><h2>Printers, <span>properly understood.</span></h2></div><span class="badge">STANDALONE / OPEN ACCESS</span></div>
+            <p class="section-intro">Printers are small networked computers that every organization depends on. This course follows a job from Print to paper, then covers addressing, discovery across VLANs, IPP and other print protocols, drivers and page languages, print servers, wireless and mobile printing, scanning, security and a repeatable troubleshooting method. It builds on the printer lessons in Networking 101 without repeating them.</p>
+            <div class="panel learn-course" aria-labelledby="learnprint-course-title">
+                <div class="learn-course-heading"><div><p class="learn-kicker">YOUR PRINTER LEARNING PATH</p><h3 id="learnprint-course-title">Ten modules, five cases and a final test.</h3></div><span class="badge">10 MODULES / 40 QUESTIONS</span></div>
+                <p>Every module is open and has diagrams, a practice scenario and a four-question check. Finish with troubleshooting cases and a 20-question final test. Examples use documentation addresses and vendor-neutral terms.</p>
+                <div class="course-prereqs" aria-label="Lessons this course assumes">
+                    <strong>Helpful first:</strong>
+                    <a href="#printer-connect">Printers: connect &amp; address (101)</a><a href="#printer-discover">Printers: discover &amp; deliver (101)</a><a href="#learn-ports">Ports &amp; transport (101)</a><a href="#learn102-vlans">VLANs &amp; trunking (102)</a>
+                </div>
+                <div class="learn-course-progress"><label for="learnprint-course-progress">Module checks completed</label><progress id="learnprint-course-progress" max="10" value="0"></progress><span id="learnprint-course-count" class="learn-course-count" role="status">0 of 10</span></div>
+                <p class="hint">Lessons, drafts and results save locally in this browser. Printer Networking is open and is not a prerequisite for another course.</p>
+                <a id="learnprint-resume" class="learn-next-module" hidden>Return to your last module</a>
+                <nav id="learnprint-module-map" class="learn-module-map" aria-label="Printer networking modules"></nav>
+                <nav class="lesson-nav print-practice-nav" aria-label="Printer course practice"><a href="#learnprint-cases">Practice / Troubleshooting cases</a><a href="#learnprint-final">Finish / Final test</a></nav>
+            </div>
+            <div id="learnprint-practice">
+                <div class="panel print-practice" id="learnprint-cases" tabindex="-1">
+                    <div class="learn-course-heading"><div><p class="learn-kicker">APPLY IT</p><h3>Troubleshooting cases</h3></div><span class="badge">5 CASES</span></div>
+                    <p>Each case gives a symptom and the evidence collected so far. Choose the most useful conclusion, then read why.</p>
+                    <div id="learnprint-case-list" class="print-case-list"></div>
+                </div>
+                <div class="panel print-practice" id="learnprint-final" tabindex="-1">
+                    <div class="learn-course-heading"><div><p class="learn-kicker">FINISH THE COURSE</p><h3>Final test</h3></div><span class="badge">20 QUESTIONS / TARGET 16</span></div>
+                    <p>Two questions from every module. Reach 16 correct to meet the final target. Missed questions link back to the module to review, and you can retake the test as often as you like.</p>
+                    <div id="learnprint-final-form" class="learn-quiz print-final"></div>
+                    <div id="learnprint-final-review" class="print-final-review" hidden></div>
+                </div>
+            </div>
+            </div>
+            <div id="learnprint-workspace" class="learn-workspace" hidden>
+                <aside class="learn-sidebar" aria-label="Printer networking navigator">
+                    <a class="learn-all-modules" href="#learnprint">All modules</a>
+                    <p class="learn-kicker">PRINTER NETWORKING</p>
+                    <nav id="learnprint-sidebar-nav" class="learn-sidebar-nav" aria-label="Choose a printer networking module"></nav>
+                </aside>
+                <div class="learn-module-main">
+                    <div class="panel learn-module-toolbar" id="learnprint-module-toolbar">
+                        <div class="learn-course-heading"><div><p id="learnprint-module-position" class="learn-kicker"></p><h3 id="learnprint-module-title" tabindex="-1"></h3></div><a class="learn-all-modules" href="#learnprint">All modules</a></div>
+                        <label class="learn-mobile-picker">Jump to a module<select id="learnprint-module-select"></select></label>
+                        <nav class="learn-module-paging" aria-label="Previous or next printer networking module"><a id="learnprint-module-prev">Previous module</a><a id="learnprint-module-next">Next module</a></nav>
+                    </div>
+                    <div id="learnprint-module-content"></div>
+                </div>
+            </div>
+            <div id="learnprint-chapters" hidden></div>
+        </section>
 
         <section id="applied-networking" class="experiment" hidden aria-label="Applied Networking course"></section>
+        <section id="advanced-networking" class="experiment" hidden aria-label="Advanced Networking course"></section>
 
         <section id="network" class="experiment">
             <div class="section-top">

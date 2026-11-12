@@ -1,9 +1,8 @@
 import {
     newCourseProgress, eligibility, moduleComplete, makeAttempt, gradeAttempt,
-    recordAssessment, recordPractical, courseComplete
+    saveAssessmentDraft, restoreAssessmentDraft, recordAssessment, recordPractical, recordCapstone, courseComplete
 } from "./course-progression.mjs";
-import { createCourseStore } from "./course-progress.js";
-import { restoreWorkbench, saveWorkbench } from "./network-workbench-model.mjs";
+import { foundationRequirements, appliedRequirements, guidedEntryRequirement } from "./learning-courses.mjs";
 import { mountNetworkWorkbench } from "./network-workbench.js";
 import { buildFigure, buildTable } from "./course-charts.js";
 
@@ -27,10 +26,11 @@ const button = (label, action, className) => {
 const hash = value => value.startsWith("#") ? value : `#${value}`;
 const passed = score => Boolean(score && score.correct / score.total >= .8);
 const scoreLabel = score => score ? `${score.correct}/${score.total}${passed(score) ? " · passed" : " · not yet passed"}` : "Not yet submitted";
-const overviewHash = "#applied-networking";
-
-export function initializeGuidedCourse({ course, root }) {
-    const store = createCourseStore(course, { validateWorkbench: (id, value) => saveWorkbench(restoreWorkbench(id, value)) });
+export function initializeGuidedCourse({ course, root, store, learningStore, mountWorkbench = mountNetworkWorkbench }) {
+    if (!store || !learningStore) throw new TypeError("Guided course progress storage is required.");
+    const prefix = course.routePrefix || "applied";
+    const overviewHash = `#${course.id}`;
+    const stageHash = stage => `#${prefix}-${stage}`;
     let progress = store.load();
     let currentHash = overviewHash;
     let activeWorkbench = null;
@@ -42,7 +42,7 @@ export function initializeGuidedCourse({ course, root }) {
     root.replaceChildren();
 
     const chrome = make("header", undefined, "gc-chrome");
-    const brand = link(overviewHash, "APPLIED NETWORKING", "gc-course-brand");
+    const brand = link(overviewHash, (course.shortTitle || course.title).toUpperCase(), "gc-course-brand");
     const pickerLabel = make("label", undefined, "gc-picker");
     const picker = make("select");
     picker.setAttribute("aria-label", "Course destination");
@@ -52,7 +52,8 @@ export function initializeGuidedCourse({ course, root }) {
     saveStatus.setAttribute("role", "status");
     saveStatus.setAttribute("aria-live", "polite");
     const reset = button("Reset course progress", () => {
-        if (!window.confirm("Delete only this course's saved progress, unfinished workbenches and visit-only assessment drafts? Other courses and your theme are not affected.")) return;
+        const downstream = course.id === "applied-networking" ? " Advanced Networking will lock again, but its saved work will be kept." : "";
+        if (!window.confirm(`Delete only this course's saved progress, assessment drafts and workbenches? Other courses and your theme are not erased.${downstream}`)) return;
         if (!store.reset()) { updateSaveStatus(false); return; }
         workbenches.forEach(item => item.controller.destroy());
         workbenches.clear();
@@ -72,10 +73,24 @@ export function initializeGuidedCourse({ course, root }) {
     root.append(chrome, content);
     updateSaveStatus();
     updatePicker();
+    const unsubscribe = learningStore.subscribe(() => updateSaveStatus());
+
+    function entryAccess() {
+        return guidedEntryRequirement(course.id, learningStore.snapshot());
+    }
+
+    function accessFor(stage) {
+        const entry = entryAccess();
+        return entry.allowed ? eligibility(course, progress, stage) : entry;
+    }
+
+    function completed() {
+        return entryAccess().allowed && courseComplete(course, progress);
+    }
 
     function updateSaveStatus(saved) {
         saveStatus.classList.toggle("gc-save-failed", store.blocked);
-        saveStatus.textContent = store.blocked ? store.issue : saved ? "Progress saved in this browser only. Unfinished assessment answers last for this visit." : "Local browser progress · no account or server record. Assessment drafts are visit-only.";
+        saveStatus.textContent = store.blocked ? store.issue : saved ? "Progress and unfinished work saved in this browser." : "Local browser progress · no account or server record. Export a backup to keep a portable copy.";
     }
 
     function persist() {
@@ -86,22 +101,24 @@ export function initializeGuidedCourse({ course, root }) {
     }
 
     function updatePicker() {
-        const entries = [[overviewHash, "Overview & syllabus"], ["#applied-readiness", `Readiness · ${scoreLabel(progress.readiness)}`]];
+        const entries = [[overviewHash, "Overview & syllabus"]];
+        if (course.readiness) entries.push([stageHash("readiness"), `Readiness · ${scoreLabel(progress.readiness)}`]);
         course.modules.forEach((module, index) => {
-            const access = eligibility(course, progress, module.id);
-            entries.push([`#applied-${module.id}`, `${index + 1}. ${module.title}${moduleComplete(progress, module.id) ? " · complete" : access.allowed ? "" : " · locked"}`]);
+            const access = accessFor(module.id);
+            entries.push([stageHash(module.id), `${index + 1}. ${module.title}${!access.allowed ? " · locked" : moduleComplete(progress, module.id) ? " · complete" : ""}`]);
         });
-        const finalAllowed = eligibility(course, progress, "final").allowed;
-        entries.push(["#applied-review", `Cumulative review${finalAllowed ? "" : " · locked"}`], ["#applied-final", `Final exam${finalAllowed ? "" : " · locked"}`]);
+        if (course.capstone) entries.push([stageHash("capstone"), `Capstone · ${progress.capstone ? "passed" : accessFor("capstone").allowed ? "available" : "locked"}`]);
+        const finalAllowed = accessFor("final").allowed;
+        entries.push([stageHash("review"), `Cumulative review${finalAllowed ? "" : " · locked"}`], [stageHash("final"), `Final exam${finalAllowed ? "" : " · locked"}`]);
         picker.replaceChildren(...entries.map(([value, title]) => {
             const option = make("option", title); option.value = value; return option;
         }));
         const module = moduleForHash(currentHash);
-        picker.value = module ? `#applied-${module.id}` : currentHash;
+        picker.value = module ? stageHash(module.id) : currentHash;
     }
 
     function moduleForHash(value) {
-        return course.modules.find(module => value === `#applied-${module.id}` || module.lessons.some(lesson => value === `#${lesson.id}`));
+        return course.modules.find(module => [stageHash(module.id), stageHash(`${module.id}-practical`), stageHash(`${module.id}-check`)].includes(value) || module.lessons.some(lesson => value === `#${lesson.id}`));
     }
 
     function heading(title, kicker, description) {
@@ -116,8 +133,8 @@ export function initializeGuidedCourse({ course, root }) {
 
     function ruleNotice() {
         const notice = make("details", undefined, "gc-privacy");
-        notice.append(make("summary", "Local progress, learning locks & assessment rules"), make("p", "Pass readiness with 16/20, each module check with 4/5, and the final with 24/30. Every module also needs its hands-on practical pass. Attempts are untimed with unlimited retries and hints. Retrying or resetting a scenario never removes an earned pass. A retry is blueprint-balanced and may repeat some questions."));
-        notice.append(make("p", "Progress and validated workbench configuration are stored only in this browser. Assessment drafts and console history are not saved across reloads. Changing browsers/devices, private browsing, or clearing site data can remove your record. A failed save is shown above; the course still works for the current visit."));
+        notice.append(make("summary", "Local progress, learning locks & assessment rules"), make("p", `${course.readiness ? "Pass readiness with 16/20, " : ""}pass each module check with 4/5${course.capstone ? ", pass the separate capstone" : ""}, and pass the final with 24/30. Every module also needs its practical pass. Attempts are untimed with unlimited retries and hints. An earned pass survives a failed retry. A balanced retry may repeat some questions.`));
+        notice.append(make("p", "Progress, assessment drafts, and supported workbench settings are stored only in this browser. Unpinned console history is not saved. Private browsing, clearing site data, or switching devices can remove local work; export a fresh backup after changes. Storage errors are shown above."));
         notice.append(make("p", "These client-side learning locks are not secure access control: source, answers and browser storage are inspectable. Passing means completing this portfolio's simplified learning model, not an independently verified qualification or professional certification. No account, identity collection or network probes are involved."));
         return notice;
     }
@@ -125,46 +142,158 @@ export function initializeGuidedCourse({ course, root }) {
     function buildCompletion() {
         const complete = make("section", undefined, "gc-completion");
         complete.setAttribute("aria-label", "Course completion");
-        complete.append(make("p", "COURSE PASSED / LOCAL RECORD", "gc-eyebrow"), make("h3", "From symptoms to a verified repair"), make("p", `Readiness, all eight practical challenges, all eight knowledge checks, and the final are passed. Best final result: ${scoreLabel(progress.final)}.`), make("p", "This browser-local record is not independently verified and is not a professional certificate.", "gc-muted"));
+        complete.append(make("p", "COURSE PASSED / LOCAL RECORD", "gc-eyebrow"), make("h3", `${course.title} completed`), make("p", `${course.readiness ? "Readiness, " : ""}all ${course.modules.length} practical challenges and knowledge checks${course.capstone ? ", the separate capstone" : ""}, and the final are passed. Best final result: ${scoreLabel(progress.final)}.`), make("p", "This browser-local record is not independently verified and is not a professional certificate.", "gc-muted"));
         const goals = make("ul");
         course.modules.forEach(module => goals.append(make("li", module.title)));
-        complete.append(goals, link("#applied-review", "Revisit the cumulative study guide", "gc-action"));
+        complete.append(goals, link(stageHash("review"), "Revisit the cumulative study guide", "gc-action"));
         return complete;
     }
 
     function overview() {
-        heading(course.title, "GUIDED COURSE / 8 MODULES / 24 LESSONS", course.description);
-        if (courseComplete(course, progress)) content.append(buildCompletion());
+        progress = store.load();
+        heading(course.title, `GUIDED COURSE / ${course.modules.length} MODULES / ${course.modules.reduce((count, module) => count + module.lessons.length, 0)} LESSONS`, course.description);
+        if (entryAccess().allowed && courseComplete(course, progress)) content.append(buildCompletion());
         const introduction = make("div", undefined, "gc-overview-intro");
         const pathway = make("section", undefined, "gc-card gc-pathway");
-        pathway.append(make("h3", "A repair is more than a green ping."), make("p", "Work a branch-office incident from baseline evidence to safe configuration change and verified handoff. Study each module's three lessons, investigate its live workbench, then pass the knowledge check."));
-        const completed = course.modules.filter(module => moduleComplete(progress, module.id)).length;
+        pathway.append(make("h3", course.pathwayTitle || "A repair is more than a green ping."), make("p", course.pathwayDescription || "Work a branch-office incident from baseline evidence to safe configuration change and verified handoff. Study each module's three lessons, investigate its live workbench, then pass the knowledge check."));
+        const completedCount = course.modules.filter(module => moduleComplete(progress, module.id)).length;
         const meter = make("progress");
         meter.max = course.modules.length;
-        meter.value = completed;
+        meter.value = completedCount;
         meter.setAttribute("aria-label", "Modules with practical and knowledge passes");
-        pathway.append(meter, make("p", `${completed} of ${course.modules.length} modules complete · both practical + knowledge required`, "gc-muted"));
+        pathway.append(meter, make("p", `${completedCount} of ${course.modules.length} modules complete · both practical + knowledge required`, "gc-muted"));
         const actions = make("div", undefined, "gc-actions");
-        actions.append(link("#applied-readiness", passed(progress.readiness) ? "Review readiness result / retake" : "Start readiness · 20 questions", "gc-action gc-primary"));
+        const entry = entryAccess();
+        actions.append(link(!entry.allowed ? entry.target : course.readiness ? stageHash("readiness") : stageHash(course.modules[0].id),
+            !entry.allowed ? "Go to next missing prerequisite" : course.readiness ? passed(progress.readiness) ? "Review readiness result / retake" : "Start readiness · 20 questions" : "Start module 1",
+            "gc-action gc-primary"));
         if (progress.resume !== overviewHash) actions.append(link(progress.resume, "Resume your last course page", "gc-action"));
         introduction.append(pathway);
         const requirements = make("aside", undefined, "gc-card");
         requirements.append(make("p", "THE LEARNING PATH", "gc-eyebrow"), make("ol"));
-        requirements.lastElementChild.append(...["Prepare with open Networking 101 + 102.", "Pass readiness to enter module 1.", "Pass each practical AND knowledge check to unlock the next module.", "Complete all eight modules before cumulative review and the final."].map(text => make("li", text)));
+        const steps = course.readiness
+            ? ["Pass all Networking 101 and 102 module quizzes (4/5 each).", "Pass readiness (16/20) to enter module 1."]
+            : ["Complete Applied Networking, including the current 101 and 102 prerequisites."];
+        steps.push("Pass each practical AND knowledge check (4/5) to unlock the next module.",
+            course.capstone ? "Pass the separate capstone after all modules, then pass the final (24/30)." : `Complete all ${course.modules.length} modules, then pass the final (24/30).`);
+        requirements.lastElementChild.append(...steps.map(text => make("li", text)));
         introduction.append(requirements);
-        content.append(actions, introduction);
+        content.append(actions, introduction, prerequisiteChecklist());
         content.append(make("h3", "Course syllabus", "gc-section-title"));
         const grid = make("div", undefined, "gc-module-grid");
         course.modules.forEach((module, index) => {
-            const access = eligibility(course, progress, module.id);
+            const access = accessFor(module.id);
             const card = make("article", undefined, `gc-module-card${access.allowed ? "" : " gc-locked-card"}`);
-            card.append(make("p", `MODULE ${String(index + 1).padStart(2, "0")} / ${moduleComplete(progress, module.id) ? "COMPLETE" : access.allowed ? "AVAILABLE" : "LOCKED"}`, "gc-eyebrow"), make("h4", module.title), make("p", module.summary));
+            card.append(make("p", `MODULE ${String(index + 1).padStart(2, "0")} / ${!access.allowed ? "LOCKED" : moduleComplete(progress, module.id) ? "COMPLETE" : "AVAILABLE"}`, "gc-eyebrow"), make("h4", module.title), make("p", module.summary));
             const lessons = make("ol", undefined, "gc-syllabus-lessons");
             module.lessons.forEach(lesson => lessons.append(make("li", lesson.title)));
-            card.append(lessons, moduleStatus(module), make("p", access.allowed ? "Three lessons, one practical incident, one five-question check." : access.reason, "gc-muted"), link(`#applied-${module.id}`, access.allowed ? "Open module →" : "View prerequisite →", "gc-action"));
+            card.append(lessons, moduleStatus(module), make("p", access.allowed ? "Three lessons, one practical incident, one five-question check." : access.reason, "gc-muted"), link(stageHash(module.id), access.allowed ? "Open module →" : "View prerequisite →", "gc-action"));
             grid.append(card);
         });
-        content.append(grid, publicStudyGuide(), ruleNotice());
+        content.append(grid, progressChecklist());
+        if (course.readiness) content.append(publicStudyGuide());
+        content.append(ruleNotice());
+    }
+
+    function prerequisiteChecklist() {
+        const snapshot = learningStore.snapshot();
+        const section = make("section", undefined, "gc-prerequisite-checklist");
+        const entry = guidedEntryRequirement(course.id, snapshot);
+        section.append(make("h3", "Prerequisite checklist"), make("p", entry.allowed ? "All entry prerequisites are met. Studied marks are self-reported and do not replace quiz passes." : `${entry.reason} Existing later-course work is preserved while access is locked.`));
+        if (!entry.allowed) section.append(link(entry.target, "Go to the next missing activity →", "gc-action gc-primary"));
+        foundationRequirements(snapshot).forEach(group => {
+            const details = make("details");
+            details.append(make("summary", `${group.title} · ${group.passed}/${group.total} quizzes passed · 4/5 each`));
+            const list = make("ul");
+            group.modules.forEach(item => {
+                const row = make("li");
+                row.append(make("span", item.passed ? "Passed · " : "Remaining · "), link(item.href, item.title));
+                list.append(row);
+            });
+            details.append(list);
+            section.append(details);
+        });
+        if (course.id === "advanced-networking") {
+            const applied = appliedRequirements(snapshot);
+            const details = make("details");
+            details.append(make("summary", `Applied Networking · ${applied.modules.filter(item => item.complete).length}/${applied.modules.length} modules complete${applied.complete ? " · passed" : " · remaining requirements"}`));
+            const list = make("ul");
+            const item = (label, ok, href) => {
+                const row = make("li");
+                row.append(make("span", ok ? "Passed · " : "Remaining · "), link(href, label));
+                list.append(row);
+            };
+            item(applied.readiness.label, applied.readiness.passed, applied.readiness.href);
+            applied.modules.forEach(module => {
+                item(`${module.title} · practical`, module.practical, module.practicalHref);
+                item(`${module.title} · knowledge check (4/5)`, module.quiz, module.quizHref);
+            });
+            item(applied.final.label, applied.final.passed, applied.final.href);
+            details.append(list);
+            section.append(details);
+        }
+        return section;
+    }
+
+    function progressChecklist() {
+        const section = make("section", undefined, "gc-progress-checklist");
+        const completedItems = [];
+        const remainingItems = [];
+        const add = (label, done, href) => (done ? completedItems : remainingItems).push({ label, href });
+        const finalScore = scoreLabel(progress.final);
+        const latestFinalScore = scoreLabel(progress.latest.final);
+        const studiedCount = progress.studied.length;
+        const lessonCount = course.modules.reduce((count, module) => count + module.lessons.length, 0);
+
+        if (course.readiness) {
+            const score = progress.readiness;
+            const latest = progress.latest.readiness;
+            add(`Readiness assessment · best ${scoreLabel(score)} · latest ${scoreLabel(latest)} · 16/20 required`,
+                passed(score) && score.correct >= 16, stageHash("readiness"));
+        }
+        course.modules.forEach(module => {
+            const saved = progress.modules[module.id];
+            const score = saved?.score;
+            const latest = progress.latest[module.id];
+            const index = course.modules.indexOf(module) + 1;
+            add(`Module ${index} practical · ${saved?.practical ? "passed" : "not yet passed"} · ${module.title}`,
+                Boolean(saved?.practical), stageHash(`${module.id}-practical`));
+            add(`Module ${index} knowledge check · best ${scoreLabel(score)} · latest ${scoreLabel(latest)} · 4/5 required`,
+                passed(score), stageHash(`${module.id}-check`));
+        });
+        if (course.capstone) {
+            add(`Separate capstone practical · ${progress.capstone ? "passed" : "not yet passed"}`,
+                progress.capstone, stageHash("capstone"));
+        }
+        add(`Final exam · best ${finalScore} · latest ${latestFinalScore} · 24/30 required`,
+            passed(progress.final) && progress.final.correct >= 24, stageHash("final"));
+
+        const activityList = (items, emptyText) => {
+            const list = make("ul");
+            if (!items.length) list.append(make("li", emptyText));
+            items.forEach(item => {
+                const row = make("li");
+                const destination = link(item.href, item.label);
+                row.append(destination);
+                list.append(row);
+            });
+            return list;
+        };
+        const completed = make("details");
+        completed.append(make("summary", `Completed · ${completedItems.length} required activities`),
+            activityList(completedItems, "No required activities completed yet."));
+        const remaining = make("details");
+        remaining.append(make("summary", `Not completed · ${remainingItems.length} required activities`),
+            activityList(remainingItems, "All required course activities are complete."));
+        const total = completedItems.length + remainingItems.length;
+        section.append(
+            make("p", "COURSE PROGRESS", "gc-eyebrow"),
+            make("h3", "Completed and remaining"),
+            make("p", `${completedItems.length}/${total} required activities complete · ${studiedCount}/${lessonCount} lessons marked studied. Studied marks are self-reported and do not replace a quiz, practical, or final pass.`, "gc-muted"),
+            completed,
+            remaining
+        );
+        return section;
     }
 
     function publicStudyGuide() {
@@ -204,7 +333,10 @@ export function initializeGuidedCourse({ course, root }) {
     function moduleStatus(module) {
         const saved = progress.modules[module.id];
         const status = make("div", undefined, "gc-module-status");
-        status.append(make("span", `Practical challenge: ${saved?.practical ? "passed" : "not yet passed"}`, saved?.practical ? "gc-passed" : ""), make("span", `Knowledge check: ${scoreLabel(saved?.score)}`, passed(saved?.score) ? "gc-passed" : ""));
+        const studied = module.lessons.filter(lesson => progress.studied.includes(lesson.id)).length;
+        status.append(make("span", `Lessons studied: ${studied}/${module.lessons.length} · self-reported`),
+            make("span", `Practical challenge: ${saved?.practical ? "passed" : "not yet passed"}`, saved?.practical ? "gc-passed" : ""),
+            make("span", `Knowledge check best: ${scoreLabel(saved?.score)}${progress.latest[module.id] ? ` · latest ${scoreLabel(progress.latest[module.id])}` : ""}`, passed(saved?.score) ? "gc-passed" : ""));
         return status;
     }
 
@@ -212,13 +344,52 @@ export function initializeGuidedCourse({ course, root }) {
         heading("This stage is not unlocked yet", "PREREQUISITE REQUIRED");
         const box = make("section", undefined, "gc-lock-notice");
         box.append(make("h3", "Complete the required step first"), make("p", access.reason));
-        const target = access.prerequisite === "readiness" ? "#applied-readiness" : `#applied-${access.prerequisite}`;
+        const missing = progress.modules[access.prerequisite];
+        const target = access.target || (access.prerequisite === "readiness" || access.prerequisite === "capstone"
+            ? stageHash(access.prerequisite)
+            : stageHash(`${access.prerequisite}-${missing?.practical ? "check" : "practical"}`));
         box.append(link(target, "Go to the missing prerequisite", "gc-action gc-primary"), link(overviewHash, "View the full syllabus", "gc-action"));
-        if (access.prerequisite === "readiness") box.append(publicStudyGuide());
+        box.append(prerequisiteChecklist());
+        if (access.prerequisite === "readiness" && course.readiness) box.append(publicStudyGuide());
         content.append(box);
     }
 
-    function modulePage(module, lesson) {
+    function getWorkbench(id, challenge, isCapstone = false) {
+        let item = workbenches.get(id);
+        if (!item) {
+            const node = make("div");
+            const controller = mountWorkbench({
+                root: node, id, challenge, saved: progress.workbenches[id], savedDraft: progress.workbenchDrafts[id],
+                onSave(saved, draft) {
+                    progress.workbenches[id] = saved;
+                    if (draft) progress.workbenchDrafts[id] = draft;
+                    persist();
+                },
+                onDraftSave(draft) {
+                    progress.workbenchDrafts[id] = draft;
+                    persist();
+                },
+                onPass(verification) {
+                    if (!accessFor(id).allowed) {
+                        saveStatus.textContent = "The prerequisites changed. Return to the course overview before recording this practical.";
+                        return;
+                    }
+                    progress = isCapstone ? recordCapstone(course, progress, verification) : recordPractical(course, progress, id, verification);
+                    persist();
+                    if (isCapstone) {
+                        const status = content.querySelector("[data-capstone-status]");
+                        if (status) status.textContent = "Capstone practical: passed. The final is now available.";
+                    } else refreshModuleStatuses(course.modules.find(module => module.id === id));
+                }
+            });
+            item = { node, controller };
+            workbenches.set(id, item);
+        }
+        activeWorkbench = item.controller;
+        return item.node;
+    }
+
+    function modulePage(module, lesson, viewHint) {
         const index = course.modules.indexOf(module);
         heading(module.title, `MODULE ${index + 1} OF ${course.modules.length}`, module.summary);
         const statuses = moduleStatus(module);
@@ -227,17 +398,17 @@ export function initializeGuidedCourse({ course, root }) {
         content.append(statuses);
         const nav = make("nav", undefined, "gc-local-nav");
         nav.setAttribute("aria-label", "Module lessons and activities");
-        const view = lesson ? lesson.id : moduleViews.get(module.id) || module.lessons[0].id;
+        const view = lesson ? lesson.id : viewHint || moduleViews.get(module.id) || module.lessons[0].id;
         moduleViews.set(module.id, view);
         module.lessons.forEach((item, position) => {
-            const itemLink = link(`#${item.id}`, `${position + 1}. ${item.title}`);
+            const itemLink = link(`#${item.id}`, `${position + 1}. ${item.title}${progress.studied.includes(item.id) ? " · studied" : ""}`);
             if (view === item.id) itemLink.setAttribute("aria-current", "page");
             nav.append(itemLink);
         });
         for (const [key, title] of [["workbench", "Practical workbench"], ["check", "Knowledge check"]]) {
             const control = button(title, () => {
                 moduleViews.set(module.id, key);
-                const target = `#applied-${module.id}`;
+                const target = stageHash(`${module.id}-${key === "workbench" ? "practical" : "check"}`);
                 if (window.location.hash === target) route(target);
                 else window.location.hash = target;
             });
@@ -246,35 +417,16 @@ export function initializeGuidedCourse({ course, root }) {
         }
         content.append(nav);
         if (view === "workbench") {
-            let item = workbenches.get(module.id);
-            if (!item) {
-                const node = make("div");
-                const controller = mountNetworkWorkbench({
-                    root: node, id: module.id, challenge: module.challenge, saved: progress.workbenches[module.id],
-                    onSave(saved) {
-                        progress.workbenches[module.id] = saved;
-                        persist();
-                    },
-                    onPass(verification) {
-                        progress = recordPractical(course, progress, module.id, verification);
-                        persist();
-                        refreshModuleStatuses(module);
-                    }
-                });
-                item = { node, controller };
-                workbenches.set(module.id, item);
-            }
-            content.append(item.node);
-            activeWorkbench = item.controller;
+            const node = getWorkbench(module.id, module.challenge);
+            content.append(node);
             if (window.matchMedia("(min-width: 1000px)").matches) {
                 window.requestAnimationFrame(() => {
-                    if (!root.hidden && content.contains(item.node)) item.node.scrollIntoView({ block: "start", behavior: "auto" });
+                    if (!root.hidden && content.contains(node)) node.scrollIntoView({ block: "start", behavior: "auto" });
                 });
             }
             const onward = make("p", undefined, "gc-next");
             onward.append(button("Continue to knowledge check →", () => {
-                moduleViews.set(module.id, "check");
-                route(`#applied-${module.id}`);
+                window.location.hash = stageHash(`${module.id}-check`);
             }));
             content.append(onward);
         } else if (view === "check") {
@@ -285,10 +437,11 @@ export function initializeGuidedCourse({ course, root }) {
         }
         const footer = make("nav", undefined, "gc-module-paging");
         footer.setAttribute("aria-label", "Course progression");
-        footer.append(link(index > 0 ? `#applied-${course.modules[index - 1].id}` : overviewHash, index > 0 ? "← Previous module" : "← Course overview"));
+        footer.append(link(index > 0 ? stageHash(course.modules[index - 1].id) : overviewHash, index > 0 ? "← Previous module" : "← Course overview"));
         const next = course.modules[index + 1];
-        const access = eligibility(course, progress, next?.id || "final");
-        const nextLink = link(next ? `#applied-${next.id}` : "#applied-review", access.allowed ? next ? "Next module →" : "Cumulative review →" : "Next step · view prerequisite →");
+        const nextStage = next?.id || (course.capstone ? "capstone" : "final");
+        const access = accessFor(nextStage);
+        const nextLink = link(next ? stageHash(next.id) : stageHash(course.capstone ? "capstone" : "review"), access.allowed ? next ? "Next module →" : course.capstone ? "Capstone →" : "Cumulative review →" : "Next step · view prerequisite →");
         nextLink.dataset.nextStage = module.id;
         footer.append(nextLink);
         content.append(footer);
@@ -299,15 +452,29 @@ export function initializeGuidedCourse({ course, root }) {
             node.replaceChildren(...moduleStatus(module).childNodes);
         });
         const next = course.modules[course.modules.indexOf(module) + 1];
-        const access = eligibility(course, progress, next?.id || "final");
+        const access = accessFor(next?.id || (course.capstone ? "capstone" : "final"));
         const nextLink = content.querySelector(`[data-next-stage="${module.id}"]`);
-        if (nextLink) nextLink.textContent = access.allowed ? next ? "Next module →" : "Cumulative review →" : "Next step · view prerequisite →";
+        if (nextLink) nextLink.textContent = access.allowed ? next ? "Next module →" : course.capstone ? "Capstone →" : "Cumulative review →" : "Next step · view prerequisite →";
     }
 
     function buildLesson(lesson, module) {
         const article = make("article", undefined, "gc-lesson");
         article.id = `${lesson.id}-content`;
         article.append(make("h3", lesson.title), make("p", lesson.intro, "gc-intro"));
+        const studied = button("", () => {
+            progress.studied = progress.studied.includes(lesson.id) ? progress.studied.filter(id => id !== lesson.id) : [...progress.studied, lesson.id];
+            persist();
+            updateStudied();
+            refreshModuleStatuses(module);
+        }, "quiet gc-studied");
+        const updateStudied = () => {
+            const marked = progress.studied.includes(lesson.id);
+            studied.textContent = marked ? "Studied ✓ · mark unread" : "Mark lesson as studied";
+            studied.setAttribute("aria-pressed", String(marked));
+        };
+        studied.title = "Self-reported reading progress; this does not pass a practical or quiz.";
+        updateStudied();
+        article.append(studied, make("p", "Studied is self-reported and does not replace a practical or quiz pass.", "gc-muted"));
         if (module.goals?.length) {
             const goals = make("details", undefined, "gc-goals");
             goals.append(make("summary", "Module learning objectives"));
@@ -340,7 +507,7 @@ export function initializeGuidedCourse({ course, root }) {
         }
         if (lesson.studio?.length) {
             const assignments = make("section", undefined, "gc-studio-assignments");
-            assignments.append(make("h4", "Observe the exchange in Network Studio"), make("p", "Your in-page workbench and assessment drafts remain here while you visit Studio. Return to this lesson to continue.", "gc-muted"));
+            assignments.append(make("h4", "Observe the exchange in Network Studio"), make("p", "Your saved workbench settings and assessment drafts remain in this browser while you visit Studio.", "gc-muted"));
             lesson.studio.forEach(item => {
                 const assignment = make("p");
                 const target = link("#network", item.label);
@@ -363,7 +530,7 @@ export function initializeGuidedCourse({ course, root }) {
         if (next) onward.append(link(`#${next.id}`, `Next lesson: ${next.title}`, "gc-action gc-primary"));
         onward.append(button("Open practical workbench", () => {
             moduleViews.set(module.id, "workbench");
-            const target = `#applied-${module.id}`;
+            const target = stageHash(`${module.id}-practical`);
             if (window.location.hash === target) route(target);
             else window.location.hash = target;
         }));
@@ -377,12 +544,22 @@ export function initializeGuidedCourse({ course, root }) {
 
     function buildAssessment(stage, spec, title) {
         const section = make("section", undefined, "gc-assessment");
-        section.append(make("p", "UNTIMED / UNLIMITED RETAKES", "gc-eyebrow"), make("h3", title), make("p", `${spec.count} questions · ${Math.ceil(spec.count * .8)} correct to pass. Best result: ${scoreLabel(assessmentScore(stage))}.`), make("p", "Draft answers are kept while navigating within this page, including Studio visits, but are NOT saved across reloads or closing the page. Only submitted best scores and earned passes are saved. Feedback appears only after every question is answered and submitted.", "gc-draft-notice"));
+        section.append(make("p", "UNTIMED / UNLIMITED RETAKES", "gc-eyebrow"), make("h3", title), make("p", `${spec.count} questions · ${Math.ceil(spec.count * .8)} correct to pass. Best result: ${scoreLabel(assessmentScore(stage))}. Latest completed: ${scoreLabel(progress.latest[stage])}.`), make("p", "Unfinished answers and question order are saved locally as you work. Feedback appears after every question is answered and submitted. Export an updated backup to move this work to another browser.", "gc-draft-notice"));
         let draft = drafts.get(stage);
+        if (!draft && progress.drafts[stage]) {
+            draft = restoreAssessmentDraft(spec, progress.drafts[stage]);
+            drafts.set(stage, draft);
+        }
+        const saveDraft = value => {
+            progress.drafts[stage] = saveAssessmentDraft(value.attempt, value.answers, Boolean(value.grade));
+            persist();
+        };
         if (!draft) {
             section.append(button(`Start ${spec.count}-question attempt`, () => {
                 try {
-                    drafts.set(stage, { attempt: makeAttempt(spec), answers: Array(spec.count).fill(null), grade: null });
+                    const started = { attempt: makeAttempt(spec), answers: Array(spec.count).fill(null), grade: null };
+                    drafts.set(stage, started);
+                    saveDraft(started);
                     section.replaceWith(buildAssessment(stage, spec, title));
                     content.querySelector(".gc-question input")?.focus();
                 } catch (exception) {
@@ -405,7 +582,7 @@ export function initializeGuidedCourse({ course, root }) {
         form.append(validation, count);
         draft.attempt.forEach((question, index) => {
             const fieldset = make("fieldset", undefined, "gc-question");
-            fieldset.id = `applied-question-${stage}-${index}`;
+            fieldset.id = `${prefix}-question-${stage}-${index}`;
             fieldset.dataset.questionId = question.id;
             const legend = make("legend", `${index + 1}. ${question.prompt}`);
             fieldset.append(legend);
@@ -413,7 +590,7 @@ export function initializeGuidedCourse({ course, root }) {
                 const label = make("label", undefined, "gc-answer");
                 const input = make("input");
                 input.type = "radio";
-                input.name = `applied-${stage}-q-${index}`;
+                input.name = `${prefix}-${stage}-q-${index}`;
                 input.value = optionIndex;
                 input.checked = draft.answers[index] === optionIndex;
                 input.disabled = Boolean(draft.grade);
@@ -423,6 +600,7 @@ export function initializeGuidedCourse({ course, root }) {
                     fieldset.classList.remove("gc-unanswered");
                     fieldset.removeAttribute("aria-invalid");
                     updateCount();
+                    saveDraft(draft);
                 });
                 label.append(input, make("span", text));
                 fieldset.append(label);
@@ -446,16 +624,16 @@ export function initializeGuidedCourse({ course, root }) {
                         validation.hidden = false;
                         validation.textContent = `Answer all questions before submitting. ${grade.missing.length} ${grade.missing.length === 1 ? "question is" : "questions are"} unanswered. No score has been recorded.`;
                         grade.missing.forEach(index => {
-                            const fieldset = form.querySelector(`#applied-question-${stage}-${index}`);
+                            const fieldset = form.querySelector(`#${prefix}-question-${stage}-${index}`);
                             fieldset.classList.add("gc-unanswered");
                             fieldset.setAttribute("aria-invalid", "true");
                         });
-                        form.querySelector(`#applied-question-${stage}-${grade.missing[0]} input`)?.focus();
+                        form.querySelector(`#${prefix}-question-${stage}-${grade.missing[0]} input`)?.focus();
                         return;
                     }
                     progress = recordAssessment(course, progress, stage, grade);
                     draft.grade = grade;
-                    persist();
+                    saveDraft(draft);
                     const replacement = buildAssessment(stage, spec, title);
                     section.replaceWith(replacement);
                     replacement.querySelector(".gc-result")?.focus();
@@ -485,19 +663,21 @@ export function initializeGuidedCourse({ course, root }) {
             }
             const actions = make("div", undefined, "gc-actions");
             actions.append(button("Start a new balanced attempt", () => {
-                drafts.set(stage, { attempt: makeAttempt(spec), answers: Array(spec.count).fill(null), grade: null });
+                const nextDraft = { attempt: makeAttempt(spec), answers: Array(spec.count).fill(null), grade: null };
+                drafts.set(stage, nextDraft);
+                saveDraft(nextDraft);
                 const replacement = buildAssessment(stage, spec, title);
                 section.replaceWith(replacement);
                 replacement.querySelector(".gc-question input")?.focus();
             }));
-            if (stage === "readiness" && passed(progress.readiness)) actions.append(link(`#applied-${course.modules[0].id}`, "Continue to module 1 →", "gc-action gc-primary"));
+            if (stage === "readiness" && passed(progress.readiness)) actions.append(link(stageHash(course.modules[0].id), "Continue to module 1 →", "gc-action gc-primary"));
             if (stage !== "readiness" && stage !== "final") {
                 const index = course.modules.findIndex(module => module.id === stage);
                 const module = course.modules[index];
-                if (moduleComplete(progress, stage)) actions.append(link(course.modules[index + 1] ? `#applied-${course.modules[index + 1].id}` : "#applied-review", "Continue to the next stage →", "gc-action gc-primary"));
-                else actions.append(button("Return to the practical challenge", () => { moduleViews.set(stage, "workbench"); route(`#applied-${module.id}`); }));
+                if (moduleComplete(progress, stage)) actions.append(link(course.modules[index + 1] ? stageHash(course.modules[index + 1].id) : stageHash(course.capstone ? "capstone" : "review"), "Continue to the next stage →", "gc-action gc-primary"));
+                else actions.append(button("Return to the practical challenge", () => { window.location.hash = stageHash(`${module.id}-practical`); }));
             }
-            if (stage === "final" && courseComplete(course, progress)) result.append(buildCompletion());
+            if (stage === "final" && completed()) result.append(buildCompletion());
             result.append(actions);
             section.append(result);
         }
@@ -506,7 +686,7 @@ export function initializeGuidedCourse({ course, root }) {
     }
 
     function review() {
-        heading("Cumulative study guide", "ALL MODULE PREREQUISITES SATISFIED", "Prepare to transfer the same reasoning to new incidents. The 30-question final draws from all eight modules; at least 24 correct answers are required.");
+        heading("Cumulative study guide", "ALL MODULE PREREQUISITES SATISFIED", `Prepare to transfer the same reasoning to new incidents. The 30-question final draws from all ${course.modules.length} modules; at least 24 correct answers are required.`);
         const list = make("div", undefined, "gc-review-grid");
         course.modules.forEach(module => {
             const item = make("section", undefined, "gc-card");
@@ -515,31 +695,40 @@ export function initializeGuidedCourse({ course, root }) {
             module.lessons.forEach(lesson => item.append(link(`#${lesson.id}`, lesson.title, "gc-review-link")));
             list.append(item);
         });
-        content.append(list, link("#applied-final", "Start / resume the final exam →", "gc-action gc-primary"), ruleNotice());
+        content.append(list, link(stageHash("final"), "Start / resume the final exam →", "gc-action gc-primary"), ruleNotice());
     }
 
-    function route(requestedHashWithoutPound = "applied-networking") {
-        const requested = hash(requestedHashWithoutPound || "applied-networking");
-        if (!requested.startsWith("#applied-")) return false;
+    function route(requestedHashWithoutPound = course.id) {
+        const requested = hash(requestedHashWithoutPound || course.id);
+        if (!requested.startsWith(`#${prefix}-`)) return false;
+        progress = store.load();
         activeWorkbench?.pause();
         activeWorkbench = null;
         currentHash = requested;
         // Resolve eligibility before inserting any lesson, assessment or workbench.
         const module = moduleForHash(requested);
-        const stage = requested === "#applied-readiness" ? "readiness" : requested === "#applied-review" || requested === "#applied-final" ? "final" : module?.id;
-        const access = stage ? eligibility(course, progress, stage) : { allowed: true };
+        const stage = requested === stageHash("readiness") && course.readiness ? "readiness"
+            : requested === stageHash("capstone") && course.capstone ? "capstone"
+                : requested === stageHash("review") || requested === stageHash("final") ? "final" : module?.id;
+        const access = stage ? accessFor(stage) : { allowed: true };
         content.replaceChildren();
         if (!access.allowed) locked(access);
         else if (requested === overviewHash) overview();
-        else if (requested === "#applied-readiness") {
+        else if (requested === stageHash("readiness") && course.readiness) {
             heading("Readiness: apply Networking 101 + 102", "ENTRY CHECK / OPEN PREPARATION", "Use the open study guide, then show that you can interpret the foundations before beginning the practical course.");
-            content.append(publicStudyGuide(), buildAssessment("readiness", course.readiness, "Course readiness"), ruleNotice());
-        } else if (requested === "#applied-review") review();
-        else if (requested === "#applied-final") {
-            heading("Final: investigate a new incident", "CUMULATIVE KNOWLEDGE ASSESSMENT", "All eight practical challenges and module checks are required. The capstone practical and this final knowledge assessment are separate requirements.");
-            content.append(link("#applied-review", "Review the cumulative study guide", "gc-action"), buildAssessment("final", course.final, "Applied networking final"), ruleNotice());
+            content.append(prerequisiteChecklist(), publicStudyGuide(), buildAssessment("readiness", course.readiness, "Course readiness"), ruleNotice());
+        } else if (requested === stageHash("capstone") && course.capstone) {
+            heading(course.capstone.title, "SEPARATE CAPSTONE / ALL MODULES REQUIRED", course.capstone.description);
+            const status = make("p", progress.capstone ? "Capstone practical: passed." : "Capstone practical: not yet passed.", "gc-module-status");
+            status.dataset.capstoneStatus = "";
+            content.append(status, getWorkbench("capstone", course.capstone.challenge, true), link(stageHash("final"), "Continue to the final →", "gc-action"));
+        } else if (requested === stageHash("review")) review();
+        else if (requested === stageHash("final")) {
+            heading("Final: investigate a new incident", "CUMULATIVE KNOWLEDGE ASSESSMENT", `All ${course.modules.length} practical challenges and module checks${course.capstone ? ", plus the separate capstone," : ""} are required. The final knowledge assessment is a separate requirement.`);
+            content.append(link(stageHash("review"), "Review the cumulative study guide", "gc-action"), buildAssessment("final", course.final, `${course.shortTitle || course.title} final`), ruleNotice());
         } else if (module) {
-            modulePage(module, module.lessons.find(lesson => requested === `#${lesson.id}`));
+            const view = requested === stageHash(`${module.id}-practical`) ? "workbench" : requested === stageHash(`${module.id}-check`) ? "check" : null;
+            modulePage(module, module.lessons.find(lesson => requested === `#${lesson.id}`), view);
         } else {
             heading("Course page not found", "UNKNOWN COURSE DESTINATION");
             content.append(make("p", "This course link does not match an available stage."), link(overviewHash, "Return to the course overview", "gc-action"));
@@ -552,6 +741,6 @@ export function initializeGuidedCourse({ course, root }) {
         return true;
     }
     route.pause = () => { activeWorkbench?.pause(); };
-    route.destroy = () => { workbenches.forEach(item => item.controller.destroy()); root.replaceChildren(); };
+    route.destroy = () => { unsubscribe(); workbenches.forEach(item => item.controller.destroy()); root.replaceChildren(); };
     return route;
 }

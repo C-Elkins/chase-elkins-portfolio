@@ -627,8 +627,9 @@ const finalRows = [
 export const appliedCourse = {
     id: "applied-networking",
     version: 1,
+    shortTitle: "Applied Networking",
     title: "Applied Networking: From Theory to Troubleshooting",
-    description: "An original, eight-module branch-office investigation course with 24 hosted lessons, local simulated hands-on challenges and evidence-led checks. Pass the 20-question readiness check, then both each practical and its five-question check at 80% or better before the 30-question final. Attempts are untimed with unlimited hints and retakes. Commands and figures are teaching simulations, not real probes. Progress stays in this browser without accounts; inspectable client-side learning locks and scores are not secure access control or professional certification.",
+    description: "An original, eight-module branch-office investigation course with 24 hosted lessons, local simulated hands-on challenges and evidence-led checks. First pass every Networking 101 and 102 module quiz, then the 20-question readiness check, each practical and five-question check, and the 30-question final. Attempts are untimed with unlimited hints and retakes. Commands and figures are teaching simulations, not real probes. Progress stays in this browser without accounts; inspectable client-side learning locks and scores are not secure access control or professional certification.",
     readiness: {
         count: 20,
         blueprint: Object.keys(readinessStudy).map(topic => ({ topic, count: 2 })),

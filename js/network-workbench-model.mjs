@@ -88,6 +88,26 @@ export function fieldsForScenario(id, device) {
     return workbenchFields.filter(item => allowed[id].includes(item.path) && (!device || item.device === device));
 }
 
+export function validateWorkbenchDraft(id, value) {
+    if (!value || typeof value !== "object" || Array.isArray(value) ||
+        Object.keys(value).some(key => !["selected", "values"].includes(key)) ||
+        !workbenchDevices.some(device => device.id === value.selected) ||
+        !value.values || typeof value.values !== "object" || Array.isArray(value.values)) {
+        throw new TypeError("Saved workbench draft is invalid.");
+    }
+    const fields = fieldsForScenario(id);
+    const values = {};
+    for (const [path, entry] of Object.entries(value.values)) {
+        const spec = fields.find(item => item.path === path);
+        if (!spec || (spec.type === "boolean" ? typeof entry !== "boolean" : typeof entry !== "string" || entry.length > 100) ||
+            (spec.type === "select" && !spec.options.some(option => String(option) === entry))) {
+            throw new TypeError("Saved workbench draft contains an invalid field.");
+        }
+        values[path] = entry;
+    }
+    return { selected: value.selected, values };
+}
+
 function validateValue(spec, value) {
     if (spec.type === "boolean" && typeof value === "boolean") return;
     if (spec.type === "ip" && typeof value === "string" && parseIPv4(value) !== null) return;

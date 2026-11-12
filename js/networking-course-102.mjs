@@ -1,4 +1,5 @@
 // Networking 102: deeper follow-up to Networking 101. 101 topics are referenced by link, not repeated.
+import { extra102Questions, placeFoundationQuestions } from "./foundation-questions.mjs";
 export { gradeModule } from "./networking-course.mjs";
 
 const question = (prompt, options, answer, explanation) => ({ prompt, options, answer, explanation });
@@ -532,4 +533,7 @@ export const networkingModules102 = [
             question("A capture shows \"TCP Zero Window\" from the client. What does it suggest?", ["The network is losing packets", "The client's receive buffer is full because the application is not reading fast enough", "DNS failed", "The TLS certificate expired"], 1, "A zero window is the receiver asking the sender to pause. Look at the receiving host and application, not the path.")
         ]
     }
-];
+].map((module, index) => ({
+    ...module,
+    questions: [...module.questions, ...placeFoundationQuestions(extra102Questions[module.id], index)]
+}));

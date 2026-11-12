@@ -9,9 +9,18 @@ import { createStudioMotion, sceneCommand, studioTiming } from "./network-motion
 import { initializeCompression } from "./compression.js";
 import { initializeCryptoStudio } from "./crypto-studio.js";
 import { initializeNetworkingBasics } from "./networking-basics.js?v=2026-11-12-course-102-2";
-import { initializeNetworking102 } from "./networking-102.js?v=2026-11-12-course-102-2";
+import { initializeNetworking102 } from "./networking-102.js?v=2026-11-14-printers";
+import { initializePrinterNetworking } from "./networking-printers.js?v=2026-11-14-printers";
 import { appliedCourse } from "./networking-applied.mjs";
+import { advancedCourse } from "./networking-advanced.mjs";
+import { mountAdvancedWorkbench } from "./advanced-workbench.js";
 import { initializeGuidedCourse } from "./guided-course.js";
+import { createLearningStore } from "./learning-progress.mjs";
+import { createLearningAdapters } from "./learning-courses.mjs";
+import { initializeLearningBackup } from "./learning-backup-ui.js";
+import { networkingModules } from "./networking-course.mjs";
+import { networkingModules102 } from "./networking-course-102.mjs";
+import { printerModules, finalExam as printerFinal } from "./networking-printers.mjs";
 import { initializeSubnetSprint } from "./subnet-sprint.js?v=2026-11-13-practice-labs";
 import { initializeFirewallBuilder } from "./firewall-builder.js?v=2026-11-13-practice-labs";
 
@@ -1595,15 +1604,34 @@ const pauseCompression = initializeCompression();
 initializeCryptoStudio();
 const pauseSubnetSprint = initializeSubnetSprint();
 initializeFirewallBuilder();
-const showNetworkingCourse = initializeNetworkingBasics();
-const showNetworking102 = initializeNetworking102();
-const showAppliedCourse = initializeGuidedCourse({ course: appliedCourse, root: $("applied-networking") });
-const experiments = ["learn", "learn102", "applied-networking", "network", "algorithms", "audio", "compression", "crypto", "subnet", "firewall"];
+const courseAdapters = createLearningAdapters();
+const learningStore = createLearningStore({ adapters: courseAdapters });
+const updateLearningStatus = () => {
+    const status = $("learning-storage-status");
+    status.hidden = !learningStore.blocked;
+    status.textContent = learningStore.issue;
+};
+learningStore.subscribe(updateLearningStatus);
+window.addEventListener("storage", event => learningStore.observeExternal(event));
+updateLearningStatus();
+initializeLearningBackup({ store: learningStore, definitions: [
+    { id: "learn", title: "Networking 101", kind: "open", modules: networkingModules, prerequisite: true },
+    { id: "learn102", title: "Networking 102", kind: "open", modules: networkingModules102, prerequisite: true },
+    { id: "learnprint", title: "Printer Networking", kind: "open", modules: printerModules, final: printerFinal },
+    { id: "applied-networking", title: "Applied Networking", kind: "guided", course: appliedCourse },
+    { id: "advanced-networking", title: "Advanced Networking", kind: "guided", course: advancedCourse }
+] });
+const showNetworkingCourse = initializeNetworkingBasics({ store: learningStore.course("learn"), adapter: courseAdapters.learn });
+const showNetworking102 = initializeNetworking102({ store: learningStore.course("learn102"), adapter: courseAdapters.learn102 });
+const showPrinterCourse = initializePrinterNetworking({ store: learningStore.course("learnprint"), adapter: courseAdapters.learnprint });
+const showAppliedCourse = initializeGuidedCourse({ course: appliedCourse, root: $("applied-networking"), store: learningStore.course("applied-networking"), learningStore });
+const showAdvancedCourse = initializeGuidedCourse({ course: advancedCourse, root: $("advanced-networking"), store: learningStore.course("advanced-networking"), learningStore, mountWorkbench: mountAdvancedWorkbench });
+const experiments = ["learn", "learn102", "learnprint", "applied-networking", "advanced-networking", "network", "algorithms", "audio", "compression", "crypto", "subnet", "firewall"];
 let courseReturn = null;
 document.addEventListener("click", event => {
-    if (event.target instanceof Element && event.target.closest("#applied-networking [data-studio-lesson]")) courseReturn = window.location.hash;
+    if (event.target instanceof Element && event.target.closest("#applied-networking [data-studio-lesson], #advanced-networking [data-studio-lesson]")) courseReturn = window.location.hash;
 }, true);
-$("applied-studio-return").addEventListener("click", () => { window.location.hash = courseReturn || "#applied-networking"; });
+$("applied-studio-return").addEventListener("click", () => { if (courseReturn) window.location.hash = courseReturn; });
 const labSwitcher = $("lab-switcher");
 const labSearch = $("lab-library-search");
 const labLinks = [...document.querySelectorAll(".lab-library a")];
@@ -1628,7 +1656,7 @@ function filterLabLibrary() {
         group.hidden = links.every(link => link.hidden);
     });
     $("lab-library-status").hidden = !query;
-    $("lab-library-status").textContent = matches ? `${matches} matching ${matches === 1 ? "destination" : "destinations"}.` : "No matches. Try networking, subnet, firewall or encryption.";
+    $("lab-library-status").textContent = matches ? `${matches} matching ${matches === 1 ? "destination" : "destinations"}.` : "No matches. Try networking, printer, subnet, firewall or encryption.";
 }
 function closeLabLibrary() {
     if (!labSwitcher.open) return;
@@ -1664,7 +1692,9 @@ let activeExperiment = null;
 function showExperiment() {
     const requested = window.location.hash.slice(1);
     const chapter = document.getElementById(requested)?.closest(".experiment")?.id;
-    const current = requested.startsWith("applied-") ? "applied-networking" : experiments.includes(requested) ? requested : chapter || activeExperiment || "network";
+    const current = requested.startsWith("applied-") ? "applied-networking"
+        : requested.startsWith("advanced-") ? "advanced-networking"
+            : experiments.includes(requested) ? requested : chapter || activeExperiment || "network";
     const switched = activeExperiment !== current;
     if (switched) {
         pauseNetwork(); pauseSorting();
@@ -1672,6 +1702,7 @@ function showExperiment() {
         pauseSubnetSprint();
         if (activeExperiment === "audio") pauseAudio();
         if (activeExperiment === "applied-networking") showAppliedCourse.pause();
+        if (activeExperiment === "advanced-networking") showAdvancedCourse.pause();
     }
     activeExperiment = current;
     if (current !== "network") courseReturn = null;
@@ -1692,12 +1723,14 @@ function showExperiment() {
     closeLabLibrary();
     if (current === "learn") showNetworkingCourse(requested);
     else if (current === "learn102") showNetworking102(requested);
+    else if (current === "learnprint") showPrinterCourse(requested);
     else if (current === "applied-networking") showAppliedCourse(requested);
+    else if (current === "advanced-networking") showAdvancedCourse(requested);
     else if (switched && chapter && requested !== current) document.getElementById(requested).scrollIntoView();
 }
 window.addEventListener("hashchange", showExperiment);
-window.addEventListener("pagehide", () => { pauseNetwork(); pauseSorting(); pauseSubnetSprint(); showAppliedCourse.pause(); });
+window.addEventListener("pagehide", () => { pauseNetwork(); pauseSorting(); pauseSubnetSprint(); showAppliedCourse.pause(); showAdvancedCourse.pause(); });
 document.addEventListener("visibilitychange", () => {
-    if (document.hidden) { pauseNetwork(); pauseSorting(); pauseCompression(); pauseSubnetSprint(); showAppliedCourse.pause(); }
+    if (document.hidden) { pauseNetwork(); pauseSorting(); pauseCompression(); pauseSubnetSprint(); showAppliedCourse.pause(); showAdvancedCourse.pause(); }
 });
 showExperiment();

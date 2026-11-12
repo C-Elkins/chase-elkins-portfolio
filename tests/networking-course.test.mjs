@@ -6,7 +6,7 @@ export function runNetworkingCourseModelTests() {
     const ids = new Set();
     const chapters = new Set();
     assert(networkingModules.length === 14, "Course contains 14 open modules");
-    assert(networkingModules.reduce((count, module) => count + module.questions.length, 0) === 42, "Course contains exactly 42 questions");
+    assert(networkingModules.reduce((count, module) => count + module.questions.length, 0) === 70, "Course contains exactly 70 questions");
     for (const module of networkingModules) {
         assert(!ids.has(module.id), `${module.id}: unique module ID`);
         ids.add(module.id);
@@ -23,9 +23,9 @@ export function runNetworkingCourseModelTests() {
         }
         const correct = module.questions.map(item => item.answer);
         const allCorrect = gradeModule(module, correct);
-        assert(allCorrect.complete && allCorrect.correct === 3 && allCorrect.results.every(Boolean), `${module.id}: all correct scores 3/3`);
+        assert(module.questions.length === 5 && allCorrect.complete && allCorrect.correct === 5 && allCorrect.results.every(Boolean), `${module.id}: all correct scores 5/5`);
         const allWrong = gradeModule(module, module.questions.map(item => (item.answer + 1) % item.options.length));
-        assert(allWrong.complete && allWrong.correct === 0 && allWrong.results.every(value => !value), `${module.id}: all wrong scores 0/3`);
+        assert(allWrong.complete && allWrong.correct === 0 && allWrong.results.every(value => !value), `${module.id}: all wrong scores 0/5`);
         for (let index = 0; index < module.questions.length; index++) {
             const answers = [...correct];
             answers[index] = null;
@@ -34,11 +34,11 @@ export function runNetworkingCourseModelTests() {
             for (let selected = 0; selected < module.questions[index].options.length; selected++) {
                 answers[index] = selected;
                 const result = gradeModule(module, answers);
-                assert(result.correct === (selected === correct[index] ? 3 : 2), `${module.id}: question ${index}, option ${selected} scored exactly`);
+                assert(result.correct === (selected === correct[index] ? 5 : 4), `${module.id}: question ${index}, option ${selected} scored exactly`);
             }
         }
     }
-    for (const answers of [[], [0, 0, 4], [0, -1, 0], ["0", 0, 0], [NaN, 0, 0]]) {
+    for (const answers of [[], [0, 0, 4, 0, 0], [0, -1, 0, 0, 0], ["0", 0, 0, 0, 0], [NaN, 0, 0, 0, 0]]) {
         let rejected = false;
         try { gradeModule(networkingModules[0], answers); }
         catch (error) { rejected = error instanceof TypeError || error instanceof RangeError; }
@@ -59,8 +59,12 @@ export async function runNetworkingCourseUITests() {
     await go("#learn");
     const quizzes = [...document.querySelectorAll("#learn .learn-quiz")];
     quizzes.forEach(quiz => quiz.querySelector("form").reset());
+    const checklist = document.querySelector("#learn .learn-progress-summary");
     const links = [...$("learn-module-map").children];
     assert(links.length === 14 && quizzes.length === 14, "Every module has a map card and end check");
+    assert(checklist?.textContent.includes("0/18 lessons marked studied") && checklist.textContent.includes("0/14 quizzes passed"), "Overview separates studied lessons from prerequisite quiz passes");
+    assert(checklist.querySelector("summary").textContent.startsWith("Completed") && [...checklist.querySelectorAll("details summary")].some(summary => summary.textContent.startsWith("Not completed")), "Overview labels completed and remaining work");
+    assert(checklist.querySelector("details:last-child a")?.hash === `#quiz-${networkingModules[0].id}`, "Outstanding work links directly to the first missing quiz");
     assert($("learn-course-progress").value === 0, "Unchecked quizzes do not count as progress");
     assert(document.querySelectorAll("#learn [data-module]").length === 18, "All 18 lesson articles belong to modules");
     assert(!document.getElementById("learn-overview").hidden && document.getElementById("learn-workspace").hidden, "Course opens on an overview, not all lessons");
@@ -98,38 +102,43 @@ export async function runNetworkingCourseUITests() {
         practice.open = false;
         quiz.open = true;
         form.requestSubmit();
-        assert(result.textContent.includes("3 remaining") && document.activeElement === fields[0].querySelector("input"), `${module.id}: unanswered submission focuses the first missing question`);
+        assert(result.textContent.includes("5 remaining") && document.activeElement === fields[0].querySelector("input"), `${module.id}: unanswered submission focuses the first missing question`);
         assert(fields.every(field => field.getAttribute("aria-invalid") === "true"), `${module.id}: unanswered questions are identified`);
         assert($("learn-course-progress").value === moduleIndex, `${module.id}: incomplete attempt does not advance progress`);
         assert(fields.every(field => field.querySelector("legend") && [...field.querySelectorAll("input")].every(input => $(input.getAttribute("aria-describedby")))), `${module.id}: questions and feedback have accessible labels`);
         module.questions.forEach((question, index) => setAnswer(index, (question.answer + 1) % question.options.length));
         form.requestSubmit();
-        assert(result.textContent.startsWith("0 of 3"), `${module.id}: wrong attempt scores 0/3`);
+        assert(result.textContent.startsWith("0 of 5"), `${module.id}: wrong attempt scores 0/5`);
         assert(fields.every(field => field.dataset.correct === "false" && !field.querySelector(".learn-quiz-feedback").hidden), `${module.id}: every wrong answer gets feedback`);
         assert(module.questions.every((question, index) => fields[index].querySelector(".learn-quiz-feedback").textContent.includes(question.options[question.answer])), `${module.id}: corrections name the actual right answer`);
-        assert($("learn-course-progress").value === moduleIndex + 1, `${module.id}: reviewed attempt counts without a passing gate`);
+        assert($("learn-course-progress").value === moduleIndex, `${module.id}: a failed attempt does not count as a prerequisite pass`);
         setAnswer(0, module.questions[0].answer);
-        assert($("learn-course-progress").value === moduleIndex && fields.every(field => field.querySelector(".learn-quiz-feedback").hidden), `${module.id}: answer changes clear stale results and score`);
+        assert($("learn-course-progress").value === moduleIndex && fields.every(field => field.querySelector(".learn-quiz-feedback").hidden), `${module.id}: answer changes clear feedback without inventing a pass`);
+        module.questions.forEach((question, index) => setAnswer(index, index < 2 ? (question.answer + 1) % 4 : question.answer));
+        form.requestSubmit();
+        assert(result.textContent.startsWith("3 of 5") && $("learn-course-progress").value === moduleIndex, `${module.id}: 3/5 does not pass`);
         module.questions.forEach((question, index) => setAnswer(index, index === 1 ? (question.answer + 1) % 4 : question.answer));
         form.requestSubmit();
-        assert(result.textContent.startsWith("2 of 3"), `${module.id}: mixed attempt scores exactly 2/3`);
+        assert(result.textContent.startsWith("4 of 5") && $("learn-course-progress").value === moduleIndex + 1, `${module.id}: 4/5 passes`);
         module.questions.forEach((question, index) => setAnswer(index, question.answer));
         form.requestSubmit();
-        assert(result.textContent.startsWith("3 of 3") && fields.every(field => field.dataset.correct === "true"), `${module.id}: retry can reach 3/3`);
-        assert(links[moduleIndex].querySelector(".learn-module-status").textContent === "Latest check: 3 / 3", `${module.id}: latest score is shown in the map`);
+        assert(result.textContent.startsWith("5 of 5") && fields.every(field => field.dataset.correct === "true"), `${module.id}: retry can reach 5/5`);
+        assert(links[moduleIndex].querySelector(".learn-module-status").textContent.includes("best 5/5 · latest 5/5"), `${module.id}: best and latest scores are shown in the map`);
         form.reset();
         assert(form.querySelectorAll("input:checked").length === 0 && result.textContent.includes("reset"), `${module.id}: restart clears answers`);
-        assert(document.activeElement === fields[0].querySelector("input") && $("learn-course-progress").value === moduleIndex, `${module.id}: restart restores focus and clears progress`);
+        assert(document.activeElement === fields[0].querySelector("input") && $("learn-course-progress").value === moduleIndex + 1, `${module.id}: restart restores focus and keeps the earned pass`);
         module.questions.forEach((question, index) => setAnswer(index, question.answer));
         form.requestSubmit();
         quiz.open = false;
     }
     assert($("learn-course-count").textContent === "14 of 14", "All checked modules yield 14 of 14");
+    assert(checklist.textContent.includes("14/14 quizzes passed") && checklist.querySelector("details").textContent.includes("quiz passed"), "Checklist reflects earned course passes");
+    assert(checklist.querySelector("details:last-child summary").textContent.includes("18 activities"), "Checklist still distinguishes unmarked lessons from quiz passes");
     await go("#algorithms");
     await go("#learn");
-    assert($("learn-course-progress").value === 14, "Switching tabs preserves visit-only results");
+    assert($("learn-course-progress").value === 14, "Switching tabs preserves saved results");
     quizzes.forEach(quiz => quiz.querySelector("form").reset());
-    assert($("learn-course-progress").value === 0, "Resetting all quizzes clears progress");
+    assert($("learn-course-progress").value === 14, "Starting new attempts keeps earned passes");
     assert(document.documentElement.scrollWidth <= innerWidth, "Course does not cause page-wide horizontal overflow");
     scrollTo(0, 0);
     return `Networking course UI tests passed: ${passed} assertions.`;

@@ -1,4 +1,4 @@
-import { newCourseProgress, eligibility, moduleComplete, makeAttempt, gradeAttempt, recordAssessment, recordPractical, courseComplete, validateCourseProgress } from "../js/course-progression.mjs";
+import { newCourseProgress, eligibility, moduleComplete, makeAttempt, gradeAttempt, saveAssessmentDraft, restoreAssessmentDraft, recordAssessment, recordPractical, recordCapstone, courseComplete, validateCourseProgress } from "../js/course-progression.mjs";
 
 const bank = (count, topic) => Array.from({ length: count }, (_, index) => ({ id: `${topic}-${index}`, topic, options: ["a", "b", "c", "d"], answer: index % 4 }));
 const spec = (count, topic) => ({ count, bank: bank(count * 2, topic), blueprint: [{ topic, count }] });
@@ -30,6 +30,7 @@ export function runCourseProgressionTests() {
         assert(moduleComplete(progress, module.id), `${module.id}: practical and 4/5 pass`);
         progress = recordAssessment(course, progress, module.id, grade(0, 5));
         assert(moduleComplete(progress, module.id), `${module.id}: failed retry does not remove earned pass`);
+        assert(progress.latest[module.id].correct === 0 && progress.modules[module.id].score.correct === 4, `${module.id}: latest and best remain distinct`);
     }
     assert(eligibility(course, progress, "final").allowed, "Final requires every combined module pass");
     progress = recordAssessment(course, progress, "final", grade(23, 30));
@@ -59,5 +60,36 @@ export function runCourseProgressionTests() {
     rejects(() => gradeAttempt(duplicated, duplicated.map(item => item.answer)), "Duplicate question attempts rejected");
     rejects(() => makeAttempt({ ...course.final, count: 29 }), "Invalid blueprint total rejected");
     rejects(() => makeAttempt(course.final, () => 1), "Out-of-bounds random source rejected");
+    const attempt = makeAttempt(course.readiness);
+    const answers = attempt.map((item, index) => index % 2 ? item.answer : null);
+    const draft = saveAssessmentDraft(attempt, answers);
+    const restored = restoreAssessmentDraft(course.readiness, JSON.parse(JSON.stringify(draft)));
+    assert(JSON.stringify(restored.attempt.map(item => [item.id, item.options, item.answer])) === JSON.stringify(attempt.map(item => [item.id, item.options, item.answer])), "A shuffled question and option order restores exactly");
+    assert(JSON.stringify(restored.answers) === JSON.stringify(answers) && restored.grade === null, "An unfinished draft keeps its selections");
+    rejects(() => saveAssessmentDraft(attempt, answers, true), "Incomplete attempts cannot be marked submitted");
+    const submitted = saveAssessmentDraft(attempt, attempt.map(item => item.answer), true);
+    assert(restoreAssessmentDraft(course.readiness, submitted).grade.passed, "Submitted draft is regraded from canonical questions");
+    const duplicate = structuredClone(draft); duplicate.questions[1].id = duplicate.questions[0].id;
+    rejects(() => restoreAssessmentDraft(course.readiness, duplicate), "Duplicate saved question IDs are rejected");
+    const badOrder = structuredClone(draft); badOrder.questions[0].order[0] = badOrder.questions[0].order[1];
+    rejects(() => restoreAssessmentDraft(course.readiness, badOrder), "Invalid option permutations are rejected");
+    const badAnswer = structuredClone(draft); badAnswer.answers[0] = 4;
+    rejects(() => restoreAssessmentDraft(course.readiness, badAnswer), "Invalid saved answers are rejected");
+    const changed = structuredClone(course.readiness);
+    changed.bank.find(item => item.id === draft.questions[0].id).options[0] = "A changed option";
+    rejects(() => restoreAssessmentDraft(changed, draft), "Changed question content cannot silently reuse answers");
+    const advanced = { ...course, id: "advanced-networking", routePrefix: "advanced", readiness: null, modules: course.modules.slice(0, 2), capstone: {} };
+    let advancedProgress = newCourseProgress(advanced);
+    assert(eligibility(advanced, advancedProgress, "baseline").allowed, "A course without readiness starts at module one");
+    assert(!eligibility(advanced, advancedProgress, "capstone").allowed, "The capstone requires every module");
+    for (const module of advanced.modules) {
+        advancedProgress = recordAssessment(advanced, advancedProgress, module.id, grade(4, 5));
+        advancedProgress = recordPractical(advanced, advancedProgress, module.id, { passed: true, checks: [{ ok: true }] });
+    }
+    assert(!eligibility(advanced, advancedProgress, "final").allowed, "A separate capstone gates the final");
+    rejects(() => recordCapstone(advanced, advancedProgress, { passed: true, checks: [{ ok: false }] }), "Unsuccessful capstone evidence cannot pass");
+    advancedProgress = recordCapstone(advanced, advancedProgress, { passed: true, checks: [{ ok: true }] });
+    advancedProgress = recordAssessment(advanced, advancedProgress, "final", grade(24, 30));
+    assert(courseComplete(advanced, validateCourseProgress(advanced, advancedProgress)), "Advanced completion survives validation without an internal readiness test");
     return `Course progression tests passed: ${passed} assertions.`;
 }

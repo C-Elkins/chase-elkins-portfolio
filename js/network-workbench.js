@@ -1,7 +1,7 @@
 import {
     workbenchDevices, workbenchLinks, fieldsForScenario, configValue,
     createWorkbench, applyWorkbenchChanges, undoWorkbench, runWorkbenchDiagnostic,
-    pinWorkbenchEvidence, verifyWorkbench, workbenchDiff, saveWorkbench, restoreWorkbench
+    pinWorkbenchEvidence, verifyWorkbench, workbenchDiff, saveWorkbench, restoreWorkbench, validateWorkbenchDraft
 } from "./network-workbench-model.mjs";
 import { parseWorkbenchCommand, workbenchHelp } from "./network-workbench-console.mjs";
 import { networkIcon } from "./network-icons.mjs";
@@ -38,11 +38,11 @@ const labelled = (label, input) => {
 };
 const readable = value => typeof value === "boolean" ? value ? "Enabled" : "Disabled" : String(value);
 
-export function mountWorkbench({ container, module, onPass, onSave, saved }) {
+export function mountWorkbench({ container, module, onPass, onSave, saved, savedDraft, onDraftSave }) {
     return mountNetworkWorkbench({
         root: container, id: typeof module === "string" ? module : module.id,
         challenge: typeof module === "string" ? {} : module.challenge,
-        onPass, onSave, saved
+        onPass, onSave, saved, savedDraft, onDraftSave
     });
 }
 
@@ -50,9 +50,10 @@ export function mountWorkbench({ container, module, onPass, onSave, saved }) {
  * Mount once per module. The controller may detach/reinsert root to retain
  * unapplied controls, command input and visit-only output during course navigation.
  */
-export function mountNetworkWorkbench({ root, id, challenge = {}, saved, onSave = () => {}, onPass = () => {} }) {
+export function mountNetworkWorkbench({ root, id, challenge = {}, saved, savedDraft, onSave = () => {}, onDraftSave = () => {}, onPass = () => {} }) {
     let state = saved ? restoreWorkbench(id, saved) : createWorkbench(id);
-    let selected = "client";
+    let editor = savedDraft ? validateWorkbenchDraft(id, savedDraft) : { selected: "client", values: {} };
+    let selected = editor.selected;
     const desktop = window.matchMedia("(min-width: 1000px)");
     let currentView = desktop.matches ? "configure" : "topology";
     let timer = null;
@@ -88,7 +89,10 @@ export function mountNetworkWorkbench({ root, id, challenge = {}, saved, onSave 
         play.setAttribute("aria-pressed", "false");
     };
     const persist = () => {
-        try { onSave(saveWorkbench(state)); } catch (exception) { reportError(exception); }
+        try { onSave(saveWorkbench(state), validateWorkbenchDraft(id, editor)); } catch (exception) { reportError(exception); }
+    };
+    const persistDraft = () => {
+        try { onDraftSave(validateWorkbenchDraft(id, editor)); } catch (exception) { reportError(exception); }
     };
 
     const intro = make("header", undefined, "wb-intro");
@@ -103,6 +107,7 @@ export function mountNetworkWorkbench({ root, id, challenge = {}, saved, onSave 
     devicePicker.dataset.workbenchDevice = "";
     devicePicker.id = `${uid}-device`;
     workbenchDevices.forEach(device => devicePicker.append(option(device.id, device.label)));
+    devicePicker.value = selected;
     devicePicker.addEventListener("change", () => selectDevice(devicePicker.value));
     const revision = make("span", "", "wb-revision");
     toolbar.append(labelled("Inspect device", devicePicker), revision);
@@ -206,11 +211,12 @@ export function mountNetworkWorkbench({ root, id, challenge = {}, saved, onSave 
         });
         try {
             const next = applyWorkbenchChanges(state, changes);
-            if (next === state) { announce.textContent = "No configuration changes to apply."; return; }
+            fieldInputs.forEach((value, path) => { delete editor.values[path]; });
+            if (next === state) { persistDraft(); refresh(true); announce.textContent = "No configuration changes to apply."; return; }
             state = next;
             pause();
             persist();
-            refresh();
+            refresh(true);
             announce.textContent = `Configuration applied at revision ${state.revision}. Previous diagnostic output is now stale; run a fresh test.`;
         } catch (exception) {
             reportError(exception, configForm);
@@ -232,6 +238,7 @@ export function mountNetworkWorkbench({ root, id, challenge = {}, saved, onSave 
         pause();
         clearError();
         state = createWorkbench(id);
+        editor.values = {};
         eventIndex = -1;
         output.replaceChildren();
         persist();
@@ -249,6 +256,7 @@ export function mountNetworkWorkbench({ root, id, challenge = {}, saved, onSave 
     tools.setAttribute("aria-label", "Equivalent diagnostic controls");
     const source = make("select");
     source.append(option("client", "Staff PC"), option("guest", "Guest PC"), ...workbenchDevices.filter(device => !["client", "guest"].includes(device.id)).map(device => option(device.id, device.label)));
+    source.value = selected;
     const test = make("select");
     for (const [value, label] of [["tcp", "Connect to service"], ["ping", "Ping / IP reachability"], ["dns", "Resolve name"], ["trace", "Trace path"], ["config", "Inspect held configuration"], ["renew", "Renew lease"], ["flush", "Clear DNS cache"], ["routes", "Route table"], ["vlans", "VLAN table"], ["trunks", "Trunk table"], ["acl", "Access policies"], ["wireless", "Wireless constraints"]]) test.append(option(value, label));
     const destination = make("input");
@@ -421,6 +429,8 @@ export function mountNetworkWorkbench({ root, id, challenge = {}, saved, onSave 
 
     function selectDevice(deviceId) {
         selected = deviceId;
+        editor.selected = deviceId;
+        persistDraft();
         devicePicker.value = deviceId;
         source.value = deviceId;
         renderInspector(true);
@@ -456,12 +466,17 @@ export function mountNetworkWorkbench({ root, id, challenge = {}, saved, onSave 
             input.id = `${uid}-${spec.path.replace(".", "-")}`;
             if (spec.type === "select") spec.options.forEach(value => input.append(option(value, `${value}`)));
             else input.type = spec.type === "boolean" ? "checkbox" : spec.type === "number" ? "number" : "text";
-            if (spec.type === "boolean") input.checked = configValue(config, spec.path);
-            else { input.value = configValue(config, spec.path); input.required = true; }
+            const value = Object.hasOwn(editor.values, spec.path) ? editor.values[spec.path] : configValue(config, spec.path);
+            if (spec.type === "boolean") input.checked = value;
+            else { input.value = value; input.required = true; }
             if (spec.min !== undefined) input.min = spec.min;
             if (spec.max !== undefined) input.max = spec.max;
             if (["ip", "hostname"].includes(spec.type)) { input.maxLength = 100; input.spellcheck = false; }
             input.setAttribute("aria-describedby", error.id);
+            input.addEventListener(["boolean", "select"].includes(spec.type) ? "change" : "input", () => {
+                editor.values[spec.path] = spec.type === "boolean" ? input.checked : input.value;
+                persistDraft();
+            });
             fieldInputs.set(spec.path, { spec, input });
             configFields.append(labelled(spec.label, input));
         });

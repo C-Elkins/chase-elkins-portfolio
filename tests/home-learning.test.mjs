@@ -2,6 +2,7 @@ import { guidedLessons } from "../js/network-guided.mjs";
 import { networkingModules } from "../js/networking-course.mjs";
 import { networkingModules102 } from "../js/networking-course-102.mjs";
 import { appliedCourse } from "../js/networking-applied.mjs";
+import { printerModules, troubleshootingCases, finalExam } from "../js/networking-printers.mjs";
 
 export async function runHomepageLearningTests() {
     let passed = 0;
@@ -14,7 +15,8 @@ export async function runHomepageLearningTests() {
     const course = document.getElementById("learning-course");
     const course102 = document.getElementById("learning-course-102");
     const applied = document.getElementById("learning-applied");
-    assert(section && studio && course && course102 && applied, "Homepage has a distinct learning spotlight and all four available paths");
+    const printers = document.getElementById("learning-printers");
+    assert(section && studio && course && course102 && applied && printers, "Homepage has a distinct learning spotlight and all five available paths");
     assert(section.getAttribute("aria-labelledby") === "learning-heading", "Spotlight has an accessible heading");
     assert(document.querySelector('.nav-links a[href="#learning"]') && document.querySelector('.hero-learning-link[href="#learning"]'), "Navigation and hero link to the spotlight");
 
@@ -25,10 +27,12 @@ export async function runHomepageLearningTests() {
     assert(courseCounts[0] === networkingModules.length && courseCounts[1] === questionCount, "Course module and quiz counts match the course data");
     const counts102 = [...course102.querySelectorAll("li strong")].map(node => Number(node.textContent));
     assert(counts102[0] === networkingModules102.length && counts102[1] === networkingModules102.reduce((count, module) => count + module.questions.length, 0), "Networking 102 module and test counts match the course data");
-    assert(/optional quiz questions/i.test(course.textContent) && /optional test questions/i.test(course102.textContent), "Quizzes and tests are described as optional");
+    assert(/quiz questions/i.test(course.textContent) && /quiz questions/i.test(course102.textContent) && /pass the 101\/102 module quizzes/i.test(applied.textContent), "Foundation quizzes and Applied prerequisites are explained");
     const appliedCounts = [...applied.querySelectorAll("li strong")].map(node => Number(node.textContent));
     assert(appliedCounts[0] === appliedCourse.modules.length && appliedCounts[1] === appliedCourse.modules.reduce((count, module) => count + module.lessons.length, 0), "Applied course module and lesson counts match its data");
-    for (const [path, hash] of [[studio, "#network"], [course, "#learn"], [course102, "#learn102"], [applied, "#applied-networking"]]) {
+    const printerCounts = [...printers.querySelectorAll("li strong")].map(node => Number(node.textContent));
+    assert(printerCounts[0] === printerModules.length && printerCounts[1] === printerModules.reduce((count, module) => count + module.questions.length, 0) && printerCounts[2] === finalExam.length && troubleshootingCases.length > 0, "Printer course counts match its data");
+    for (const [path, hash] of [[studio, "#network"], [course, "#learn"], [course102, "#learn102"], [applied, "#applied-networking"], [printers, "#learnprint"]]) {
         const link = path.querySelector("a");
         const destination = new URL(link.getAttribute("href"), location.href);
         assert(destination.origin === location.origin && destination.pathname.endsWith("/lab.html") && destination.hash === hash, `${hash} links to the correct local Lab view`);
@@ -41,9 +45,9 @@ export async function runHomepageLearningTests() {
     const roadmap = section.querySelector(".learning-roadmap");
     const planned = [...roadmap.querySelectorAll(".learning-roadmap-list li")];
     assert(/aren’t available yet/i.test(roadmap.textContent), "Roadmap says future material is not available yet");
-    assert(planned.length === 2 && planned.every(item => item.querySelector(".learning-planned")?.textContent.trim() === "PLANNED"), "Every future topic is labeled planned");
-    assert(["Deeper printer networking", "Cybersecurity learning"].every(title => planned.some(item => item.querySelector("h4")?.textContent === title)), "Roadmap covers the planned learning topics");
-    assert(!planned.some(item => /Networking 102/.test(item.textContent)), "Released Networking 102 is no longer listed as planned");
+    assert(planned.length === 1 && planned.every(item => item.querySelector(".learning-planned")?.textContent.trim() === "PLANNED"), "Every future topic is labeled planned");
+    assert(planned.some(item => item.querySelector("h4")?.textContent === "Cybersecurity learning"), "Roadmap covers the planned learning topics");
+    assert(!planned.some(item => /Networking 102|printer/i.test(item.textContent)), "Released courses are no longer listed as planned");
     assert(!roadmap.querySelector("a, button"), "Planned topics do not link to unavailable material");
 
     const artwork = section.querySelector(".learning-display");
